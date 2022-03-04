@@ -1,4 +1,4 @@
-package com.jimphieffer.Server;
+package com.jimphieffer.Network.Server;
 
 import com.jimphieffer.Message;
 

@@ -1,6 +1,5 @@
-package com.jimphieffer.Server;
+package com.jimphieffer.Network.Server;
 
-import com.jimphieffer.Client.Client;
 import com.jimphieffer.Message;
 
 import java.awt.*;

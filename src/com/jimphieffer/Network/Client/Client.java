@@ -1,4 +1,4 @@
-package com.jimphieffer.Client;
+package com.jimphieffer.Network.Client;
 
 public interface Client {
     void onMessage(String message);

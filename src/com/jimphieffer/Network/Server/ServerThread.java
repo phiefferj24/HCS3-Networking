@@ -1,8 +1,8 @@
-package com.jimphieffer.Server;
+package com.jimphieffer.Network.Server;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
+
 import com.jimphieffer.Message;
 
 public class ServerThread extends Thread {
