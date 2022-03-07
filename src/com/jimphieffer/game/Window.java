@@ -1,17 +1,8 @@
-package com.jimphieffer.Game;
+package com.jimphieffer.game;
 
-import org.lwjgl.*;
 import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
 
-import java.awt.*;
-import java.nio.*;
-
-import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Window {
@@ -31,6 +22,14 @@ public class Window {
         }
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(window, (videoMode.width() - width) / 2, (videoMode.height() - height) / 2);
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if(action == GLFW_PRESS) listener.keyPressed(window, key);
+            else if(action == GLFW_RELEASE) listener.keyReleased(window, key);
+        });
+        glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+            if(action == GLFW_PRESS) listener.mousePressed(window, button);
+            else if(action == GLFW_RELEASE) listener.mouseReleased(window, button);
+        });
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
         glfwShowWindow(window);

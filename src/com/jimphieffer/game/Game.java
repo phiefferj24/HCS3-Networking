@@ -1,4 +1,4 @@
-package com.jimphieffer.Game;
+package com.jimphieffer.game;
 
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
@@ -8,7 +8,6 @@ import java.util.concurrent.*;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static java.lang.System.*;
 
 /**
  * Note:
@@ -20,21 +19,24 @@ import static java.lang.System.*;
  */
 
 public class Game extends Thread {
+    private static final int MAX_QUEUE_SIZE = 3;
+    public static final BlockingQueue<MethodWrapper> queue = new LinkedBlockingQueue<>();
+
     private double framesPerSecond = 30.d;
     private Window window;
-    private BlockingQueue<MethodWrapper> queue = new LinkedBlockingQueue<>();
     private long windowPointer;
     public void run() {
-        final double nanosPerFrame = 1000000000.d / framesPerSecond;
-        double lastRenderTime = nanoTime();
+        final double secondsPerFrame = 1.d / framesPerSecond;
+        double lastRenderTime = glfwGetTime();
         while(!glfwWindowShouldClose(windowPointer)) {
-            double deltaTime = nanoTime() - lastRenderTime;
-            while(deltaTime < nanosPerFrame) {
+            double deltaTime = glfwGetTime() - lastRenderTime;
+            while(deltaTime < secondsPerFrame) {
                 tick(deltaTime);
-                deltaTime = nanoTime() - lastRenderTime;
+                deltaTime = glfwGetTime() - lastRenderTime;
             }
-            queue.add(this::render);
-            lastRenderTime = nanoTime();
+            if(queue.size() < MAX_QUEUE_SIZE) queue.add(this::render);
+            else System.err.println("Rendering running behind!");
+            lastRenderTime = glfwGetTime();
         }
         queue.add(this::close);
         System.exit(0);
@@ -72,7 +74,7 @@ public class Game extends Thread {
         g.start();
         while(!glfwWindowShouldClose(g.windowPointer)) {
             try {
-                g.queue.take().run();
+                queue.take().run();
             } catch (InterruptedException e) {
                 System.err.println("Could not take render from queue!");
             }

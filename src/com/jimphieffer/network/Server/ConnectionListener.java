@@ -1,4 +1,4 @@
-package com.jimphieffer.Network.Server;
+package com.jimphieffer.network.Server;
 
 import java.io.*;
 import java.net.*;
