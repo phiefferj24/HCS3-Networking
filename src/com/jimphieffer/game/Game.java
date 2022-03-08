@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 
 public class Game extends Thread {
-    private static final int MAX_QUEUE_SIZE = 3;
+    public static final int MAX_QUEUE_LENGTH = 3;
     public static final BlockingQueue<MethodWrapper> queue = new LinkedBlockingQueue<>();
 
     private double framesPerSecond = 30.d;
@@ -28,14 +28,15 @@ public class Game extends Thread {
     public void run() {
         final double secondsPerFrame = 1.d / framesPerSecond;
         double lastRenderTime = glfwGetTime();
+        double lastTickTime = glfwGetTime();
+        double deltaTime = glfwGetTime() - lastRenderTime;
         while(!glfwWindowShouldClose(windowPointer)) {
-            double deltaTime = glfwGetTime() - lastRenderTime;
             while(deltaTime < secondsPerFrame) {
                 tick(deltaTime);
-                deltaTime = glfwGetTime() - lastRenderTime;
+                deltaTime = glfwGetTime() - lastTickTime;
             }
-            if(queue.size() < MAX_QUEUE_SIZE) queue.add(this::render);
-            else System.err.println("Rendering running behind!");
+            if(queue.size() < MAX_QUEUE_LENGTH) queue.add(this::render);
+            else while(queue.size() >= MAX_QUEUE_LENGTH);
             lastRenderTime = glfwGetTime();
         }
         queue.add(this::close);
@@ -62,7 +63,7 @@ public class Game extends Thread {
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
         glfwPollEvents();
         double time = System.currentTimeMillis() / 1000.d;
-        glClearColor((float) Math.abs(Math.sin(time)), 0, (float) (1-Math.abs(Math.sin(time))), 0);
+        glClearColor((float)((Math.sin(time)+1)/2.f), 0.f, 1-(float)((Math.sin(time)+1)/2.f), 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfwSwapBuffers(windowPointer);
     }
@@ -72,7 +73,7 @@ public class Game extends Thread {
         Game g = new Game();
         g.init();
         g.start();
-        while(!glfwWindowShouldClose(g.windowPointer)) {
+        while(!glfwWindowShouldClose(g.windowPointer) || !queue.isEmpty()) {
             try {
                 queue.take().run();
             } catch (InterruptedException e) {
