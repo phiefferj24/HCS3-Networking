@@ -1,10 +1,10 @@
 package com.jimphieffer.game;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import java.util.concurrent.*;
-
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -31,16 +31,21 @@ public class Game extends Thread {
         double lastTickTime = glfwGetTime();
         double deltaTime = glfwGetTime() - lastRenderTime;
         while(!glfwWindowShouldClose(windowPointer)) {
+            call(GLFW::glfwPollEvents);
             while(deltaTime < secondsPerFrame) {
                 tick(deltaTime);
                 deltaTime = glfwGetTime() - lastTickTime;
             }
-            if(queue.size() < MAX_QUEUE_LENGTH) queue.add(this::render);
-            else while(queue.size() >= MAX_QUEUE_LENGTH);
+            call(this::render);
             lastRenderTime = glfwGetTime();
         }
         queue.add(this::close);
         System.exit(0);
+    }
+
+    public void call(MethodWrapper m) {
+        if(queue.size() < MAX_QUEUE_LENGTH) queue.add(m);
+        else while(queue.size() >= MAX_QUEUE_LENGTH);
     }
 
     public void init() {

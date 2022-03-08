@@ -1,4 +1,4 @@
-package com.jimphieffer.network.Server;
+package com.jimphieffer.network.server;
 
 public class Main {
     public static void main(String[] args) {
