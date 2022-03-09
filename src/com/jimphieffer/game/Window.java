@@ -9,7 +9,7 @@ public class Window {
     private long window;
     private int width;
     private int height;
-    public Window(String name, int width, int height, InputListener listener) {
+    public Window(String name, int width, int height, Game game) {
         GLFWErrorCallback.createPrint(System.err).set();
         if(!glfwInit()) {
             throw new IllegalStateException("Could not initialize GLFW!");
@@ -23,12 +23,12 @@ public class Window {
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(window, (videoMode.width() - width) / 2, (videoMode.height() - height) / 2);
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if(action == GLFW_PRESS) listener.keyPressed(window, key);
-            else if(action == GLFW_RELEASE) listener.keyReleased(window, key);
+            if(action == GLFW_PRESS) game.keyPressed(window, key);
+            else if(action == GLFW_RELEASE) game.keyReleased(window, key);
         });
         glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-            if(action == GLFW_PRESS) listener.mousePressed(window, button);
-            else if(action == GLFW_RELEASE) listener.mouseReleased(window, button);
+            if(action == GLFW_PRESS) game.mousePressed(window, button);
+            else if(action == GLFW_RELEASE) game.mouseReleased(window, button);
         });
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
