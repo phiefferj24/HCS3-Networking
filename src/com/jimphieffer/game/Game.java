@@ -23,6 +23,11 @@ public class Game {
     private double framesPerSecond = 60.d;
     private Window window;
     private long windowPointer;
+    private InputListener inputListener;
+
+    public Game(InputListener inputListener) {
+        this.inputListener = inputListener;
+    }
     public void run() {
         final double secondsPerFrame = 1.d / framesPerSecond;
         double lastRenderTime = glfwGetTime();
@@ -43,7 +48,7 @@ public class Game {
     }
 
     public void init() {
-        window = new Window("Window",800, 600, new InputListener());
+        window = new Window("Window",800, 600, inputListener);
         windowPointer = window.getWindow();
         GL.createCapabilities();
     }
@@ -69,33 +74,11 @@ public class Game {
     }
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
-        glfwPollEvents();
-        //test
-        double time = System.currentTimeMillis() / 1000.d;
-        glClearColor(0.f, 0.f, 0.f, 0.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glColor3f((float)((Math.sin(time)+1)/2.f), 0.f, 1-(float)((Math.sin(time)+1)/2.f));
-        glBegin(GL_TRIANGLES);
-        {
-            glVertex3f(-0.9f, -0.9f, -0.1f);
-            glVertex3f(0.9f, -0.9f, -0.1f);
-            glVertex3f(-0.9f, 0.9f, -0.1f);
-            //glVertex3f(0.9f, 0.9f, -0.1f);
-        }
-        glColor3f(1-(float)((Math.sin(time)+1)/2.f), 0.f, (float)((Math.sin(time)+1)/2.f));
-        {
-            //glVertex3f(-0.9f, -0.9f, -0.1f);
-            glVertex3f(0.9f, -0.9f, -0.1f);
-            glVertex3f(-0.9f, 0.9f, -0.1f);
-            glVertex3f(0.9f, 0.9f, -0.1f);
-        }
-        glEnd();
-        glfwSwapBuffers(windowPointer);
+
     }
 
     public static void main(String[] args) {
-        Configuration.GLFW_CHECK_THREAD0.set(false);
-        Game g = new Game();
+        Game g = new Game(new InputListener());
         g.init();
         g.run();
     }
