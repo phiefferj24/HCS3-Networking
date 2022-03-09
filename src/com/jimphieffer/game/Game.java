@@ -23,11 +23,7 @@ public class Game {
     private double framesPerSecond = 60.d;
     private Window window;
     private long windowPointer;
-    private InputListener inputListener;
 
-    public Game(InputListener inputListener) {
-        this.inputListener = inputListener;
-    }
     public void run() {
         final double secondsPerFrame = 1.d / framesPerSecond;
         double lastRenderTime = glfwGetTime();
@@ -48,7 +44,7 @@ public class Game {
     }
 
     public void init() {
-        window = new Window("Window",800, 600, inputListener);
+        window = new Window("Window",800, 600, this);
         windowPointer = window.getWindow();
         GL.createCapabilities();
     }
@@ -77,8 +73,23 @@ public class Game {
 
     }
 
+    public void keyPressed(long window, int key) {
+
+    }
+    public void keyReleased(long window, int key) {
+        if(key == GLFW_KEY_ESCAPE) {
+            Game.close(window);
+        }
+    }
+    public void mousePressed(long window, int button) {
+
+    }
+    public void mouseReleased(long window, int button) {
+
+    }
+
     public static void main(String[] args) {
-        Game g = new Game(new InputListener());
+        Game g = new Game();
         g.init();
         g.run();
     }
