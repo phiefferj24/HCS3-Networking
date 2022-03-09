@@ -7,10 +7,10 @@ import com.jimphieffer.Message;
 
 public class ServerThread extends Thread {
     private Socket socket;
-    private Server server;
     private PrintWriter output;
     private BufferedReader input;
     private String name = "";
+    private Server server;
     public ServerThread(Socket socket, Server server) {
         try {
             this.socket = socket;

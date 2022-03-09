@@ -14,7 +14,7 @@ public class ServerConsole implements ActionListener {
     private JTextArea textArea;
     private JTextField textField;
     private ArrayList<String> clients;
-    private ConnectionListener listener;
+    private Server listener;
     private static final int TEXT_INPUT_HEIGHT = 30;
     public ServerConsole(int width, int height) {
         JFrame jf = new JFrame("Console");
@@ -61,7 +61,7 @@ public class ServerConsole implements ActionListener {
         }
     }
 
-    public void setListener(ConnectionListener listener) {
+    public void setListener(Server listener) {
         this.listener = listener;
     }
 
