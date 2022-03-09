@@ -44,6 +44,7 @@ public class Game {
         }
         close();
         System.exit(0);
+        //
     }
 
     public void init() {
