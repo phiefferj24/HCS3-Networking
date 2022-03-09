@@ -67,6 +67,7 @@ public class Game extends Thread {
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
         glfwPollEvents();
+        //test
         double time = System.currentTimeMillis() / 1000.d;
         glClearColor((float)((Math.sin(time)+1)/2.f), 0.f, 1-(float)((Math.sin(time)+1)/2.f), 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
