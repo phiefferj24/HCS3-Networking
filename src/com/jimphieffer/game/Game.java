@@ -1,5 +1,6 @@
 package com.jimphieffer.game;
 
+import com.jimphieffer.network.client.ClientThread;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
@@ -24,9 +25,12 @@ public class Game {
     private Window window;
     private long windowPointer;
     private InputListener inputListener;
+    private ClientThread c;
 
     public Game(InputListener inputListener) {
         this.inputListener = inputListener;
+        c = new ClientThread("10.13.98.152",9000);
+
     }
     public void run() {
         final double secondsPerFrame = 1.d / framesPerSecond;
@@ -75,9 +79,11 @@ public class Game {
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
 
+
     }
 
     public static void main(String[] args) {
+
         Game g = new Game(new InputListener());
         g.init();
         g.run();

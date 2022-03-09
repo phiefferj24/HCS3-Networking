@@ -1,11 +1,12 @@
 package com.jimphieffer.network.client;
 
 import com.jimphieffer.Message;
+import com.jimphieffer.game.InputListener;
 
 import java.io.*;
 import java.net.Socket;
 
-public class ClientThread extends Thread {
+public class ClientThread extends Thread{
     private Socket socket;
     private PrintWriter output;
     private BufferedReader input;
