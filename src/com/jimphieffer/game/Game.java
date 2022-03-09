@@ -41,6 +41,7 @@ public class Game extends Thread {
         }
         queue.add(this::close);
         System.exit(0);
+        //
     }
 
     public void call(MethodWrapper m) {
