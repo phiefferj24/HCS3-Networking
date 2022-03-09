@@ -9,13 +9,7 @@ public class InputListener {
     }
     public void keyReleased(long window, int key) {
         if(key == GLFW_KEY_ESCAPE) {
-            Game.queue.add(() -> {
-                glfwFreeCallbacks(window);
-                glfwDestroyWindow(window);
-                glfwTerminate();
-                glfwSetErrorCallback(null).free();
-                System.exit(0);
-            });
+            Game.close(window);
         }
     }
     public void mousePressed(long window, int button) {

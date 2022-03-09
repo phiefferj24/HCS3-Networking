@@ -18,11 +18,9 @@ import static org.lwjgl.opengl.GL11.*;
  * This should not cause any problems (as of now).
  */
 
-public class Game extends Thread {
-    public static final int MAX_QUEUE_LENGTH = 3;
-    public static final BlockingQueue<MethodWrapper> queue = new LinkedBlockingQueue<>();
+public class Game {
 
-    private double framesPerSecond = 30.d;
+    private double framesPerSecond = 60.d;
     private Window window;
     private long windowPointer;
     public void run() {
@@ -31,21 +29,16 @@ public class Game extends Thread {
         double lastTickTime = glfwGetTime();
         double deltaTime = glfwGetTime() - lastRenderTime;
         while(!glfwWindowShouldClose(windowPointer)) {
-            call(GLFW::glfwPollEvents);
             while(deltaTime < secondsPerFrame) {
                 tick(deltaTime);
                 deltaTime = glfwGetTime() - lastTickTime;
             }
-            call(this::render);
+            glfwPollEvents();
+            render();
             lastRenderTime = glfwGetTime();
         }
-        queue.add(this::close);
+        close();
         System.exit(0);
-    }
-
-    public void call(MethodWrapper m) {
-        if(queue.size() < MAX_QUEUE_LENGTH) queue.add(m);
-        else while(queue.size() >= MAX_QUEUE_LENGTH);
     }
 
     public void init() {
@@ -63,13 +56,38 @@ public class Game extends Thread {
         glfwDestroyWindow(windowPointer);
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+        System.exit(0);
+    }
+
+    public static void close(long window) {
+        glfwFreeCallbacks(window);
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
+        System.exit(0);
     }
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
         glfwPollEvents();
         double time = System.currentTimeMillis() / 1000.d;
-        glClearColor((float)((Math.sin(time)+1)/2.f), 0.f, 1-(float)((Math.sin(time)+1)/2.f), 0);
+        glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glColor3f((float)((Math.sin(time)+1)/2.f), 0.f, 1-(float)((Math.sin(time)+1)/2.f));
+        glBegin(GL_TRIANGLES);
+        {
+            glVertex3f(-0.9f, -0.9f, -0.1f);
+            glVertex3f(0.9f, -0.9f, -0.1f);
+            glVertex3f(-0.9f, 0.9f, -0.1f);
+            //glVertex3f(0.9f, 0.9f, -0.1f);
+        }
+        glColor3f(1-(float)((Math.sin(time)+1)/2.f), 0.f, (float)((Math.sin(time)+1)/2.f));
+        {
+            //glVertex3f(-0.9f, -0.9f, -0.1f);
+            glVertex3f(0.9f, -0.9f, -0.1f);
+            glVertex3f(-0.9f, 0.9f, -0.1f);
+            glVertex3f(0.9f, 0.9f, -0.1f);
+        }
+        glEnd();
         glfwSwapBuffers(windowPointer);
     }
 
@@ -77,13 +95,6 @@ public class Game extends Thread {
         Configuration.GLFW_CHECK_THREAD0.set(false);
         Game g = new Game();
         g.init();
-        g.start();
-        while(!glfwWindowShouldClose(g.windowPointer) || !queue.isEmpty()) {
-            try {
-                queue.take().run();
-            } catch (InterruptedException e) {
-                System.err.println("Could not take render from queue!");
-            }
-        }
+        g.run();
     }
 }
