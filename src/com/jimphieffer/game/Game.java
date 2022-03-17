@@ -1,9 +1,12 @@
 package com.jimphieffer.game;
 
+import com.jimphieffer.network.client.ClientThread;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
+import javax.xml.stream.Location;
+import java.util.ArrayList;
 import java.util.concurrent.*;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -20,12 +23,20 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Game {
 
+    private int windowWidth;
+    private int windowHeight;
+    private boolean space = false;
+    private ArrayList<Sprite> sprites;
+
     private double framesPerSecond = 60.d;
     private Window window;
     private long windowPointer;
+    private ClientThread c;
+
 
     public void run() {
         final double secondsPerFrame = 1.d / framesPerSecond;
+
         double lastRenderTime = glfwGetTime();
         double lastTickTime = glfwGetTime();
         double deltaTime = glfwGetTime() - lastRenderTime;
@@ -44,12 +55,32 @@ public class Game {
     }
 
     public void init() {
-        window = new Window("Window",800, 600, this);
+        sprites = new ArrayList<>();
+        sprites.add(new Player(50,50,50,50,"src/com/jimphieffer/game/sprites/player.png",0,0,"Host Player"));
+        windowWidth = 800;
+        windowHeight = 600;
+        window = new Window("Window",windowWidth, windowHeight, this);
         windowPointer = window.getWindow();
         GL.createCapabilities();
+       // c = new ClientThread("10.13.98.152",9000);
+
+
     }
 
     private void tick(double deltaTime) {
+
+
+        for(Sprite s: sprites)
+        {
+            s.step(this);
+
+            if(s instanceof Player)
+                if (space)
+                    ((Player) s).setVX(((Player) s).getVX()+0.1);
+
+        }
+
+
 
     }
 
@@ -70,15 +101,39 @@ public class Game {
     }
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
+        glClearColor(0.0f, 0.0f, 0.0f,0.0f);
+        glClear(GL_COLOR_BUFFER_BIT & GL_DEPTH_BUFFER_BIT);
+        glColor3f(1, 1, 1);
 
+
+        for(Sprite s: sprites) {
+            System.out.println("afs");
+
+            glBegin(GL_TRIANGLES);
+            {
+                glVertex2d(s.getLeft(), s.getHeight());
+                glVertex2d(s.getLeft()+s.getWidth(), s.getTop());
+                glVertex2d(s.getLeft()+s.getWidth()/2, s.getTop()+s.getHeight());
+
+            }
+        }
+        glEnd();
+        glfwSwapBuffers(windowPointer);
     }
 
     public void keyPressed(long window, int key) {
-
+        if(key==GLFW_KEY_SPACE)
+        {
+            space = true;
+        }
     }
     public void keyReleased(long window, int key) {
         if(key == GLFW_KEY_ESCAPE) {
             Game.close(window);
+        }
+        else if(key==GLFW_KEY_SPACE)
+        {
+            space = false;
         }
     }
     public void mousePressed(long window, int button) {
@@ -86,6 +141,16 @@ public class Game {
     }
     public void mouseReleased(long window, int button) {
 
+    }
+
+    public int getWindowWidth()
+    {
+        return windowWidth;
+    }
+
+    public int getWindowHeight()
+    {
+        return windowHeight;
     }
 
     public static void main(String[] args) {

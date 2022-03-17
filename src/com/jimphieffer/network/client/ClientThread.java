@@ -1,7 +1,6 @@
 package com.jimphieffer.network.client;
 
 import com.jimphieffer.Message;
-import com.jimphieffer.game.InputListener;
 
 import java.io.*;
 import java.net.Socket;
