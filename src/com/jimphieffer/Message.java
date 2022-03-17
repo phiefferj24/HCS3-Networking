@@ -14,7 +14,8 @@ public class Message {
     public enum MessageType {
         CONNECT,
         MESSAGE,
-        DISCONNECT
+        DISCONNECT,
+        COMMAND
     }
     public static String encode(String message, MessageProtocol protocol, MessageType type) {
         return protocol.name() + "/" + type.name() + ":" + message;
