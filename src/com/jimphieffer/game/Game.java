@@ -23,10 +23,9 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Game {
 
-    private int windowWidth;
-    private int windowHeight;
+
     private boolean space = false;
-    private ArrayList<Sprite> sprites;
+
 
     private double framesPerSecond = 60.d;
     private Window window;
@@ -55,10 +54,9 @@ public class Game {
     }
 
     public void init() {
-        sprites = new ArrayList<>();
-        sprites.add(new Player(50,50,50,50,"src/com/jimphieffer/game/sprites/player.png",0,0,"Host Player"));
-        windowWidth = 800;
-        windowHeight = 600;
+        int windowWidth = 800;
+        int windowHeight = 600;
+
         window = new Window("Window",windowWidth, windowHeight, this);
         windowPointer = window.getWindow();
         GL.createCapabilities();
@@ -103,25 +101,7 @@ public class Game {
     }
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
-        glClearColor(0.0f, 0.0f, 0.0f,0.0f);
-        glClear(GL_COLOR_BUFFER_BIT & GL_DEPTH_BUFFER_BIT);
-        glColor3f(1, 1, 1);
 
-        for(Sprite s: sprites) {
-            glBegin(GL_TRIANGLES);
-            {
-
-
-
-                glVertex2d(s.getLeft()/windowWidth, (double)s.getHeight()/windowHeight);
-                glVertex2d(s.getLeft()/windowWidth+(double)s.getWidth()/windowWidth, s.getTop()/windowHeight);
-                glVertex2d(s.getLeft()/windowWidth+(double)s.getWidth()/(windowWidth*2), s.getTop()/windowHeight+(double)s.getHeight()/windowHeight);
-
-
-            }
-        }
-        glEnd();
-        glfwSwapBuffers(windowPointer);
     }
 
     public void keyPressed(long window, int key) {
@@ -146,15 +126,6 @@ public class Game {
 
     }
 
-    public int getWindowWidth()
-    {
-        return windowWidth;
-    }
-
-    public int getWindowHeight()
-    {
-        return windowHeight;
-    }
 
     public static void main(String[] args) {
         Game g = new Game();

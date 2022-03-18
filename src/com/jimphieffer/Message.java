@@ -14,6 +14,7 @@ public class Message {
     public enum MessageType {
         CONNECT,
         MESSAGE,
+        MOVEMENT,
         DISCONNECT,
         COMMAND
     }

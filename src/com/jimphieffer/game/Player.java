@@ -63,14 +63,14 @@ public class Player extends Sprite{
         if(Math.abs(vy)<.3)
             vy = 0;
 
-        if (getLeft() < -game.getWindowWidth())
-            vx = Math.abs(vx);
-        if (getLeft() + getWidth() > game.getWindowWidth())
-            vx = -Math.abs(vx);
-        if (getTop() < -game.getWindowHeight())
-            vy = Math.abs(vy);
-        if (getTop() + getHeight() >game.getWindowHeight())
-            vy = -Math.abs(vy);
+//        if (getLeft() < -game.getWorldWidth())
+//            vx = Math.abs(vx);
+//        if (getLeft() + getWidth() > game.getWorldWidth())
+//            vx = -Math.abs(vx);
+//        if (getTop() < -game.getWorldHeight())
+//            vy = Math.abs(vy);
+//        if (getTop() + getHeight() >game.getWorldHeight())
+//            vy = -Math.abs(vy);
 
 
 
