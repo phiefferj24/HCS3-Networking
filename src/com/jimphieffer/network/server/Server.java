@@ -11,7 +11,9 @@ public class Server {
     private Server server;
     private ArrayList<ServerThread> serverThreads;
     private ServerConsole console;
+    private ServerGame serverGame;
     public Server(int port) {
+        this.serverGame = new ServerGame(this);
         try {
             serverSocket = new ServerSocket(port);
             this.server = server;
@@ -59,7 +61,7 @@ public class Server {
         return serverThreads;
     }
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
-
+        serverGame.onMessage(message,protocol,type,socket);
     }
 
 }
