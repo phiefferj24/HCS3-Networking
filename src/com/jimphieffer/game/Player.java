@@ -83,8 +83,7 @@ public class Player extends Sprite{
 
 
 
-        //m.out.println(vx);
-        //System.out.println(vy);
+
 
         setLeft(getLeft()+vx);
         setTop(getTop()+vy);

@@ -75,8 +75,10 @@ public class Game {
             s.step(this);
 
             if(s instanceof Player)
-                if (space)
-                    ((Player) s).setVX(((Player) s).getVX()+0.1);
+                if (space) {
+                    System.out.println("space");
+                    ((Player) s).setVX(((Player) s).getVX() + 0.1);
+                }
 
         }
 
@@ -105,15 +107,16 @@ public class Game {
         glClear(GL_COLOR_BUFFER_BIT & GL_DEPTH_BUFFER_BIT);
         glColor3f(1, 1, 1);
 
-
         for(Sprite s: sprites) {
-            System.out.println("afs");
-
             glBegin(GL_TRIANGLES);
             {
-                glVertex2d(s.getLeft(), s.getHeight());
-                glVertex2d(s.getLeft()+s.getWidth(), s.getTop());
-                glVertex2d(s.getLeft()+s.getWidth()/2, s.getTop()+s.getHeight());
+
+
+
+                glVertex2d(s.getLeft()/windowWidth, (double)s.getHeight()/windowHeight);
+                glVertex2d(s.getLeft()/windowWidth+(double)s.getWidth()/windowWidth, s.getTop()/windowHeight);
+                glVertex2d(s.getLeft()/windowWidth+(double)s.getWidth()/(windowWidth*2), s.getTop()/windowHeight+(double)s.getHeight()/windowHeight);
+
 
             }
         }
