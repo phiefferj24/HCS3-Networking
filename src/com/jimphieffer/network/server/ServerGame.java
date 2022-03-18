@@ -1,10 +1,20 @@
 package com.jimphieffer.network.server;
 
-public class ServerGame extends Thread {
+import com.jimphieffer.Message;
+
+import java.net.Socket;
+
+public class ServerGame extends Server {
+
+    public ServerGame(int port) {
+        super(port);
+    }
 
     public void run() {
-        Server s = new Server(9000);
 
 
+    }
+
+    public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
     }
 }
