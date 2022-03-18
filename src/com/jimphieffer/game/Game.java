@@ -68,17 +68,17 @@ public class Game {
     private void tick(double deltaTime) {
 
 
-        for(Sprite s: sprites)
-        {
-            s.step(this);
-
-            if(s instanceof Player)
-                if (space) {
-                    System.out.println("space");
-                    ((Player) s).setVX(((Player) s).getVX() + 0.1);
-                }
-
-        }
+//        for(Sprite s: sprites)
+//        {
+//            s.step(this);
+//
+//            if(s instanceof Player)
+//                if (space) {
+//                    System.out.println("space");
+//                    ((Player) s).setVX(((Player) s).getVX() + 0.1);
+//                }
+//
+//        }
 
 
 
