@@ -1,6 +1,7 @@
 package com.jimphieffer.game;
 
 import com.jimphieffer.network.client.ClientThread;
+import com.jimphieffer.network.server.Server;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
@@ -54,6 +55,9 @@ public class Game {
     }
 
     public void init() {
+        ClientThread ct = new ClientThread("192.168.20.45",9000);
+
+
         int windowWidth = 800;
         int windowHeight = 600;
 
@@ -128,6 +132,7 @@ public class Game {
 
 
     public static void main(String[] args) {
+        Server s = new Server(9000);
         Game g = new Game();
         g.init();
         g.run();

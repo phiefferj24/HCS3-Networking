@@ -4,6 +4,8 @@ import com.jimphieffer.Message;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class ClientThread extends Thread{
     private Socket socket;
@@ -46,7 +48,17 @@ public class ClientThread extends Thread{
     public void onMessage(String message) {
 
     }
-    public String getClientName() {
-        return "";
+    public String getClientName() { //TODO  uses the name of device as client name and idk if this will cause problems or not :) -Tiko
+        String hostname = "Unknown";
+
+        try
+        {
+            hostname = InetAddress.getLocalHost().getHostName();
+        }
+        catch (UnknownHostException ex)
+        {
+            System.out.println("Hostname can not be resolved");
+        }
+        return hostname;
     }
 }

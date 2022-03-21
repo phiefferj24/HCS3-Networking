@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class Server {
+public class Server{
     private ServerSocket serverSocket;
     private Server server;
     private ArrayList<ServerThread> serverThreads;
@@ -16,7 +16,6 @@ public class Server {
         this.serverGame = new ServerGame(this);
         try {
             serverSocket = new ServerSocket(port);
-            this.server = server;
             serverThreads = new ArrayList<>();
         } catch (IOException e) {
             e.printStackTrace();
