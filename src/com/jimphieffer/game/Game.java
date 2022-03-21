@@ -55,7 +55,7 @@ public class Game {
     }
 
     public void init() {
-        ClientThread ct = new ClientThread("192.168.20.45",9000);
+        ClientThread ct = new ClientThread("127.0.0.1",9000);
 
 
         int windowWidth = 800;
@@ -132,7 +132,14 @@ public class Game {
 
 
     public static void main(String[] args) {
-        Server s = new Server(9000);
+        Thread t = new Thread(){
+                public void run() {
+                    Server s = new Server(9000);
+                    s.listen();
+                }
+        };
+        t.start();
+
         Game g = new Game();
         g.init();
         g.run();

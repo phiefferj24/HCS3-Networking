@@ -21,6 +21,7 @@ public class Server{
             e.printStackTrace();
             System.exit(1);
         }
+
     }
     public Server(int port, ServerConsole console) {
         this(port);
