@@ -132,12 +132,10 @@ public class Game {
 
 
     public static void main(String[] args) {
-        Thread t = new Thread(){
-                public void run() {
-                    Server s = new Server(9000);
-                    s.listen();
-                }
-        };
+        Thread t = new Thread(() -> {
+            Server s = new Server(9000);
+            s.listen();
+        });
         t.start();
 
         Game g = new Game();

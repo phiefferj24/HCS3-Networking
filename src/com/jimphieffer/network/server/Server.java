@@ -8,7 +8,6 @@ import java.util.*;
 
 public class Server{
     private ServerSocket serverSocket;
-    private Server server;
     private ArrayList<ServerThread> serverThreads;
     private ServerConsole console;
     private ServerGame serverGame;
@@ -33,7 +32,7 @@ public class Server{
         while(true) {
             try {
                 Socket socket = serverSocket.accept();
-                ServerThread serverThread = new ServerThread(socket, server);
+                ServerThread serverThread = new ServerThread(socket, this);
                 serverThreads.add(serverThread);
                 serverThread.start();
             } catch (IOException e) {
