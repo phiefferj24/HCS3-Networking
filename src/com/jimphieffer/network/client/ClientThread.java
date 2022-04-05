@@ -26,7 +26,7 @@ public class ClientThread extends Thread{
             output = new PrintWriter(socket.getOutputStream(), true);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Connected on port " + port + ".");
-            output.println(Message.encode(getClientName(), Message.MessageProtocol.SEND, Message.MessageType.CONNECT));
+            output.println(Message.encode(game.getUsername(), Message.MessageProtocol.SEND, Message.MessageType.CONNECT));
         } catch (IOException e) {
             e.printStackTrace();
         }

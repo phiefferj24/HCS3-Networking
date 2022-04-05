@@ -9,6 +9,7 @@ import org.lwjgl.system.*;
 
 import javax.xml.stream.Location;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.*;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -23,13 +24,14 @@ import static org.lwjgl.opengl.GL11.*;
  * This should not cause any problems (as of now).
  */
 
-public class Game { //TODO in the future game should extend client thread and we shoudl do it like that
-                   // however it causes problems right now and idk y :)
+public class Game {
 
 
     private boolean space = false;
     private String ip;
     private int port;
+
+    private String username;
 
 
     private double framesPerSecond = 60.d;
@@ -38,8 +40,15 @@ public class Game { //TODO in the future game should extend client thread and we
     private ClientThread ct;
 
     public Game(String ip, int port) {
+
+        Scanner s = new Scanner(System.in);
+        System.out.println("username: ");
+        username = s.nextLine();
+
         ct = new ClientThread(ip,port, this);
         ct.start();
+
+
     }
 
 
@@ -96,19 +105,8 @@ public class Game { //TODO in the future game should extend client thread and we
 
     private void tick(double deltaTime) {
 
+        //ct.send(Message.encode());
 
-
-//        for(Sprite s: sprites)
-//        {
-//            s.step(this);
-//
-//            if(s instanceof Player)
-//                if (space) {
-//                    System.out.println("space");
-//                    ((Player) s).setVX(((Player) s).getVX() + 0.1);
-//                }
-//
-//        }
 
 
 
@@ -137,6 +135,9 @@ public class Game { //TODO in the future game should extend client thread and we
 
     }
 
+    public String getUsername() {
+        return username;
+    }
 
 
     public void keyPressed(long window, int key) {
