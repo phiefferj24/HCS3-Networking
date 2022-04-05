@@ -3,14 +3,9 @@ package com.jimphieffer.network.server;
 import com.jimphieffer.Message;
 import com.jimphieffer.game.Player;
 import com.jimphieffer.game.Sprite;
-import com.jimphieffer.game.Window;
-import org.lwjgl.opengl.GL;
 
 import java.net.Socket;
 import java.util.ArrayList;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class ServerGame extends Thread {
 
@@ -28,6 +23,13 @@ public class ServerGame extends Thread {
 
     public void run()
     {
+        for (Sprite s: sprites) //TODO sends all sprites to everybody. In the future maby change? -tiko :P
+        {
+            if(s instanceof Player p) {
+                String message = p.getUsername() + ";" + p.getX() + ";" + p.getY();
+                server.relay(Message.encode(message, Message.MessageProtocol.SEND, Message.MessageType.PLAYER_LOCATION));
+            }
+        }
 
     }
 
@@ -35,13 +37,20 @@ public class ServerGame extends Thread {
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
         if(protocol== Message.MessageProtocol.SEND)
         {
-            System.out.println("message sent: " + message);
-            message = Message.decode(message);
+
+            System.out.println("message to server: " + message);
+            server.send(Message.encode("message recieved",Message.MessageProtocol.SEND,Message.MessageType.CONNECT),socket);
             //CONNECT: USERNAME
+
+
+
             if (type == Message.MessageType.CONNECT)
             {
+                //todo if(name doesnt already exist) {
                 sprites.add(new Player(50,50,50,50,"src/com/jimphieffer/game/sprites/player.png",0,0,message));
                 spritesNames.add(message);
+                server.send(Message.encode("SUCCESS",Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
+                //} else {send message FAILED}
             }
             else if (type == Message.MessageType.DISCONNECT)
             {//USERMAME
@@ -74,8 +83,7 @@ public class ServerGame extends Thread {
 
                             if(!player.touchingAfterDisplacement(sprites.get(j),vx,vy));
                             {
-                                //TODO send message to client thred with updated locations
-
+                                server.send(Message.encode("SUCCESS",Message.MessageProtocol.SEND,Message.MessageType.CONNECT),socket);
                             }
                         }
                     }

@@ -1,5 +1,6 @@
 package com.jimphieffer.game;
 
+import com.jimphieffer.Message;
 import com.jimphieffer.network.client.ClientThread;
 import com.jimphieffer.network.server.Server;
 import org.lwjgl.glfw.GLFW;
@@ -22,19 +23,29 @@ import static org.lwjgl.opengl.GL11.*;
  * This should not cause any problems (as of now).
  */
 
-public class Game {
+public class Game { //TODO in the future game should extend client thread and we shoudl do it like that
+                   // however it causes problems right now and idk y :)
 
 
     private boolean space = false;
+    private String ip;
+    private int port;
 
 
     private double framesPerSecond = 60.d;
     private Window window;
     private long windowPointer;
-    private ClientThread c;
+    private ClientThread ct;
+
+    public Game(String ip, int port) {
+        ct = new ClientThread(ip,port, this);
+        ct.start();
+    }
+
 
 
     public void run() {
+
         final double secondsPerFrame = 1.d / framesPerSecond;
 
         double lastRenderTime = glfwGetTime();
@@ -51,11 +62,24 @@ public class Game {
         }
         close();
         System.exit(0);
-        //
+
+
+    }
+
+    public void onMessage(String message) {
+
+        System.out.println("message to game: " + message);
     }
 
     public void init() {
-        ClientThread ct = new ClientThread("127.0.0.1",9000);
+        //ct = new ClientThread("127.0.0.1",9000);
+
+
+
+
+
+
+
 
 
         int windowWidth = 800;
@@ -65,11 +89,13 @@ public class Game {
         windowPointer = window.getWindow();
         GL.createCapabilities();
        // c = new ClientThread("10.13.98.152",9000);
+        //this.start();
 
 
     }
 
     private void tick(double deltaTime) {
+
 
 
 //        for(Sprite s: sprites)
@@ -87,6 +113,9 @@ public class Game {
 
 
     }
+
+
+
 
     private void close() {
         glfwFreeCallbacks(windowPointer);
@@ -107,6 +136,8 @@ public class Game {
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
 
     }
+
+
 
     public void keyPressed(long window, int key) {
         if(key==GLFW_KEY_SPACE)
@@ -138,7 +169,7 @@ public class Game {
         });
         t.start();
 
-        Game g = new Game();
+        Game g = new Game("127.0.0.1",9000);
         g.init();
         g.run();
     }

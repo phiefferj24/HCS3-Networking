@@ -1,7 +1,5 @@
 package com.jimphieffer.game;
 
-import java.util.ArrayList;
-
 public class Player extends Sprite{
 
     private double vx;
@@ -42,6 +40,8 @@ public class Player extends Sprite{
     }
 
     public int getHealth(){return health;}
+
+    public String getUsername(){return username;}
 
     public void setHealth(int health){this.health=health;}
 
@@ -85,8 +85,8 @@ public class Player extends Sprite{
 
 
 
-        setLeft(getLeft()+vx);
-        setTop(getTop()+vy);
+        setX(getX()+vx);
+        setY(getY()+vy);
 
 
     }

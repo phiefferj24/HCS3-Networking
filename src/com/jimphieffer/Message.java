@@ -15,6 +15,7 @@ public class Message {
         CONNECT,
         MESSAGE,
         MOVEMENT,
+        PLAYER_LOCATION,
         DISCONNECT,
         COMMAND
     }

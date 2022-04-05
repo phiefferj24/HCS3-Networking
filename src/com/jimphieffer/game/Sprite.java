@@ -1,22 +1,17 @@
 package com.jimphieffer.game;
-import java.awt.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import javax.imageio.*;
 
 public class Sprite
 {
-    private double left;  //the x-coordinate of the left edge of the sprite
-    private double top;   //the y-coordinate of the top edge of the sprite
+    private double x;  //the x-coordinate of the left edge of the sprite
+    private double y;   //the y-coordinate of the top edge of the sprite
     private int width;
     private int height;
     private String image;
 
     public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage)
     {
-        left = theLeft;
-        top = theTop;
+        x = theLeft;
+        y = theTop;
         width = theWidth;
         height = theHeight;
         setImage(theImage);
@@ -28,26 +23,26 @@ public class Sprite
 
     public boolean touching(double x, double y)
     {
-        return x>left && x<left+width && y>top && y<top + height;
+        return x> this.x && x< this.x +width && y> this.y && y< this.y + height;
     }
 
     public boolean touchingAfterDisplacement(double x, double y, double dx, double dy)
     {
-        return x>left+dx && x<left+width+dx && y>top+dy && y<top + height+dy ;
+        return x> this.x +dx && x< this.x +width+dx && y> this.y +dy && y< this.y + height+dy ;
     }
 
     public boolean touching(Sprite s)
     {
         double scale = 0.2;
-        double sRight = (s.getLeft() + s.getWidth()) - s.getWidth()*scale;
-        double sBottom = s.getTop() + s.getHeight() - s.getHeight()*scale;
-        if (touching(s.getLeft() + s.getWidth()*scale, s.getTop() + s.getHeight()*scale))
+        double sRight = (s.getX() + s.getWidth()) - s.getWidth()*scale;
+        double sBottom = s.getY() + s.getHeight() - s.getHeight()*scale;
+        if (touching(s.getX() + s.getWidth()*scale, s.getY() + s.getHeight()*scale))
             return true;
-        if (touching(s.getLeft() + s.getWidth()*scale,sBottom))
+        if (touching(s.getX() + s.getWidth()*scale,sBottom))
             return true;
         if (touching(sRight,sBottom))
             return true;
-        if (touching(sRight,s.getTop() + s.getHeight()*scale))
+        if (touching(sRight,s.getY() + s.getHeight()*scale))
             return true;
         return false;
     }
@@ -55,21 +50,21 @@ public class Sprite
     public void deactivate()
     {
         setHeight(0);
-        setLeft(10000);
-        setTop(10000);
+        setX(10000);
+        setY(10000);
     }
 
     public boolean touching(Sprite s, double scale)
     {
-        double sRight = (s.getLeft() + s.getWidth()) - s.getWidth()*scale;
-        double sBottom = s.getTop() + s.getHeight() - s.getHeight()*scale;
-        if (touching(s.getLeft() + s.getWidth()*scale, s.getTop() + s.getHeight()*scale))
+        double sRight = (s.getX() + s.getWidth()) - s.getWidth()*scale;
+        double sBottom = s.getY() + s.getHeight() - s.getHeight()*scale;
+        if (touching(s.getX() + s.getWidth()*scale, s.getY() + s.getHeight()*scale))
             return true;
-        if (touching(s.getLeft() + s.getWidth()*scale,sBottom))
+        if (touching(s.getX() + s.getWidth()*scale,sBottom))
             return true;
         if (touching(sRight,sBottom))
             return true;
-        if (touching(sRight,s.getTop() + s.getHeight()*scale))
+        if (touching(sRight,s.getY() + s.getHeight()*scale))
             return true;
 
 
@@ -79,10 +74,10 @@ public class Sprite
 
     public boolean touchingAfterDisplacement(Sprite s, double dx, double dy) {
         double scale = 0.2;
-        double sLeft = s.getLeft();
-        double sTop = s.getTop();
-        double sRight = (s.getLeft() + s.getWidth());
-        double sBottom = s.getTop() + s.getHeight();
+        double sLeft = s.getX();
+        double sTop = s.getY();
+        double sRight = (s.getX() + s.getWidth());
+        double sBottom = s.getY() + s.getHeight();
 
         if (touchingAfterDisplacement(sLeft,sTop,dx,dy))
             return true;
@@ -107,24 +102,24 @@ public class Sprite
     }
 
 
-    public double getLeft()
+    public double getX()
     {
-        return left;
+        return x;
     }
 
-    public void setLeft(double l)
+    public void setX(double l)
     {
-        left = l;
+        x = l;
     }
 
-    public double getTop()
+    public double getY()
     {
-        return top;
+        return y;
     }
 
-    public void setTop(double t)
+    public void setY(double t)
     {
-        top = t;
+        y = t;
     }
 
     public int getWidth()

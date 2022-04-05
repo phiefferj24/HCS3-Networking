@@ -1,6 +1,7 @@
 package com.jimphieffer.network.client;
 
 import com.jimphieffer.Message;
+import com.jimphieffer.game.Game;
 
 import java.io.*;
 import java.net.Socket;
@@ -11,7 +12,14 @@ public class ClientThread extends Thread{
     private Socket socket;
     private PrintWriter output;
     private BufferedReader input;
-    public ClientThread(String ip, int port) {
+    private String lastMessage = "";
+    private Game game;
+
+
+
+
+    public ClientThread(String ip, int port, Game game) {
+        this.game = game;
         System.out.println("Trying to connect on port " + port + "...");
         try {
             socket = new Socket(ip, port);
@@ -22,6 +30,7 @@ public class ClientThread extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
     public void run() {
         while(true) {
@@ -43,12 +52,16 @@ public class ClientThread extends Thread{
     }
     public void relay(String message) {
         output.println(Message.encode(message, Message.MessageProtocol.RELAY, Message.MessageType.MESSAGE));
-        System.out.println("Relayed: " + message);
     }
     public void onMessage(String message) {
-
+        game.onMessage(message);
     }
-    public String getClientName() { //TODO  uses the name of device as client name and idk if this will cause problems or not :) -Tiko
+
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public String getClientName() { //TODO uses the name of device as client name in the future we wanna have user input name on display before connecting for this :) -Tiko
         String hostname = "Unknown";
 
         try
