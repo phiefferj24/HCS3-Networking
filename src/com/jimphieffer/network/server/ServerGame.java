@@ -81,7 +81,7 @@ public class ServerGame extends Thread {
                             Player player = (Player)sprites.get(i);
 
 
-                            if(!player.touchingAfterDisplacement(sprites.get(j),vx,vy));
+                            if(!player.touchingAfterDisplacement(sprites.get(j),vx,vy))
                             {
                                 server.send(Message.encode("SUCCESS",Message.MessageProtocol.SEND,Message.MessageType.CONNECT),socket);
                             }

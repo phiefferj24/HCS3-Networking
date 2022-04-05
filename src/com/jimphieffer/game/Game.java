@@ -39,14 +39,26 @@ public class Game {
     private long windowPointer;
     private ClientThread ct;
 
+    private int x;
+    private int y;
+    private int vx;
+    private int vy;
+
+
     public Game(String ip, int port) {
 
         Scanner s = new Scanner(System.in);
         System.out.println("username: ");
         username = s.nextLine();
 
+        x = 50;
+        y = 50;
+        vx = 0;
+        vy = 0;
+
         ct = new ClientThread(ip,port, this);
         ct.start();
+
 
 
     }
@@ -105,7 +117,7 @@ public class Game {
 
     private void tick(double deltaTime) {
 
-        //ct.send(Message.encode());
+        ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
 
 
 
