@@ -163,6 +163,8 @@ public class Game {
     }
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
+        glClearColor(0, 0, 0, 0);
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         double centerC = (double)x/((double)window.getWidth()/2)-1;
         double centerY = (double)y/((double)window.getHeight()/2)-1;
@@ -170,11 +172,10 @@ public class Game {
         double sizey = (double)bi.getHeight()/(double)window.getHeight();
 
 //        shittyRender(bi,centerC+sizex/2,centerY+sizey/2,centerC-sizex/2,centerY-sizey/2);
+
         shittyRender(bi,.5,0,0,.5);
 
-
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        glfwSwapBuffers(windowPointer);
     }
 
     public void shittyRender(BufferedImage bi, double x1, double y1, double x2, double y2) {
@@ -185,10 +186,10 @@ public class Game {
             for(int j = 0; j < bi.getHeight(); j++) {
                 int c = bi.getRGB(i, j);
                 glColor4d(((c >> 16) & 0xFF) / 255., ((c >> 8) & 0xFF) / 255., (c & 0xFF) / 255., ((c >> 24) & 0xFF) / 255.);
-                glVertex3d(i*xc, j*yc, 0);
-                glVertex3d((i+1)*xc, j*yc, 0);
-                glVertex3d((i+1)*xc, (j+1)*yc, 0);
-                glVertex3d(i*xc, (j+1)*yc, 0);
+                glVertex3d(i*xc+x1, j*yc+y1, 0);
+                glVertex3d((i+1)*xc+x1, j*yc+y1, 0);
+                glVertex3d((i+1)*xc+x1, (j+1)*yc+y1, 0);
+                glVertex3d(i*xc+x1, (j+1)*yc+y1, 0);
             }
         }
         glEnd();
