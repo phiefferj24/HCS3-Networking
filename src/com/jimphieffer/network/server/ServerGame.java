@@ -39,11 +39,7 @@ public class ServerGame extends Thread {
         {
 
             System.out.println("message to server: " + message);
-            server.send(Message.encode("message recieved",Message.MessageProtocol.SEND,Message.MessageType.CONNECT),socket);
             //CONNECT: USERNAME
-
-
-
             if (type == Message.MessageType.CONNECT)
             {
                 //todo if(name doesnt already exist) {
