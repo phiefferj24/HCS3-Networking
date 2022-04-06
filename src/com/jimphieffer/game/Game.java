@@ -7,8 +7,10 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
+import javax.imageio.ImageIO;
 import javax.xml.stream.Location;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.*;
@@ -44,6 +46,8 @@ public class Game {
     private int y;
     private int vx;
     private int vy;
+
+    private BufferedImage bi;
 
 
     public Game(String ip, int port) {
@@ -92,6 +96,11 @@ public class Game {
 
         System.out.println("message to game: " + message);
 
+        if(Message.getType(message).equals(Message.MessageType.MOVEMENT))
+        {
+            message = message.substring(message.indexOf(":"),message.length());
+        }
+
 
     }
 
@@ -99,6 +108,11 @@ public class Game {
         //ct = new ClientThread("127.0.0.1",9000);
 
 
+        try {
+            bi = ImageIO.read(Game.class.getResource("/com/jimphieffer/game/sprites/player.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -125,6 +139,8 @@ public class Game {
 
 
 
+
+
     }
 
 
@@ -147,6 +163,16 @@ public class Game {
     }
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
+
+        double centerC = (double)x/((double)window.getWidth()/2)-1;
+        double centerY = (double)y/((double)window.getHeight()/2)-1;
+        double sizex = (double)bi.getWidth()/(double)window.getWidth();
+        double sizey = (double)bi.getHeight()/(double)window.getHeight();
+
+//        shittyRender(bi,centerC+sizex/2,centerY+sizey/2,centerC-sizex/2,centerY-sizey/2);
+        shittyRender(bi,.5,0,0,.5);
+
+
         glClearColor(0, 0, 0, 0);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     }
