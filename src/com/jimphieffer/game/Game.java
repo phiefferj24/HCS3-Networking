@@ -8,6 +8,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import javax.xml.stream.Location;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.*;
@@ -144,7 +145,25 @@ public class Game {
     }
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
+        glClearColor(0, 0, 0, 0);
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    }
 
+    public void shittyRender(BufferedImage bi, double x1, double y1, double x2, double y2) {
+        double xc = (x2-x1)/bi.getWidth();
+        double yc = (y2-y1)/bi.getHeight();
+        glBegin(GL_QUADS);
+        for(int i = 0; i < bi.getWidth(); i++) {
+            for(int j = 0; j < bi.getHeight(); j++) {
+                int c = bi.getRGB(i, j);
+                glColor4d(((c >> 16) & 0xFF) / 255., ((c >> 8) & 0xFF) / 255., (c & 0xFF) / 255., ((c >> 24) & 0xFF) / 255.);
+                glVertex3d(i*xc, j*yc, 0);
+                glVertex3d((i+1)*xc, j*yc, 0);
+                glVertex3d((i+1)*xc, (j+1)*yc, 0);
+                glVertex3d(i*xc, (j+1)*yc, 0);
+            }
+        }
+        glEnd();
     }
 
     public String getUsername() {
