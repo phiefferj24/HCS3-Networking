@@ -90,6 +90,8 @@ public class Game {
     public void onMessage(String message) {
 
         System.out.println("message to game: " + message);
+
+
     }
 
     public void init() {
