@@ -34,6 +34,10 @@ public class Window {
         glfwSwapInterval(1);
         glfwShowWindow(window);
         glfwSetWindowSizeCallback(window, (window, newWidth, newHeight) -> setWindowSize(newWidth, newHeight));
+
+
+        this.width = width;
+        this.height = height;
     }
 
     public long getWindow() {

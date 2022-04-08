@@ -42,10 +42,10 @@ public class Game {
     private long windowPointer;
     private ClientThread ct;
 
-    private int x;
-    private int y;
-    private int vx;
-    private int vy;
+    private double x;
+    private double y;
+    private double vx;
+    private double vy;
 
     private BufferedImage bi;
 
@@ -72,12 +72,14 @@ public class Game {
 
     public void run() {
 
+
         final double secondsPerFrame = 1.d / framesPerSecond;
 
         double lastRenderTime = glfwGetTime();
         double lastTickTime = glfwGetTime();
         double deltaTime = glfwGetTime() - lastRenderTime;
         while(!glfwWindowShouldClose(windowPointer)) {
+            System.out.println("run");
             while(deltaTime < secondsPerFrame) {
                 tick(deltaTime);
                 deltaTime = glfwGetTime() - lastTickTime;
@@ -99,6 +101,11 @@ public class Game {
         if(Message.getType(message).equals(Message.MessageType.MOVEMENT))
         {
             message = message.substring(message.indexOf(":"),message.length());
+            String[] loc = message.split(",");
+            x = Double.parseDouble(loc[1]);
+            y = Double.parseDouble(loc[2]);
+            vx = Double.parseDouble(loc[3]);
+            vy = Double.parseDouble(loc[4]);
         }
 
 
@@ -134,6 +141,8 @@ public class Game {
 
     private void tick(double deltaTime) {
 
+        System.out.println("tick");
+
         ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
 
 
@@ -163,17 +172,24 @@ public class Game {
     }
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
+        double scale = .3; //doesnt do anything :/
         glClearColor(0, 0, 0, 0);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        double centerC = (double)x/((double)window.getWidth()/2)-1;
+        double centerC = x/((double)window.getWidth()/2)-1;
         double centerY = (double)y/((double)window.getHeight()/2)-1;
-        double sizex = (double)bi.getWidth()/(double)window.getWidth();
-        double sizey = (double)bi.getHeight()/(double)window.getHeight();
+        double sizex = (double)bi.getWidth()/(double)window.getWidth() * scale;
+        double sizey = (double)bi.getHeight()/(double)window.getHeight() * scale;
 
-//        shittyRender(bi,centerC+sizex/2,centerY+sizey/2,centerC-sizex/2,centerY-sizey/2);
+//        System.out.println((centerC+sizex/2));
+//        System.out.println((centerY+sizey/2));
+//        System.out.println((centerC-sizex/2));
+//        System.out.println((centerY-sizey/2));
 
-        shittyRender(bi,.5,0,0,.5);
+
+        shittyRender(bi,centerC+sizex/2,centerY+sizey/2,centerC-sizex/2,centerY-sizey/2);
+
+    //    shittyRender(bi,.5,0,0,.5);
 
         glfwSwapBuffers(windowPointer);
     }
@@ -201,18 +217,22 @@ public class Game {
 
 
     public void keyPressed(long window, int key) {
-        if(key==GLFW_KEY_SPACE)
-        {
-            space = true;
-        }
+        vx = 0;
+        vy = 0;
+
+
+        if (key == GLFW_KEY_D)
+            vx=1;
+        if (key == GLFW_KEY_A)
+            vx=1;
+        if (key == GLFW_KEY_W)
+            vy=1;
+        if (key == GLFW_KEY_A)
+            vy=1;
     }
     public void keyReleased(long window, int key) {
         if(key == GLFW_KEY_ESCAPE) {
             Game.close(window);
-        }
-        else if(key==GLFW_KEY_SPACE)
-        {
-            space = false;
         }
     }
     public void mousePressed(long window, int button) {
