@@ -8,7 +8,10 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import javax.xml.stream.Location;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -69,6 +72,16 @@ public class Game {
     }
 
 
+    public void tick() {
+
+        System.out.println("tick");
+
+        ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
+
+
+    }
+
+
 
     public void run() {
 
@@ -81,7 +94,7 @@ public class Game {
         while(!glfwWindowShouldClose(windowPointer)) {
             System.out.println("run");
             while(deltaTime < secondsPerFrame) {
-                tick(deltaTime);
+                //tick(deltaTime);
                 deltaTime = glfwGetTime() - lastTickTime;
             }
             glfwPollEvents();
@@ -139,18 +152,6 @@ public class Game {
 
     }
 
-    private void tick(double deltaTime) {
-
-        System.out.println("tick");
-
-        ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
-
-
-
-
-
-
-    }
 
 
 
@@ -216,7 +217,7 @@ public class Game {
     }
 
 
-    public void keyPressed(long window, int key) {
+    public void keyPressed(int key) {
         vx = 0;
         vy = 0;
 
@@ -230,28 +231,60 @@ public class Game {
         if (key == GLFW_KEY_A)
             vy=1;
     }
-    public void keyReleased(long window, int key) {
-        if(key == GLFW_KEY_ESCAPE) {
-            Game.close(window);
-        }
+    public void keyReleased(int key) {
+//        if(key == GLFW_KEY_ESCAPE) {
+//            Game.close(window);
+//        }
     }
-    public void mousePressed(long window, int button) {
+    public void mousePressed(int button) {
 
     }
-    public void mouseReleased(long window, int button) {
+    public void mouseReleased(int button) {
 
     }
+
+    public void mouseMoved(int mouse_x, int mouse_ty)
+    {
+
+    }
+
+
+    public void paintComponent(Graphics g)
+    {
+
+
+        g.setColor(new Color(11, 173, 14));
+        g.fillRect(0, 0, 800, 300);
+
+
+
+    }
+
+
 
 
     public static void main(String[] args) {
+
+
+        JFrame j = new JFrame();
+        j.setVisible(true);
+
+
         Thread t = new Thread(() -> {
             Server s = new Server(9000);
             s.listen();
+
         });
+
         t.start();
 
-        Game g = new Game("127.0.0.1",9000);
-        g.init();
-        g.run();
+
+        System.out.println("construc");
+        Display d = new Display(800,300);
+        System.out.println("done");
+        d.run();
     }
+
+
+
 }

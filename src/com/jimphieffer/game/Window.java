@@ -23,12 +23,12 @@ public class Window {
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(window, (videoMode.width() - width) / 2, (videoMode.height() - height) / 2);
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if(action == GLFW_PRESS) game.keyPressed(window, key);
-            else if(action == GLFW_RELEASE) game.keyReleased(window, key);
+            if(action == GLFW_PRESS) game.keyPressed( key);
+            else if(action == GLFW_RELEASE) game.keyReleased(key);
         });
         glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-            if(action == GLFW_PRESS) game.mousePressed(window, button);
-            else if(action == GLFW_RELEASE) game.mouseReleased(window, button);
+            if(action == GLFW_PRESS) game.mousePressed( button);
+            else if(action == GLFW_RELEASE) game.mouseReleased(button);
         });
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
