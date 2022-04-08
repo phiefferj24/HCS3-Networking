@@ -1,31 +1,29 @@
 package com.jimphieffer.game;
 
 import com.jimphieffer.Message;
+import com.jimphieffer.graphics.Mesh;
+import com.jimphieffer.graphics.Texture;
+import com.jimphieffer.graphics.Uniforms;
 import com.jimphieffer.network.client.ClientThread;
 import com.jimphieffer.network.server.Server;
-import org.lwjgl.glfw.GLFW;
+import jdk.jshell.execution.Util;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
+import org.lwjgl.system.MemoryUtil;
 
 import javax.imageio.ImageIO;
-import javax.xml.stream.Location;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.management.MemoryUsage;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.*;
+
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
-/**
- * Note:
- * RenderWrapper exists here because OpenGL with Java on Mac is incredibly annoying.
- * Most events (but not all) that interface with the window need to be run in the same thread as the window was created in.
- * The window MUST also be created in the main thread, or the program will error.
- * The BlockingQueue here allows render to be queued up in the main thread while tick can run on the separate thread.
- * This should not cause any problems (as of now).
- */
+import static com.jimphieffer.utils.FileUtilities.*;
+import static org.lwjgl.system.MemoryUtil.*;
 
 public class Game {
 
@@ -49,6 +47,13 @@ public class Game {
 
     private BufferedImage bi;
 
+    private int programId;
+    private int vsId;
+    private int fsId;
+
+    private ArrayList<Mesh> meshes;
+
+    private boolean[] keys = new boolean[4];
 
     public Game(String ip, int port) {
 
@@ -75,21 +80,25 @@ public class Game {
         final double secondsPerFrame = 1.d / framesPerSecond;
 
         double lastRenderTime = glfwGetTime();
-        double lastTickTime = glfwGetTime();
-        double deltaTime = glfwGetTime() - lastRenderTime;
+        double lastTickTime;
+        double sinceRender = 0;
+        double deltaTime = 0;
         while(!glfwWindowShouldClose(windowPointer)) {
-            while(deltaTime < secondsPerFrame) {
+            while(sinceRender < secondsPerFrame) {
+                lastTickTime = glfwGetTime();
                 tick(deltaTime);
                 deltaTime = glfwGetTime() - lastTickTime;
+                sinceRender = glfwGetTime() - lastRenderTime;
+                //System.out.println("TPS: " + (1/deltaTime));
             }
             glfwPollEvents();
             render();
             lastRenderTime = glfwGetTime();
+            //System.out.println("FPS: " + (1/sinceRender));
+            sinceRender = 0;
         }
         close();
         System.exit(0);
-
-
     }
 
     public void onMessage(String message) {
@@ -106,20 +115,6 @@ public class Game {
 
     public void init() {
         //ct = new ClientThread("127.0.0.1",9000);
-
-
-        try {
-            bi = ImageIO.read(Game.class.getResource("/com/jimphieffer/game/sprites/player.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-
-
-
         int windowWidth = 800;
         int windowHeight = 600;
 
@@ -128,15 +123,81 @@ public class Game {
         GL.createCapabilities();
        // c = new ClientThread("10.13.98.152",9000);
         //this.start();
+        initShaders();
 
+        meshes = new ArrayList<>();
 
+        initTextures();
+    }
+
+    private void initTextures() {
+        Uniforms.createUniform("texture_sampler", programId);
+        Uniforms.createUniform("positionMatrix", programId);
+
+        meshes.add(createMesh(0, 0, 1, 1, "resources/sprites/gb.png"));
+    }
+
+    private void initShaders() {
+        // create shader program
+        programId = glCreateProgram();
+        if(programId == 0) {
+            System.err.println("Could not create shader program.");
+            return;
+        }
+
+        // compile and link vertex shader
+        vsId = glCreateShader(GL_VERTEX_SHADER);
+        if(vsId == 0) {
+            System.err.println("Could not create vertex shader.");
+            return;
+        }
+        glShaderSource(vsId, loadFile("/shaders/vertex.vs"));
+        glCompileShader(vsId);
+        if(glGetShaderi(vsId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile vertex shader.");
+            return;
+        }
+        glAttachShader(programId, vsId);
+
+        // compile and link fragment shader
+        fsId = glCreateShader(GL_FRAGMENT_SHADER);
+        if(fsId == 0) {
+            System.err.println("Could not create fragment shader.");
+            return;
+        }
+        glShaderSource(fsId, loadFile("/shaders/fragment.fs"));
+        glCompileShader(fsId);
+        if(glGetShaderi(fsId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile fragment shader.");
+            return;
+        }
+        glAttachShader(programId, fsId);
+
+        // link shader program to window
+        glLinkProgram(programId);
+        if(glGetProgrami(programId, GL_LINK_STATUS) == 0) {
+            System.err.println("Could not link shader program.");
+            return;
+        }
+
+        // clear compiled shaders
+        glDetachShader(programId, vsId);
+        glDetachShader(programId, fsId);
+
+        // validate the shader program
+        glValidateProgram(programId);
+        if(glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
+            System.err.println("Warning validating shader program.");
+        }
     }
 
     private void tick(double deltaTime) {
 
-        ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
+        //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
 
-
+        int dirx = keys[0] ? 1 : -1;
+        int diry = keys[3] ? 1 : -1;
+        meshes.get(0).translate((keys[2] || keys[3]) ? (float)deltaTime * diry : 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx : 0);
 
 
 
@@ -147,16 +208,10 @@ public class Game {
 
 
     private void close() {
+        if(programId != 0) glDeleteProgram(programId);
+        meshes.forEach(Mesh::close);
         glfwFreeCallbacks(windowPointer);
         glfwDestroyWindow(windowPointer);
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
-        System.exit(0);
-    }
-
-    public static void close(long window) {
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
         glfwTerminate();
         glfwSetErrorCallback(null).free();
         System.exit(0);
@@ -166,33 +221,12 @@ public class Game {
         glClearColor(0, 0, 0, 0);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        double centerC = (double)x/((double)window.getWidth()/2)-1;
-        double centerY = (double)y/((double)window.getHeight()/2)-1;
-        double sizex = (double)bi.getWidth()/(double)window.getWidth();
-        double sizey = (double)bi.getHeight()/(double)window.getHeight();
-
-//        shittyRender(bi,centerC+sizex/2,centerY+sizey/2,centerC-sizex/2,centerY-sizey/2);
-
-        shittyRender(bi,.5,0,0,.5);
+        glUseProgram(programId);
+        Uniforms.setUniform("texture_sampler", 0);
+        meshes.forEach(Mesh::render);
+        glUseProgram(0);
 
         glfwSwapBuffers(windowPointer);
-    }
-
-    public void shittyRender(BufferedImage bi, double x1, double y1, double x2, double y2) {
-        double xc = (x2-x1)/bi.getWidth();
-        double yc = (y2-y1)/bi.getHeight();
-        glBegin(GL_QUADS);
-        for(int i = 0; i < bi.getWidth(); i++) {
-            for(int j = 0; j < bi.getHeight(); j++) {
-                int c = bi.getRGB(i, j);
-                glColor4d(((c >> 16) & 0xFF) / 255., ((c >> 8) & 0xFF) / 255., (c & 0xFF) / 255., ((c >> 24) & 0xFF) / 255.);
-                glVertex3d(i*xc+x1, j*yc+y1, 0);
-                glVertex3d((i+1)*xc+x1, j*yc+y1, 0);
-                glVertex3d((i+1)*xc+x1, (j+1)*yc+y1, 0);
-                glVertex3d(i*xc+x1, (j+1)*yc+y1, 0);
-            }
-        }
-        glEnd();
     }
 
     public String getUsername() {
@@ -201,18 +235,22 @@ public class Game {
 
 
     public void keyPressed(long window, int key) {
-        if(key==GLFW_KEY_SPACE)
-        {
-            space = true;
+        switch (key) {
+            case GLFW_KEY_UP -> keys[0] = true;
+            case GLFW_KEY_DOWN -> keys[1] = true;
+            case GLFW_KEY_LEFT -> keys[2] = true;
+            case GLFW_KEY_RIGHT -> keys[3] = true;
         }
     }
     public void keyReleased(long window, int key) {
         if(key == GLFW_KEY_ESCAPE) {
-            Game.close(window);
+            close();
         }
-        else if(key==GLFW_KEY_SPACE)
-        {
-            space = false;
+        switch (key) {
+            case GLFW_KEY_UP -> keys[0] = false;
+            case GLFW_KEY_DOWN -> keys[1] = false;
+            case GLFW_KEY_LEFT -> keys[2] = false;
+            case GLFW_KEY_RIGHT -> keys[3] = false;
         }
     }
     public void mousePressed(long window, int button) {
@@ -220,6 +258,31 @@ public class Game {
     }
     public void mouseReleased(long window, int button) {
 
+    }
+
+
+    // use but dont touch
+
+    public Mesh createMesh(float x, float y, float width, float height, String texture) {
+        return new Mesh(
+                new float[] {
+                    -width, -height, 0,
+                    width, -height, 0,
+                    -width, height, 0,
+                    width, height, 0,
+                },
+                new int[] {
+                    0, 1, 2, 1, 3, 2,
+                },
+                new float[] {
+                    0, 1,
+                    1, 1,
+                    0, 0,
+                    1, 0,
+                },
+                new Texture(texture),
+                x,
+                y);
     }
 
 
