@@ -23,7 +23,7 @@ public class Display extends JComponent implements KeyListener, MouseListener, M
       Image image = images.get(name);
       if (image == null)
       {
-        URL url = Display.class.getResource(name);
+        URL url = Display.class.getClassLoader().getResource(name); //I CHANGED THE ORIGINAL CODE TO INCLUDE getClassLoader -Tiko
         if (url == null)
           throw new RuntimeException("unable to load image:  " + name);
         image = ImageIO.read(url);

@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.xml.stream.Location;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -39,16 +40,14 @@ public class Game {
 
     private String username;
 
+    private Player player;
+
 
     private double framesPerSecond = 60.d;
     private Window window;
     private long windowPointer;
     private ClientThread ct;
 
-    private double x;
-    private double y;
-    private double vx;
-    private double vy;
 
     private BufferedImage bi;
 
@@ -59,24 +58,27 @@ public class Game {
         System.out.println("username: ");
         username = s.nextLine();
 
-        x = 50;
-        y = 50;
-        vx = 0;
-        vy = 0;
 
         ct = new ClientThread(ip,port, this);
         ct.start();
 
 
+        player = new Player(Math.random()*800,Math.random()*600,50,50,
+                "com/jimphieffer/game/sprites/player.png",0,0,username);
 
     }
 
 
     public void tick() {
 
-        System.out.println("tick");
+       player.step(this);
 
-        ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
+
+
+
+        ct.send(Message.encode(username + ", " + player.getX() + ", " + player.getY()
+                                                 + ", " + player.getVX() + ", " + player.getVY()
+                ,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
 
 
     }
@@ -114,11 +116,12 @@ public class Game {
         if(Message.getType(message).equals(Message.MessageType.MOVEMENT))
         {
             message = message.substring(message.indexOf(":"),message.length());
+            message = message.substring(1,message.length());
             String[] loc = message.split(",");
-            x = Double.parseDouble(loc[1]);
-            y = Double.parseDouble(loc[2]);
-            vx = Double.parseDouble(loc[3]);
-            vy = Double.parseDouble(loc[4]);
+            player.setX(Double.parseDouble(loc[0]));
+            player.setY(Double.parseDouble(loc[1]));
+            player.setVX(Double.parseDouble(loc[2]));
+            player.setVY(Double.parseDouble(loc[3]));
         }
 
 
@@ -177,8 +180,8 @@ public class Game {
         glClearColor(0, 0, 0, 0);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        double centerC = x/((double)window.getWidth()/2)-1;
-        double centerY = (double)y/((double)window.getHeight()/2)-1;
+        double centerC = player.getX()/((double)window.getWidth()/2)-1;
+        double centerY = (double)player.getY()/((double)window.getHeight()/2)-1;
         double sizex = (double)bi.getWidth()/(double)window.getWidth() * scale;
         double sizey = (double)bi.getHeight()/(double)window.getHeight() * scale;
 
@@ -218,20 +221,24 @@ public class Game {
 
 
     public void keyPressed(int key) {
-        vx = 0;
-        vy = 0;
+
+        if(key == KeyEvent.VK_A)
+            player.setVX(-1);
+        else if(key == KeyEvent.VK_D)
+            player.setVX(1);
+        else if(key == KeyEvent.VK_W)
+            player.setVY(-1);
+        else if(key == KeyEvent.VK_S)
+            player.setVY(1);
 
 
-        if (key == GLFW_KEY_D)
-            vx=1;
-        if (key == GLFW_KEY_A)
-            vx=1;
-        if (key == GLFW_KEY_W)
-            vy=1;
-        if (key == GLFW_KEY_A)
-            vy=1;
     }
+
+
     public void keyReleased(int key) {
+        player.setVX(0);
+        player.setVY(0);
+
 //        if(key == GLFW_KEY_ESCAPE) {
 //            Game.close(window);
 //        }
@@ -249,13 +256,19 @@ public class Game {
     }
 
 
+
     public void paintComponent(Graphics g)
     {
 
-
+        int width =800;
+        int height =600;
         g.setColor(new Color(11, 173, 14));
-        g.fillRect(0, 0, 800, 300);
+        g.fillRect(0, 0, width, height);
 
+
+        g.setColor(new Color(255, 255, 255));
+
+        g.drawImage(Display.getImage("com/jimphieffer/game/sprites/player.png"), (int)player.getX(), (int)player.getY(), 50, 50, null);
 
 
     }
@@ -266,23 +279,6 @@ public class Game {
     public static void main(String[] args) {
 
 
-        JFrame j = new JFrame();
-        j.setVisible(true);
-
-
-        Thread t = new Thread(() -> {
-            Server s = new Server(9000);
-            s.listen();
-
-        });
-
-        t.start();
-
-
-        System.out.println("construc");
-        Display d = new Display(800,300);
-        System.out.println("done");
-        d.run();
     }
 
 

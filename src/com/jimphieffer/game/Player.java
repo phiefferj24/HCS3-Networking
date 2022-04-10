@@ -49,19 +49,19 @@ public class Player extends Sprite{
     {
 
 
-        if(vx<0)
-            vx+=1;
-        if(vx>0)
-            vx-=1;
-        if(vy<0)
-            vy+=1;
-        if(vy>0)
-            vy-=1;
-
-        if(Math.abs(vx)<.3)
-            vx = 0;
-        if(Math.abs(vy)<.3)
-            vy = 0;
+//        if(vx<0)
+//            vx+=1;
+//        if(vx>0)
+//            vx-=1;
+//        if(vy<0)
+//            vy+=1;
+//        if(vy>0)
+//            vy-=1;
+//
+//        if(Math.abs(vx)<.3)
+//            vx = 0;
+//        if(Math.abs(vy)<.3)
+//            vy = 0;
 
 //        if (getLeft() < -game.getWorldWidth())
 //            vx = Math.abs(vx);

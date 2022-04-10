@@ -38,7 +38,7 @@ public class ServerGame extends Thread {
         if(protocol== Message.MessageProtocol.SEND)
         {
 
-            System.out.println("message to server: " + message);
+            //System.out.println("message to server: " + message);
             //CONNECT: USERNAME
             if (type == Message.MessageType.CONNECT)
             {
@@ -68,22 +68,26 @@ public class ServerGame extends Thread {
                 double vx = Double.parseDouble(locs[3]);
                 double vy = Double.parseDouble(locs[4]);
 
-                for (int i = 0; i< spritesNames.size(); i++)
-                {
-                    if(spritesNames.get(i).equals(message)) {
-                        for(int j = 0; j <sprites.size(); j++) {
-                            if (j == i)
-                                break;
-                            Player player = (Player)sprites.get(i);
 
 
-                            if(!player.touchingAfterDisplacement(sprites.get(j),vx,vy))
-                            {
-                                server.send(Message.encode("SUCCESS",Message.MessageProtocol.SEND,Message.MessageType.CONNECT),socket);
-                            }
-                        }
-                    }
-                }
+                server.send(Message.encode(curX + ", " + curY + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT),socket);
+
+//                for (int i = 0; i< spritesNames.size(); i++) TODO collisions
+//                {
+//                    if(spritesNames.get(i).equals(message)) {
+//                        for(int j = 0; j <sprites.size(); j++) {
+//                            if (j == i)
+//                                break;
+//                            Player player = (Player)sprites.get(i);
+//
+//
+//                            if(!player.touchingAfterDisplacement(sprites.get(j),vx,vy))
+//                            {
+//                                server.send(Message.encode(curX + ", " + curY + ", " + vx + ", " + vy,Message.MessageProtocol.SEND,Message.MessageType.CONNECT),socket);
+//                            }
+//                        }
+//                    }
+//                }
 
 
             }

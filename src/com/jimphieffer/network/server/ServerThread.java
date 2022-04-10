@@ -27,7 +27,7 @@ public class ServerThread extends Thread {
             try {
                 String message = input.readLine();
                 if(message == null) {
-                    System.out.println("Client at\"" + socket.getInetAddress().toString() + "\" terminated connection.");
+                    System.out.println("System.out.println(\"sendClient at\"" + socket.getInetAddress().toString() + "\" terminated connection.");
                     server.onMessage(name, Message.MessageProtocol.SEND, Message.MessageType.DISCONNECT, socket);
                     this.interrupt();
                     return;
