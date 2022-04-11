@@ -1,17 +1,32 @@
-package com.jimphieffer.game;
+package com.jimphieffer.game.objects;
 
-public class Player extends Sprite{
+import com.jimphieffer.game.Game;
+import com.jimphieffer.game.Sprite;
+
+import java.net.Socket;
+
+public class Player extends Sprite {
+
 
     private double vx;
     private double vy;
     private int health;
-    private int amtStone = 0;
     private String username;
 
-    public Player(double left, double top, int width, int height, String image,
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    private Socket socket;
+
+    public Player(double x, double y, int width, int height, String image,
                   double velocityX, double velocityY, String username)
     {
-        super(left, top, width, height, image);
+        super(x, y, width, height, image);
         vx = velocityX;
         vy = velocityY;
         health  = 15;
@@ -89,6 +104,12 @@ public class Player extends Sprite{
         setY(getY()+vy);
 
 
+    }
+
+    public String toString()
+    {
+        return "[" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";"  +
+                getImage() + ";" + getVX() + "; " + getVY()  +";" + getUsername() +"]";
     }
 
 

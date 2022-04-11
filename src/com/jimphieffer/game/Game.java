@@ -1,23 +1,17 @@
 package com.jimphieffer.game;
 
 import com.jimphieffer.Message;
+import com.jimphieffer.game.objects.Player;
 import com.jimphieffer.network.client.ClientThread;
-import com.jimphieffer.network.server.Server;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.xml.stream.Location;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.*;
+
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -262,11 +256,16 @@ public class Game {
 
         int width =800;
         int height =600;
-        g.setColor(new Color(11, 173, 14));
+
+
+        g.setColor(new Color(34, 34, 34));
         g.fillRect(0, 0, width, height);
-
-
         g.setColor(new Color(255, 255, 255));
+        for(int i = 0; i< width; i +=100)
+            for(int j = 0; j< height; j+=100)
+            {
+                g.drawImage(Display.getImage("com/jimphieffer/game/sprites/grass.png"),i,j,100,100,null);
+            }
 
         g.drawImage(Display.getImage("com/jimphieffer/game/sprites/player.png"), (int)player.getX(), (int)player.getY(), 50, 50, null);
 

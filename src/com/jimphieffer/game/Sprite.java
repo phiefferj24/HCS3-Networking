@@ -21,6 +21,7 @@ public class Sprite
 
     }
 
+
     public boolean touching(double x, double y)
     {
         return x> this.x && x< this.x +width && y> this.y && y< this.y + height;
@@ -155,5 +156,10 @@ public class Sprite
     public void step(Game game)
     {
         //do NOT insert any code here
+    }
+
+    public String toString()
+    {
+        return "[" + x +";" + y + ";" + width + ";" + height + ";" + image + "]";
     }
 }
