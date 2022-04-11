@@ -16,13 +16,13 @@ public class Mesh {
     public final int vertexCount;
     private final Texture texture;
     public final Matrix4f positionMatrix = new Matrix4f();
-    public Mesh(float[] vertices, int[] indices, float[] textureCoordinates, Texture texture, float x, float y) {
+    public Mesh(float[] vertices, int[] indices, float[] textureCoordinates, Texture texture, float x, float y, float z) {
         vertexCount = indices.length;
         this.texture = texture;
         FloatBuffer verticesBuffer = null;
         IntBuffer elementBuffer = null;
         FloatBuffer textureCoordinateBuffer = null;
-        positionMatrix.translate(x, y, 0);
+        positionMatrix.translate(x, y, z);
         try {
             // initialize buffers
             verticesBuffer = memAllocFloat(vertices.length);
@@ -90,8 +90,8 @@ public class Mesh {
         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
-    public void translate(float x, float y) {
-        positionMatrix.translate(x, y, 0);
+    public void translate(float x, float y, float z) {
+        positionMatrix.translate(x, y, z);
     }
     public void scale(float factor) {
         positionMatrix.scale(factor);

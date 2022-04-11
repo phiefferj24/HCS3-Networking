@@ -25,4 +25,13 @@ public class Camera {
         fovDeg = degrees;
         projectionMatrix.setPerspective(Math.toRadians(fovDeg), aspectRatio, 0.01f, 1000.f);
     }
+    public float getFOV() {
+        return fovDeg;
+    }
+    public float getAspectRatio() {
+        return aspectRatio;
+    }
+    public void rotate(float angle) {
+        projectionMatrix.rotateZ(Math.toRadians(-angle));
+    }
 }

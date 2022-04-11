@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Window {
-    private long window;
+    private final long window;
     private int width;
     private int height;
     private Game game;

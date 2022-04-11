@@ -6,15 +6,8 @@ import com.jimphieffer.graphics.Texture;
 import com.jimphieffer.graphics.Uniforms;
 import com.jimphieffer.network.client.ClientThread;
 import com.jimphieffer.network.server.Server;
-import jdk.jshell.execution.Util;
-import org.lwjgl.opengl.*;
-import org.lwjgl.system.MemoryUtil;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.lang.management.MemoryUsage;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -135,7 +128,7 @@ public class Game {
         Uniforms.createUniform("positionMatrix", programId);
         Uniforms.createUniform("projectionMatrix", programId);
 
-        meshes.add(createMesh(0, 0, 0.1f, 0.1f, "resources/sprites/gb.png"));
+        meshes.add(createMesh(0, 0, 0, 0.1f, 0.1f, "resources/sprites/gb.png"));
     }
 
     private void initShaders() {
@@ -198,12 +191,12 @@ public class Game {
 
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
-        meshes.get(0).translate((keys[2] || keys[3]) ? (float)deltaTime * diry : 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx : 0);
+        meshes.get(0).translate((keys[2] || keys[3]) ? (float)deltaTime * diry : 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx : 0, 0);
         if(keys[4]) {
-            meshes.get(0).rotate((float)deltaTime * 20);
+            camera.setFOV(camera.getFOV() + (float)deltaTime * 10);
         }
         if(keys[5]) {
-            meshes.get(0).rotate(-(float)deltaTime * 20);
+            camera.setFOV(camera.getFOV() - (float)deltaTime * 10);
         }
 
     }
@@ -273,7 +266,7 @@ public class Game {
 
     // use but dont touch
 
-    public Mesh createMesh(float x, float y, float width, float height, String texture) {
+    public Mesh createMesh(float x, float y, float z, float width, float height, String texture) {
         return new Mesh(
                 new float[] {
                     -width, -height, -1.f,
@@ -291,8 +284,7 @@ public class Game {
                     1, 0,
                 },
                 new Texture(texture),
-                x,
-                y);
+                x, y, z);
     }
 
 
