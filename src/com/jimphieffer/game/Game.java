@@ -53,7 +53,9 @@ public class Game {
 
     private ArrayList<Mesh> meshes;
 
-    private boolean[] keys = new boolean[4];
+    private boolean[] keys = new boolean[6];
+
+    private Camera camera;
 
     public Game(String ip, int port) {
 
@@ -81,21 +83,14 @@ public class Game {
 
         double lastRenderTime = glfwGetTime();
         double lastTickTime;
-        double sinceRender = 0;
         double deltaTime = 0;
         while(!glfwWindowShouldClose(windowPointer)) {
-            while(sinceRender < secondsPerFrame) {
-                lastTickTime = glfwGetTime();
-                tick(deltaTime);
-                deltaTime = glfwGetTime() - lastTickTime;
-                sinceRender = glfwGetTime() - lastRenderTime;
-                //System.out.println("TPS: " + (1/deltaTime));
-            }
             glfwPollEvents();
+            tick(glfwGetTime() - lastRenderTime);
             render();
             lastRenderTime = glfwGetTime();
+            while(glfwGetTime() - lastRenderTime < secondsPerFrame);
             //System.out.println("FPS: " + (1/sinceRender));
-            sinceRender = 0;
         }
         close();
         System.exit(0);
@@ -115,12 +110,11 @@ public class Game {
 
     public void init() {
         //ct = new ClientThread("127.0.0.1",9000);
-        int windowWidth = 800;
-        int windowHeight = 600;
+        int windowWidth = 1280;
+        int windowHeight = 720;
 
         window = new Window("Window",windowWidth, windowHeight, this);
         windowPointer = window.getWindow();
-        GL.createCapabilities();
        // c = new ClientThread("10.13.98.152",9000);
         //this.start();
         initShaders();
@@ -128,13 +122,20 @@ public class Game {
         meshes = new ArrayList<>();
 
         initTextures();
+
+        camera = new Camera(window.getWidth(), window.getHeight());
+    }
+
+    public void windowSizeChanged() {
+        camera.setScreenSize(window.getWidth(), window.getHeight());
     }
 
     private void initTextures() {
         Uniforms.createUniform("texture_sampler", programId);
         Uniforms.createUniform("positionMatrix", programId);
+        Uniforms.createUniform("projectionMatrix", programId);
 
-        meshes.add(createMesh(0, 0, 1, 1, "resources/sprites/gb.png"));
+        meshes.add(createMesh(0, 0, 0.1f, 0.1f, "resources/sprites/gb.png"));
     }
 
     private void initShaders() {
@@ -198,9 +199,12 @@ public class Game {
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
         meshes.get(0).translate((keys[2] || keys[3]) ? (float)deltaTime * diry : 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx : 0);
-
-
-
+        if(keys[4]) {
+            meshes.get(0).rotate((float)deltaTime * 20);
+        }
+        if(keys[5]) {
+            meshes.get(0).rotate(-(float)deltaTime * 20);
+        }
 
     }
 
@@ -218,11 +222,13 @@ public class Game {
     }
 
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
-        glClearColor(0, 0, 0, 0);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
 
         glUseProgram(programId);
         Uniforms.setUniform("texture_sampler", 0);
+        Uniforms.setUniform("projectionMatrix", camera.projectionMatrix);
+
         meshes.forEach(Mesh::render);
         glUseProgram(0);
 
@@ -240,6 +246,8 @@ public class Game {
             case GLFW_KEY_DOWN -> keys[1] = true;
             case GLFW_KEY_LEFT -> keys[2] = true;
             case GLFW_KEY_RIGHT -> keys[3] = true;
+            case GLFW_KEY_Z -> keys[4] = true;
+            case GLFW_KEY_X -> keys[5] = true;
         }
     }
     public void keyReleased(long window, int key) {
@@ -251,6 +259,8 @@ public class Game {
             case GLFW_KEY_DOWN -> keys[1] = false;
             case GLFW_KEY_LEFT -> keys[2] = false;
             case GLFW_KEY_RIGHT -> keys[3] = false;
+            case GLFW_KEY_Z -> keys[4] = false;
+            case GLFW_KEY_X -> keys[5] = false;
         }
     }
     public void mousePressed(long window, int button) {
@@ -266,10 +276,10 @@ public class Game {
     public Mesh createMesh(float x, float y, float width, float height, String texture) {
         return new Mesh(
                 new float[] {
-                    -width, -height, 0,
-                    width, -height, 0,
-                    -width, height, 0,
-                    width, height, 0,
+                    -width, -height, -1.f,
+                    width, -height, -1.f,
+                    -width, height, -1.f,
+                    width, height, -1.f,
                 },
                 new int[] {
                     0, 1, 2, 1, 3, 2,

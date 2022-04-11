@@ -22,7 +22,6 @@ public class Uniforms {
         glUniform1i(uniforms.get(uniformName), value);
     }
     public static void setUniform(String uniformName, Matrix4f value) {
-        // Dump the matrix into a float buffer
         try (MemoryStack stack = MemoryStack.stackPush()) {
             glUniformMatrix4fv(uniforms.get(uniformName), false,
                     value.get(stack.mallocFloat(16)));
