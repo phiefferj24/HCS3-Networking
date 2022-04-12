@@ -7,7 +7,9 @@ import com.jimphieffer.graphics.Uniforms;
 import com.jimphieffer.graphics.hud.HUD;
 import com.jimphieffer.network.client.ClientThread;
 import com.jimphieffer.network.server.Server;
+import org.joml.Matrix4f;
 import org.joml.Vector4f;
+import org.lwjgl.system.Platform;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -53,6 +55,8 @@ public class Game {
 
     private Camera camera;
 
+    private Player player;
+
     public Game(String ip, int port) {
 
         Scanner s = new Scanner(System.in);
@@ -66,9 +70,6 @@ public class Game {
 
         ct = new ClientThread(ip,port, this);
         ct.start();
-
-
-
     }
 
 
@@ -99,8 +100,13 @@ public class Game {
         if(Message.getType(message).equals(Message.MessageType.MOVEMENT))
         {
             message = message.substring(message.indexOf(":"),message.length());
+            message = message.substring(1,message.length());
+            String[] loc = message.split(",");
+            player.setX(Double.parseDouble(loc[0]));
+            player.setY(Double.parseDouble(loc[1]));
+            player.setVX(Double.parseDouble(loc[2]));
+            player.setVY(Double.parseDouble(loc[3]));
         }
-
 
     }
 
@@ -117,6 +123,10 @@ public class Game {
 
         meshes = new ArrayList<>();
 
+
+        player = new Player(0,0,50,50,
+                "/textures/player.png",0,0,username);
+
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -129,7 +139,7 @@ public class Game {
     }
 
     private void initTextures() {
-        meshes.add(new Mesh(0, 0, -1.f, 0.1f, 0.1f, "resources/textures/gb.png", objectProgramId));
+        meshes.add(new Mesh((float)player.getX(), (float)player.getY(), 0, 0.1f, 0.1f, player.getImage(), objectProgramId));
     }
 
     private void initShaders() {
@@ -279,7 +289,6 @@ public class Game {
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-
         glUseProgram(objectProgramId);
         Uniforms.setUniform("texture_sampler", 0, objectProgramId);
         Uniforms.setUniform("projectionMatrix", camera.projectionMatrix, objectProgramId);
@@ -295,6 +304,7 @@ public class Game {
 
         glfwSwapBuffers(windowPointer);
     }
+
 
     public String getUsername() {
         return username;

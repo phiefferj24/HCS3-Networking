@@ -9,8 +9,8 @@ public class HUD {
     private ArrayList<HUDElement> elements;
     public HUD(int programId) {
         elements = new ArrayList<>();
-        elements.add(new HUDElement());
-        elements.get(0).mesh = new Mesh(0, 0, 0, 0.1f, 0.1f, "resources/textures/edition.png", programId);
+        //elements.add(new HUDElement());
+        //elements.get(0).mesh = new Mesh(0, 0, 0, 0.1f, 0.1f, "/textures/edition.png", programId);
     }
     public void render() {
         elements.forEach(HUDElement::render);

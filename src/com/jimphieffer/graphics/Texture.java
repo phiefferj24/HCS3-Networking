@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL30.*;
 public class Texture {
     public final int id;
     public Texture(String path) {
-        ImageData imageData = getImageData(path);
+        ImageData imageData = getImageData("resources"+path);
         id = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, id);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

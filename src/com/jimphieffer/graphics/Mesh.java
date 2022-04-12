@@ -98,6 +98,9 @@ public class Mesh {
     public void translate(float x, float y, float z) {
         positionMatrix.translate(x, y, z);
     }
+    public void setPosition(float x, float y, float z) {
+        positionMatrix.identity().translate(x, y, z);
+    }
     public void scale(float factor) {
         positionMatrix.scale(factor);
     }
