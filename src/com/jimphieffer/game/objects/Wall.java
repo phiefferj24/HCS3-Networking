@@ -15,4 +15,11 @@ public class Wall extends Sprite {
         this.width = width;
         this.height = height;
     }
+
+
+    public String toString()
+    {
+        return "[" +"WALL" + ";" + x +";" + y + ";" + width + ";" + height + ";" + "/textures/wall.png" + "]";
+    }
+
 }

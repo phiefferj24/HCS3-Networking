@@ -160,6 +160,6 @@ public class Sprite
 
     public String toString()
     {
-        return "[" + x +";" + y + ";" + width + ";" + height + ";" + image + "]";
+        return "[" + "SPRITE" +";" + x +";" + y + ";" + width + ";" + height + ";" + image + "]";
     }
 }

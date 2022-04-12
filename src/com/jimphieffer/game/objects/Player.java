@@ -108,7 +108,7 @@ public class Player extends Sprite {
 
     public String toString()
     {
-        return "[" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";"  +
+        return "[" +"PLAYER" + ";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";"  +
                 getImage() + ";" + getVX() + "; " + getVY()  +";" + getUsername() +"]";
     }
 

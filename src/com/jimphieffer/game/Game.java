@@ -109,8 +109,9 @@ public class Game {
             player.setVX(Double.parseDouble(loc[2]));
             player.setVY(Double.parseDouble(loc[3]));
         }
-
     }
+
+
 
     public void init() {
         //ct = new ClientThread("127.0.0.1",9000);
