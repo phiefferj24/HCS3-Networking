@@ -40,6 +40,7 @@ public class Window {
             if(action == GLFW_PRESS) game.mousePressed(window, button);
             else if(action == GLFW_RELEASE) game.mouseReleased(window, button);
         });
+        glfwSetCursorPosCallback(window, game::mouseMoved);
         glfwSetFramebufferSizeCallback(window, (window, nwidth, nheight) -> {
             this.width = nwidth;
             this.height = nheight;

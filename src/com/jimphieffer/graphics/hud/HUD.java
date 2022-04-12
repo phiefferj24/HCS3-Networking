@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 public class HUD {
     private ArrayList<HUDElement> elements;
+    double mx = 0;
+    double my = 0;
     public HUD(int programId) {
         elements = new ArrayList<>();
         //elements.add(new HUDElement());
@@ -15,9 +17,13 @@ public class HUD {
     public void render() {
         elements.forEach(HUDElement::render);
     }
-    public void update(float mx, float my) {
+    public void mouseMoved(double x, double y) {
+        this.mx = x;
+        this.my = y;
         elements.forEach(hudElement -> {
-            if(hudElement.bounds.contains(mx, my));
+            if(hudElement.bounds.contains((float)x, (float)y)) {
+                hudElement.hover();
+            }
         });
     }
 }

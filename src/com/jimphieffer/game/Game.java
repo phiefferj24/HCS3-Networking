@@ -127,7 +127,7 @@ public class Game {
         meshes = new ArrayList<>();
 
 
-        player = new Player(0,0,50,50,
+        player = new Player(0,0,100,100,
                 "/textures/player.png",objectProgramId ,0,0,username);
 
         initTextures();
@@ -136,7 +136,7 @@ public class Game {
 
         hud = new HUD(hudProgramId);
 
-        background = new Mesh(0, 0, -10.f, 10.f, 10.f, "/textures/grass.png", objectProgramId, 0.005f, 0.005f);
+        background = new Mesh(0, 0, -10.f, windowWidth, windowHeight, "/textures/grass.png", objectProgramId, 0.1f, 0.1f);
     }
 
     public void windowSizeChanged() {
@@ -295,6 +295,8 @@ public class Game {
 
         background.render();
 
+        player.mesh.render();
+
         meshes.forEach(Mesh::render);
 
         glUseProgram(hudProgramId);
@@ -341,6 +343,10 @@ public class Game {
     }
     public void mouseReleased(long window, int button) {
 
+    }
+
+    public void mouseMoved(long window, double x, double y) {
+        hud.mouseMoved(x, y);
     }
 
 
