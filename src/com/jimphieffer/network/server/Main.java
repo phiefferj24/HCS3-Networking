@@ -1,6 +1,5 @@
 package com.jimphieffer.network.server;
 
-import com.jimphieffer.game.Display;
 import com.jimphieffer.game.Game;
 
 import javax.swing.*;
@@ -17,10 +16,6 @@ public class Main extends JComponent{
         });
 
         t.start();
-
-
-        Display d = new Display(800,600);
-        d.run();
 
 
 

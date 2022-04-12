@@ -6,7 +6,7 @@ import org.joml.Matrix4f;
 public class Camera {
     public Matrix4f projectionMatrix;
     public Camera(int width, int height) {
-        projectionMatrix = new Matrix4f().ortho(-1.f, 1.f, (float)height/width, -(float)height/width, 0.01f, 1000.f);
+        projectionMatrix = new Matrix4f().ortho(-1.f, 1.f, -(float)height/width, (float)height/width, 0.01f, 1000.f);
     }
     public void translate(float x, float y, float z) {
         projectionMatrix.translate(-x, -y, -z);
