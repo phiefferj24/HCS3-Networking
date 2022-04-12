@@ -18,7 +18,9 @@ public class Message {
         PLAYER_LOCATION,
         DISCONNECT,
         COMMAND,
-        USERNAME
+        USERNAME,
+        KEY_PRESSED,
+        KEY_RELEASED
     }
     public static String encode(String message, MessageProtocol protocol, MessageType type) {
         return protocol.name() + "/" + type.name() + ":" + message;
