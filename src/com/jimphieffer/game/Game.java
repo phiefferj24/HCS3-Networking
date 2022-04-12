@@ -57,6 +57,8 @@ public class Game {
 
     private Player player;
 
+    private Mesh background;
+
     public Game(String ip, int port) {
 
         Scanner s = new Scanner(System.in);
@@ -132,6 +134,8 @@ public class Game {
         camera = new Camera(window.getWidth(), window.getHeight());
 
         hud = new HUD(hudProgramId);
+
+        background = new Mesh(0, 0, -10.f, 10.f, 10.f, "/textures/grass.png", objectProgramId, 0.005f, 0.005f);
     }
 
     public void windowSizeChanged() {
@@ -139,7 +143,7 @@ public class Game {
     }
 
     private void initTextures() {
-        meshes.add(new Mesh((float)player.getX(), (float)player.getY(), 0, 0.1f, 0.1f, player.getImage(), objectProgramId));
+        meshes.add(new Mesh((float)player.getX(), (float)player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
     }
 
     private void initShaders() {
@@ -260,15 +264,16 @@ public class Game {
     private void tick(double deltaTime) {
 
         //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
-
+        float mod = 10;
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
-        meshes.get(0).translate((keys[2] || keys[3]) ? (float)deltaTime * diry : 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx : 0, 0);
+        meshes.get(0).translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod : 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod : 0, 0);
+        camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
         if(keys[4]) {
-            camera.setFOV(camera.getFOV() + (float)deltaTime * 10);
+            camera.setFOV(camera.getFOV()+(float)deltaTime * 10);
         }
         if(keys[5]) {
-            camera.setFOV(camera.getFOV() - (float)deltaTime * 10);
+            camera.setFOV(camera.getFOV()-(float)deltaTime * 10);
         }
 
     }
@@ -293,6 +298,9 @@ public class Game {
         Uniforms.setUniform("texture_sampler", 0, objectProgramId);
         Uniforms.setUniform("projectionMatrix", camera.projectionMatrix, objectProgramId);
         Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), objectProgramId);
+
+        background.render();
+
         meshes.forEach(Mesh::render);
 
         glUseProgram(hudProgramId);

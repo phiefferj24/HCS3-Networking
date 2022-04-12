@@ -9,7 +9,8 @@ public class Camera {
     private float fovDeg = 60.f;
     public Camera(int width, int height) {
         aspectRatio = (float) width / height;
-        projectionMatrix = new Matrix4f().perspective(Math.toRadians(fovDeg), aspectRatio, 0.01f, 1000.f);
+        //projectionMatrix = new Matrix4f().perspective(Math.toRadians(fovDeg), aspectRatio, 0.01f, 1000.f);
+        projectionMatrix = new Matrix4f().ortho(-1.f, 1.f, (float)height/width, -(float)height/width, 0.01f, 1000.f);
     }
     public void translate(float x, float y, float z) {
         projectionMatrix.translate(-x, -y, -z);

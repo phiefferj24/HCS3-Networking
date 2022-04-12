@@ -20,6 +20,9 @@ public class Mesh {
     public Mesh(float x, float y, float z, float width, float height, String texture, int programId) {
         this(new float[] {-width, -height, -1.f, width, -height, -1.f, -width, height, -1.f, width, height, -1.f}, new int[] {0, 1, 2, 1, 3, 2}, new float[] {0, 1, 1, 1, 0, 0, 1, 0}, new Texture(texture), x, y, z, programId);
     }
+    public Mesh(float x, float y, float z, float width, float height, String texture, int programId, float textureScaleX, float textureScaleY) {
+        this(new float[] {-width, -height, -1.f, width, -height, -1.f, -width, height, -1.f, width, height, -1.f}, new int[] {0, 1, 2, 1, 3, 2}, new float[] {0, 1/textureScaleY, 1/textureScaleX, 1/textureScaleY, 0, 0, 1/textureScaleX, 0}, new Texture(texture), x, y, z, programId);
+    }
     public Mesh(float[] vertices, int[] indices, float[] textureCoordinates, Texture texture, float x, float y, float z, int programId) {
         this.programId = programId;
         vertexCount = indices.length;
