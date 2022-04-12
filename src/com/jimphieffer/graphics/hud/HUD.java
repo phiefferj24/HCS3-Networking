@@ -15,4 +15,9 @@ public class HUD {
     public void render() {
         elements.forEach(HUDElement::render);
     }
+    public void update(float mx, float my) {
+        elements.forEach(hudElement -> {
+            if(hudElement.bounds.contains(mx, my));
+        });
+    }
 }

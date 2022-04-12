@@ -1,9 +1,11 @@
 package com.jimphieffer.graphics.hud.elements;
 
 import com.jimphieffer.graphics.Mesh;
+import com.jimphieffer.graphics.hud.FloatRectangle;
 
 public class HUDElement {
     public Mesh mesh;
+    public FloatRectangle bounds;
 
     public void hover() {
 
