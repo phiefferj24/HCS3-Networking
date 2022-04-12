@@ -16,7 +16,12 @@ public class Mesh {
     public final int vertexCount;
     private final Texture texture;
     public final Matrix4f positionMatrix = new Matrix4f();
-    public Mesh(float[] vertices, int[] indices, float[] textureCoordinates, Texture texture, float x, float y, float z) {
+    private final int programId;
+    public Mesh(float x, float y, float z, float width, float height, String texture, int programId) {
+        this(new float[] {-width, -height, -1.f, width, -height, -1.f, -width, height, -1.f, width, height, -1.f}, new int[] {0, 1, 2, 1, 3, 2}, new float[] {0, 1, 1, 1, 0, 0, 1, 0}, new Texture(texture), x, y, z, programId);
+    }
+    public Mesh(float[] vertices, int[] indices, float[] textureCoordinates, Texture texture, float x, float y, float z, int programId) {
+        this.programId = programId;
         vertexCount = indices.length;
         this.texture = texture;
         FloatBuffer verticesBuffer = null;
@@ -83,7 +88,7 @@ public class Mesh {
         glDeleteTextures(texture.id);
     }
     public void render() {
-        Uniforms.setUniform("positionMatrix", positionMatrix);
+        Uniforms.setUniform("positionMatrix", positionMatrix, programId);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture.id);
         glBindVertexArray(vaoId);

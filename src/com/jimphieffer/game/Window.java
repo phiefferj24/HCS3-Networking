@@ -46,12 +46,14 @@ public class Window {
             game.windowSizeChanged();
         });
         glfwMakeContextCurrent(window);
-        //glfwSwapInterval(1);
+        glfwSwapInterval(1);
         glfwShowWindow(window);
         glfwSetWindowSizeCallback(window, (window, newWidth, newHeight) -> setWindowSize(newWidth, newHeight));
 
         GL.createCapabilities();
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glClearColor(0, 0, 0, 0);
     }
 

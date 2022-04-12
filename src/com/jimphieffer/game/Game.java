@@ -4,10 +4,11 @@ import com.jimphieffer.Message;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.Texture;
 import com.jimphieffer.graphics.Uniforms;
+import com.jimphieffer.graphics.hud.HUD;
 import com.jimphieffer.network.client.ClientThread;
 import com.jimphieffer.network.server.Server;
+import org.joml.Vector4f;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,7 +17,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 
 import static com.jimphieffer.utils.FileUtilities.*;
-import static org.lwjgl.system.MemoryUtil.*;
 
 public class Game {
 
@@ -38,13 +38,16 @@ public class Game {
     private int vx;
     private int vy;
 
-    private BufferedImage bi;
+    private int objectProgramId;
+    private int objectVertexShaderId;
+    private int objectFragmentShaderId;
 
-    private int programId;
-    private int vsId;
-    private int fsId;
+    private int hudProgramId;
+    private int hudVertexShaderId;
+    private int hudFragmentShaderId;
 
     private ArrayList<Mesh> meshes;
+    private HUD hud;
 
     private boolean[] keys = new boolean[6];
 
@@ -117,6 +120,8 @@ public class Game {
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
+
+        hud = new HUD(hudProgramId);
     }
 
     public void windowSizeChanged() {
@@ -124,65 +129,122 @@ public class Game {
     }
 
     private void initTextures() {
-        Uniforms.createUniform("texture_sampler", programId);
-        Uniforms.createUniform("positionMatrix", programId);
-        Uniforms.createUniform("projectionMatrix", programId);
-
-        meshes.add(createMesh(0, 0, 0, 0.1f, 0.1f, "resources/sprites/gb.png"));
+        meshes.add(new Mesh(0, 0, -1.f, 0.1f, 0.1f, "resources/textures/gb.png", objectProgramId));
     }
 
     private void initShaders() {
         // create shader program
-        programId = glCreateProgram();
-        if(programId == 0) {
-            System.err.println("Could not create shader program.");
+        objectProgramId = glCreateProgram();
+        if(objectProgramId == 0) {
+            System.err.println("Could not create object shader program.");
             return;
         }
 
         // compile and link vertex shader
-        vsId = glCreateShader(GL_VERTEX_SHADER);
-        if(vsId == 0) {
-            System.err.println("Could not create vertex shader.");
+        objectVertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+        if(objectVertexShaderId == 0) {
+            System.err.println("Could not create object vertex shader.");
             return;
         }
-        glShaderSource(vsId, loadFile("/shaders/vertex.vs"));
-        glCompileShader(vsId);
-        if(glGetShaderi(vsId, GL_COMPILE_STATUS) == 0) {
-            System.err.println("Could not compile vertex shader.");
+        glShaderSource(objectVertexShaderId, loadFile("/shaders/objects/vertex.vs"));
+        glCompileShader(objectVertexShaderId);
+        if(glGetShaderi(objectVertexShaderId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile object vertex shader.");
             return;
         }
-        glAttachShader(programId, vsId);
+        glAttachShader(objectProgramId, objectVertexShaderId);
 
         // compile and link fragment shader
-        fsId = glCreateShader(GL_FRAGMENT_SHADER);
-        if(fsId == 0) {
-            System.err.println("Could not create fragment shader.");
+        objectFragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+        if(objectFragmentShaderId == 0) {
+            System.err.println("Could not create object fragment shader.");
             return;
         }
-        glShaderSource(fsId, loadFile("/shaders/fragment.fs"));
-        glCompileShader(fsId);
-        if(glGetShaderi(fsId, GL_COMPILE_STATUS) == 0) {
-            System.err.println("Could not compile fragment shader.");
+        glShaderSource(objectFragmentShaderId, loadFile("/shaders/objects/fragment.fs"));
+        glCompileShader(objectFragmentShaderId);
+        if(glGetShaderi(objectFragmentShaderId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile object fragment shader.");
             return;
         }
-        glAttachShader(programId, fsId);
+        glAttachShader(objectProgramId, objectFragmentShaderId);
 
         // link shader program to window
-        glLinkProgram(programId);
-        if(glGetProgrami(programId, GL_LINK_STATUS) == 0) {
-            System.err.println("Could not link shader program.");
+        glLinkProgram(objectProgramId);
+        if(glGetProgrami(objectProgramId, GL_LINK_STATUS) == 0) {
+            System.err.println("Could not link object shader program.");
             return;
         }
 
         // clear compiled shaders
-        glDetachShader(programId, vsId);
-        glDetachShader(programId, fsId);
+        glDetachShader(objectProgramId, objectVertexShaderId);
+        glDetachShader(objectProgramId, objectFragmentShaderId);
 
         // validate the shader program
-        glValidateProgram(programId);
-        if(glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
-            System.err.println("Warning validating shader program.");
+        glValidateProgram(objectProgramId);
+        if(glGetProgrami(objectProgramId, GL_VALIDATE_STATUS) == 0) {
+            System.err.println("Warning validating object shader program.");
         }
+
+
+        hudProgramId = glCreateProgram();
+        if(hudProgramId == 0) {
+            System.err.println("Could not create HUD shader program.");
+            return;
+        }
+
+        // compile and link vertex shader
+        hudVertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+        if(hudVertexShaderId == 0) {
+            System.err.println("Could not create HUD vertex shader.");
+            return;
+        }
+        glShaderSource(hudVertexShaderId, loadFile("/shaders/hud/vertex.vs"));
+        glCompileShader(hudVertexShaderId);
+        if(glGetShaderi(hudVertexShaderId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile HUD vertex shader.");
+            return;
+        }
+        glAttachShader(hudProgramId, hudVertexShaderId);
+
+        // compile and link fragment shader
+        hudFragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+        if(hudFragmentShaderId == 0) {
+            System.err.println("Could not create HUD fragment shader.");
+            return;
+        }
+        glShaderSource(hudFragmentShaderId, loadFile("/shaders/hud/fragment.fs"));
+        glCompileShader(hudFragmentShaderId);
+        if(glGetShaderi(hudFragmentShaderId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile HUD fragment shader.");
+            return;
+        }
+        glAttachShader(hudProgramId, hudFragmentShaderId);
+
+        // link shader program to window
+        glLinkProgram(hudProgramId);
+        if(glGetProgrami(hudProgramId, GL_LINK_STATUS) == 0) {
+            System.err.println("Could not link HUD shader program.");
+            return;
+        }
+
+        // clear compiled shaders
+        glDetachShader(hudProgramId, hudVertexShaderId);
+        glDetachShader(hudProgramId, hudFragmentShaderId);
+
+        // validate the shader program
+        glValidateProgram(hudProgramId);
+        if(glGetProgrami(hudProgramId, GL_VALIDATE_STATUS) == 0) {
+            System.err.println("Warning validating HUD shader program.");
+        }
+
+        // initialize uniforms
+        Uniforms.createUniform("texture_sampler", objectProgramId);
+        Uniforms.createUniform("positionMatrix", objectProgramId);
+        Uniforms.createUniform("projectionMatrix", objectProgramId);
+        Uniforms.createUniform("color", objectProgramId);
+        Uniforms.createUniform("texture_sampler", hudProgramId);
+        Uniforms.createUniform("positionMatrix", hudProgramId);
+        Uniforms.createUniform("color", hudProgramId);
     }
 
     private void tick(double deltaTime) {
@@ -205,7 +267,7 @@ public class Game {
 
 
     private void close() {
-        if(programId != 0) glDeleteProgram(programId);
+        if(objectProgramId != 0) glDeleteProgram(objectProgramId);
         meshes.forEach(Mesh::close);
         glfwFreeCallbacks(windowPointer);
         glfwDestroyWindow(windowPointer);
@@ -218,11 +280,17 @@ public class Game {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 
-        glUseProgram(programId);
-        Uniforms.setUniform("texture_sampler", 0);
-        Uniforms.setUniform("projectionMatrix", camera.projectionMatrix);
-
+        glUseProgram(objectProgramId);
+        Uniforms.setUniform("texture_sampler", 0, objectProgramId);
+        Uniforms.setUniform("projectionMatrix", camera.projectionMatrix, objectProgramId);
+        Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), objectProgramId);
         meshes.forEach(Mesh::render);
+
+        glUseProgram(hudProgramId);
+        Uniforms.setUniform("texture_sampler", 0, hudProgramId);
+        Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
+        hud.render();
+
         glUseProgram(0);
 
         glfwSwapBuffers(windowPointer);
@@ -265,28 +333,6 @@ public class Game {
 
 
     // use but dont touch
-
-    public Mesh createMesh(float x, float y, float z, float width, float height, String texture) {
-        return new Mesh(
-                new float[] {
-                    -width, -height, -1.f,
-                    width, -height, -1.f,
-                    -width, height, -1.f,
-                    width, height, -1.f,
-                },
-                new int[] {
-                    0, 1, 2, 1, 3, 2,
-                },
-                new float[] {
-                    0, 1,
-                    1, 1,
-                    0, 0,
-                    1, 0,
-                },
-                new Texture(texture),
-                x, y, z);
-    }
-
 
     public static void main(String[] args) {
         Thread t = new Thread(() -> {
