@@ -1,31 +1,22 @@
 package com.jimphieffer.game;
 
 import com.jimphieffer.Message;
+import com.jimphieffer.graphics.Mesh;
+import com.jimphieffer.graphics.Texture;
+import com.jimphieffer.graphics.Uniforms;
+import com.jimphieffer.graphics.hud.HUD;
 import com.jimphieffer.network.client.ClientThread;
 import com.jimphieffer.network.server.Server;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
+import org.joml.Vector4f;
 
-import javax.imageio.ImageIO;
-import javax.xml.stream.Location;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.*;
+
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
-/**
- * Note:
- * RenderWrapper exists here because OpenGL with Java on Mac is incredibly annoying.
- * Most events (but not all) that interface with the window need to be run in the same thread as the window was created in.
- * The window MUST also be created in the main thread, or the program will error.
- * The BlockingQueue here allows render to be queued up in the main thread while tick can run on the separate thread.
- * This should not cause any problems (as of now).
- */
+import static com.jimphieffer.utils.FileUtilities.*;
 
 public class Game {
 
@@ -42,13 +33,25 @@ public class Game {
     private long windowPointer;
     private ClientThread ct;
 
-    private double x;
-    private double y;
-    private double vx;
-    private double vy;
+    private int x;
+    private int y;
+    private int vx;
+    private int vy;
 
-    private BufferedImage bi;
+    private int objectProgramId;
+    private int objectVertexShaderId;
+    private int objectFragmentShaderId;
 
+    private int hudProgramId;
+    private int hudVertexShaderId;
+    private int hudFragmentShaderId;
+
+    private ArrayList<Mesh> meshes;
+    private HUD hud;
+
+    private boolean[] keys = new boolean[6];
+
+    private Camera camera;
 
     public Game(String ip, int port) {
 
@@ -72,26 +75,21 @@ public class Game {
 
     public void run() {
 
-
         final double secondsPerFrame = 1.d / framesPerSecond;
 
         double lastRenderTime = glfwGetTime();
-        double lastTickTime = glfwGetTime();
-        double deltaTime = glfwGetTime() - lastRenderTime;
+        double lastTickTime;
+        double deltaTime = 0;
         while(!glfwWindowShouldClose(windowPointer)) {
-            System.out.println("run");
-            while(deltaTime < secondsPerFrame) {
-                tick(deltaTime);
-                deltaTime = glfwGetTime() - lastTickTime;
-            }
             glfwPollEvents();
+            tick(glfwGetTime() - lastRenderTime);
             render();
             lastRenderTime = glfwGetTime();
+            while(glfwGetTime() - lastRenderTime < secondsPerFrame);
+            //System.out.println("FPS: " + (1/sinceRender));
         }
         close();
         System.exit(0);
-
-
     }
 
     public void onMessage(String message) {
@@ -101,11 +99,6 @@ public class Game {
         if(Message.getType(message).equals(Message.MessageType.MOVEMENT))
         {
             message = message.substring(message.indexOf(":"),message.length());
-            String[] loc = message.split(",");
-            x = Double.parseDouble(loc[1]);
-            y = Double.parseDouble(loc[2]);
-            vx = Double.parseDouble(loc[3]);
-            vy = Double.parseDouble(loc[4]);
         }
 
 
@@ -113,42 +106,160 @@ public class Game {
 
     public void init() {
         //ct = new ClientThread("127.0.0.1",9000);
-
-
-        try {
-            bi = ImageIO.read(Game.class.getResource("/com/jimphieffer/game/sprites/player.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-
-
-
-        int windowWidth = 800;
-        int windowHeight = 600;
+        int windowWidth = 1280;
+        int windowHeight = 720;
 
         window = new Window("Window",windowWidth, windowHeight, this);
         windowPointer = window.getWindow();
-        GL.createCapabilities();
        // c = new ClientThread("10.13.98.152",9000);
         //this.start();
+        initShaders();
+
+        meshes = new ArrayList<>();
+
+        initTextures();
+
+        camera = new Camera(window.getWidth(), window.getHeight());
+
+        hud = new HUD(hudProgramId);
+    }
+
+    public void windowSizeChanged() {
+        camera.setScreenSize(window.getWidth(), window.getHeight());
+    }
+
+    private void initTextures() {
+        meshes.add(new Mesh(0, 0, -1.f, 0.1f, 0.1f, "resources/textures/gb.png", objectProgramId));
+    }
+
+    private void initShaders() {
+        // create shader program
+        objectProgramId = glCreateProgram();
+        if(objectProgramId == 0) {
+            System.err.println("Could not create object shader program.");
+            return;
+        }
+
+        // compile and link vertex shader
+        objectVertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+        if(objectVertexShaderId == 0) {
+            System.err.println("Could not create object vertex shader.");
+            return;
+        }
+        glShaderSource(objectVertexShaderId, loadFile("/shaders/objects/vertex.vs"));
+        glCompileShader(objectVertexShaderId);
+        if(glGetShaderi(objectVertexShaderId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile object vertex shader.");
+            return;
+        }
+        glAttachShader(objectProgramId, objectVertexShaderId);
+
+        // compile and link fragment shader
+        objectFragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+        if(objectFragmentShaderId == 0) {
+            System.err.println("Could not create object fragment shader.");
+            return;
+        }
+        glShaderSource(objectFragmentShaderId, loadFile("/shaders/objects/fragment.fs"));
+        glCompileShader(objectFragmentShaderId);
+        if(glGetShaderi(objectFragmentShaderId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile object fragment shader.");
+            return;
+        }
+        glAttachShader(objectProgramId, objectFragmentShaderId);
+
+        // link shader program to window
+        glLinkProgram(objectProgramId);
+        if(glGetProgrami(objectProgramId, GL_LINK_STATUS) == 0) {
+            System.err.println("Could not link object shader program.");
+            return;
+        }
+
+        // clear compiled shaders
+        glDetachShader(objectProgramId, objectVertexShaderId);
+        glDetachShader(objectProgramId, objectFragmentShaderId);
+
+        // validate the shader program
+        glValidateProgram(objectProgramId);
+        if(glGetProgrami(objectProgramId, GL_VALIDATE_STATUS) == 0) {
+            System.err.println("Warning validating object shader program.");
+        }
 
 
+        hudProgramId = glCreateProgram();
+        if(hudProgramId == 0) {
+            System.err.println("Could not create HUD shader program.");
+            return;
+        }
+
+        // compile and link vertex shader
+        hudVertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+        if(hudVertexShaderId == 0) {
+            System.err.println("Could not create HUD vertex shader.");
+            return;
+        }
+        glShaderSource(hudVertexShaderId, loadFile("/shaders/hud/vertex.vs"));
+        glCompileShader(hudVertexShaderId);
+        if(glGetShaderi(hudVertexShaderId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile HUD vertex shader.");
+            return;
+        }
+        glAttachShader(hudProgramId, hudVertexShaderId);
+
+        // compile and link fragment shader
+        hudFragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+        if(hudFragmentShaderId == 0) {
+            System.err.println("Could not create HUD fragment shader.");
+            return;
+        }
+        glShaderSource(hudFragmentShaderId, loadFile("/shaders/hud/fragment.fs"));
+        glCompileShader(hudFragmentShaderId);
+        if(glGetShaderi(hudFragmentShaderId, GL_COMPILE_STATUS) == 0) {
+            System.err.println("Could not compile HUD fragment shader.");
+            return;
+        }
+        glAttachShader(hudProgramId, hudFragmentShaderId);
+
+        // link shader program to window
+        glLinkProgram(hudProgramId);
+        if(glGetProgrami(hudProgramId, GL_LINK_STATUS) == 0) {
+            System.err.println("Could not link HUD shader program.");
+            return;
+        }
+
+        // clear compiled shaders
+        glDetachShader(hudProgramId, hudVertexShaderId);
+        glDetachShader(hudProgramId, hudFragmentShaderId);
+
+        // validate the shader program
+        glValidateProgram(hudProgramId);
+        if(glGetProgrami(hudProgramId, GL_VALIDATE_STATUS) == 0) {
+            System.err.println("Warning validating HUD shader program.");
+        }
+
+        // initialize uniforms
+        Uniforms.createUniform("texture_sampler", objectProgramId);
+        Uniforms.createUniform("positionMatrix", objectProgramId);
+        Uniforms.createUniform("projectionMatrix", objectProgramId);
+        Uniforms.createUniform("color", objectProgramId);
+        Uniforms.createUniform("texture_sampler", hudProgramId);
+        Uniforms.createUniform("positionMatrix", hudProgramId);
+        Uniforms.createUniform("color", hudProgramId);
     }
 
     private void tick(double deltaTime) {
 
-        System.out.println("tick");
+        //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
 
-        ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
-
-
-
-
-
+        int dirx = keys[0] ? 1 : -1;
+        int diry = keys[3] ? 1 : -1;
+        meshes.get(0).translate((keys[2] || keys[3]) ? (float)deltaTime * diry : 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx : 0, 0);
+        if(keys[4]) {
+            camera.setFOV(camera.getFOV() + (float)deltaTime * 10);
+        }
+        if(keys[5]) {
+            camera.setFOV(camera.getFOV() - (float)deltaTime * 10);
+        }
 
     }
 
@@ -156,6 +267,8 @@ public class Game {
 
 
     private void close() {
+        if(objectProgramId != 0) glDeleteProgram(objectProgramId);
+        meshes.forEach(Mesh::close);
         glfwFreeCallbacks(windowPointer);
         glfwDestroyWindow(windowPointer);
         glfwTerminate();
@@ -163,52 +276,24 @@ public class Game {
         System.exit(0);
     }
 
-    public static void close(long window) {
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
-        System.exit(0);
-    }
-
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
-        double scale = .3; //doesnt do anything :/
-        glClearColor(0, 0, 0, 0);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        double centerC = x/((double)window.getWidth()/2)-1;
-        double centerY = (double)y/((double)window.getHeight()/2)-1;
-        double sizex = (double)bi.getWidth()/(double)window.getWidth() * scale;
-        double sizey = (double)bi.getHeight()/(double)window.getHeight() * scale;
 
-//        System.out.println((centerC+sizex/2));
-//        System.out.println((centerY+sizey/2));
-//        System.out.println((centerC-sizex/2));
-//        System.out.println((centerY-sizey/2));
+        glUseProgram(objectProgramId);
+        Uniforms.setUniform("texture_sampler", 0, objectProgramId);
+        Uniforms.setUniform("projectionMatrix", camera.projectionMatrix, objectProgramId);
+        Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), objectProgramId);
+        meshes.forEach(Mesh::render);
 
+        glUseProgram(hudProgramId);
+        Uniforms.setUniform("texture_sampler", 0, hudProgramId);
+        Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
+        hud.render();
 
-        shittyRender(bi,centerC+sizex/2,centerY+sizey/2,centerC-sizex/2,centerY-sizey/2);
-
-    //    shittyRender(bi,.5,0,0,.5);
+        glUseProgram(0);
 
         glfwSwapBuffers(windowPointer);
-    }
-
-    public void shittyRender(BufferedImage bi, double x1, double y1, double x2, double y2) {
-        double xc = (x2-x1)/bi.getWidth();
-        double yc = (y2-y1)/bi.getHeight();
-        glBegin(GL_QUADS);
-        for(int i = 0; i < bi.getWidth(); i++) {
-            for(int j = 0; j < bi.getHeight(); j++) {
-                int c = bi.getRGB(i, j);
-                glColor4d(((c >> 16) & 0xFF) / 255., ((c >> 8) & 0xFF) / 255., (c & 0xFF) / 255., ((c >> 24) & 0xFF) / 255.);
-                glVertex3d(i*xc+x1, j*yc+y1, 0);
-                glVertex3d((i+1)*xc+x1, j*yc+y1, 0);
-                glVertex3d((i+1)*xc+x1, (j+1)*yc+y1, 0);
-                glVertex3d(i*xc+x1, (j+1)*yc+y1, 0);
-            }
-        }
-        glEnd();
     }
 
     public String getUsername() {
@@ -217,22 +302,26 @@ public class Game {
 
 
     public void keyPressed(long window, int key) {
-        vx = 0;
-        vy = 0;
-
-
-        if (key == GLFW_KEY_D)
-            vx=1;
-        if (key == GLFW_KEY_A)
-            vx=1;
-        if (key == GLFW_KEY_W)
-            vy=1;
-        if (key == GLFW_KEY_A)
-            vy=1;
+        switch (key) {
+            case GLFW_KEY_UP -> keys[0] = true;
+            case GLFW_KEY_DOWN -> keys[1] = true;
+            case GLFW_KEY_LEFT -> keys[2] = true;
+            case GLFW_KEY_RIGHT -> keys[3] = true;
+            case GLFW_KEY_Z -> keys[4] = true;
+            case GLFW_KEY_X -> keys[5] = true;
+        }
     }
     public void keyReleased(long window, int key) {
         if(key == GLFW_KEY_ESCAPE) {
-            Game.close(window);
+            close();
+        }
+        switch (key) {
+            case GLFW_KEY_UP -> keys[0] = false;
+            case GLFW_KEY_DOWN -> keys[1] = false;
+            case GLFW_KEY_LEFT -> keys[2] = false;
+            case GLFW_KEY_RIGHT -> keys[3] = false;
+            case GLFW_KEY_Z -> keys[4] = false;
+            case GLFW_KEY_X -> keys[5] = false;
         }
     }
     public void mousePressed(long window, int button) {
@@ -242,6 +331,8 @@ public class Game {
 
     }
 
+
+    // use but dont touch
 
     public static void main(String[] args) {
         Thread t = new Thread(() -> {
