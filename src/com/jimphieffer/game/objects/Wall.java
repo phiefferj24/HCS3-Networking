@@ -7,9 +7,9 @@ public class Wall extends Sprite {
     private double y;
     private int width;
     private int height;
-    public Wall(double x, double y, int width, int height)
+    public Wall(double x, double y, int width, int height,int programID)
     {
-        super(x, y,width,height,"/textures/wall.png");
+        super(x, y,width,height,"/textures/wall.png",programID );
         this.x = x;
         this.y = y;
         this.width = width;

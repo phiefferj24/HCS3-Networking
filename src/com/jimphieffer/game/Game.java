@@ -128,7 +128,7 @@ public class Game {
 
 
         player = new Player(0,0,50,50,
-                "/textures/player.png",0,0,username);
+                "/textures/player.png",objectProgramId ,0,0,username);
 
         initTextures();
 
@@ -268,8 +268,8 @@ public class Game {
         float mod = 10;
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
-        meshes.get(0).translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod : 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod : 0, 0);
-        camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
+        meshes.get(0).setPosition((float)player.getX(), (float)player.getY(), 0);
+        //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
     }
 
 

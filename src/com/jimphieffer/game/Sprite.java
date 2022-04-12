@@ -1,5 +1,7 @@
 package com.jimphieffer.game;
 
+import com.jimphieffer.graphics.Mesh;
+
 public class Sprite
 {
     private double x;  //the x-coordinate of the left edge of the sprite
@@ -7,14 +9,16 @@ public class Sprite
     private int width;
     private int height;
     private String image;
+    private Mesh mesh;
 
-    public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage)
+    public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, int programID)
     {
         x = theLeft;
         y = theTop;
         width = theWidth;
         height = theHeight;
         setImage(theImage);
+        mesh = new Mesh((float)x,(float)y,0,width,height,image,programID);
     }
 
     public Sprite() {

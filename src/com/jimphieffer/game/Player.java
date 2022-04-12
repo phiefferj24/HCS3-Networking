@@ -8,10 +8,10 @@ public class Player extends Sprite{
     private int amtStone = 0;
     private String username;
 
-    public Player(double left, double top, int width, int height, String image,
+    public Player(double left, double top, int width, int height, String image, int programID,
                   double velocityX, double velocityY, String username)
     {
-        super(left, top, width, height, image);
+        super(left, top, width, height, image,programID);
         vx = velocityX;
         vy = velocityY;
         health  = 15;

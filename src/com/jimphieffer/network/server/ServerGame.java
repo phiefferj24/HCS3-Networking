@@ -43,7 +43,7 @@ public class ServerGame extends Thread {
             if (type == Message.MessageType.CONNECT)
             {
                 //todo if(name doesnt already exist) {
-                sprites.add(new Player(50,50,50,50,"src/com/jimphieffer/game/sprites/player.png",0,0,message));
+                sprites.add(new Player(50,50,50,50,"src/com/jimphieffer/game/sprites/player.png",0,0,0,message));
                 spritesNames.add(message);
                 server.send(Message.encode("SUCCESS",Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
                 //} else {send message FAILED}
