@@ -15,7 +15,7 @@ public class Player extends Sprite{
         vx = velocityX;
         vy = velocityY;
         health  = 15;
-        this.username = username;
+       username = username + this.hashCode();
 
     }
 
@@ -47,7 +47,6 @@ public class Player extends Sprite{
 
     public void step(Game game)
     {
-
 
         if(vx<0)
             vx+=1;

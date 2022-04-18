@@ -98,7 +98,6 @@ public class Game {
     public void onMessage(String message) {
 
         System.out.println("message to game: " + message);
-
         if(Message.getType(message).equals(Message.MessageType.MOVEMENT))
         {
             message = message.substring(message.indexOf(":"),message.length());
@@ -353,13 +352,13 @@ public class Game {
     // use but dont touch
 
     public static void main(String[] args) {
-        Thread t = new Thread(() -> {
-            Server s = new Server(9000);
-            s.listen();
-        });
-        t.start();
+//        Thread t = new Thread(() -> {
+//            Server s = new Server(9000);
+//            s.listen();
+//        });
+//        t.start();
 
-        Game g = new Game("127.0.0.1",9000);
+        Game g = new Game("172.20.10.3",5678);
         g.init();
         g.run();
     }
