@@ -23,10 +23,13 @@ public class ServerGame extends Thread {
 
     public void run()
     {
+        String bruh = "";
         for (Sprite s: sprites)
         {
-            server.relay(Message.encode(s.toString(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+            bruh+=s.toString() + ",";
         }
+        server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+
 
     }
 
