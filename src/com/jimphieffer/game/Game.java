@@ -59,6 +59,8 @@ public class Game {
 
     private Mesh background;
 
+    private ArrayList<String> sprites;
+
     public Game(String ip, int port) {
 
         Scanner s = new Scanner(System.in);
@@ -72,6 +74,7 @@ public class Game {
 
         ct = new ClientThread(ip,port, this);
         ct.start();
+        sprites = new ArrayList<>();
     }
 
 
@@ -110,6 +113,12 @@ public class Game {
         }
         if(Message.getType(message).equals(Message.MessageType.SPRITE))
         {
+            String[] sprs = Message.decode(message).split(",");
+            sprites = new ArrayList<>();
+            for(String s: sprs)
+            {
+                //sprites.add()
+            }
 
         }
     }
