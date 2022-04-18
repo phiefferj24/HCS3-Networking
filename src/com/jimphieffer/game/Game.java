@@ -358,7 +358,7 @@ public class Game {
 //        });
 //        t.start();
 
-        Game g = new Game("172.20.10.3",5678);
+        Game g = new Game("10.13.34.34",9000);
         g.init();
         g.run();
     }

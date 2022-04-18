@@ -18,6 +18,7 @@ public class Message {
         PLAYER_LOCATION,
         DISCONNECT,
         COMMAND,
+        SPRITE,
         USERNAME,
         KEY_PRESSED,
         KEY_RELEASED

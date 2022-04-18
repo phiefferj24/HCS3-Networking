@@ -23,12 +23,9 @@ public class ServerGame extends Thread {
 
     public void run()
     {
-        for (Sprite s: sprites) //TODO sends all sprites to everybody. In the future maby change? -tiko :P
+        for (Sprite s: sprites)
         {
-            if(s instanceof Player p) {
-                String message = p.getUsername() + ";" + p.getX() + ";" + p.getY();
-                server.relay(Message.encode(message, Message.MessageProtocol.SEND, Message.MessageType.PLAYER_LOCATION));
-            }
+            server.relay(Message.encode(s.toString(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
         }
 
     }
