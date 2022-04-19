@@ -2,6 +2,9 @@ package com.jimphieffer.game;
 
 import com.jimphieffer.graphics.Mesh;
 
+import static java.lang.Double.*;
+import static java.lang.Integer.*;
+
 public class Sprite
 {
     private double x;  //the x-coordinate of the left edge of the sprite

@@ -70,10 +70,9 @@ public class Game {
         vx = 0;
         vy = 0;
 
-        ct = new ClientThread(ip,port, this);
+        ct = new ClientThread(ip, port, this);
         ct.start();
     }
-
 
 
     public void run() {
@@ -83,12 +82,12 @@ public class Game {
         double lastRenderTime = glfwGetTime();
         double lastTickTime;
         double deltaTime = 0;
-        while(!glfwWindowShouldClose(windowPointer)) {
+        while (!glfwWindowShouldClose(windowPointer)) {
             glfwPollEvents();
             tick(glfwGetTime() - lastRenderTime);
             render();
             lastRenderTime = glfwGetTime();
-            while(glfwGetTime() - lastRenderTime < secondsPerFrame);
+            while (glfwGetTime() - lastRenderTime < secondsPerFrame) ;
             //System.out.println("FPS: " + (1/sinceRender));
         }
         close();
@@ -98,10 +97,9 @@ public class Game {
     public void onMessage(String message) {
 
         System.out.println("message to game: " + message);
-        if(Message.getType(message).equals(Message.MessageType.MOVEMENT))
-        {
-            message = message.substring(message.indexOf(":"),message.length());
-            message = message.substring(1,message.length());
+        if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
+            message = message.substring(message.indexOf(":"), message.length());
+            message = message.substring(1, message.length());
             String[] loc = message.split(",");
             player.setX(Double.parseDouble(loc[0]));
             player.setY(Double.parseDouble(loc[1]));
@@ -111,58 +109,68 @@ public class Game {
     }
 
 
-
     public void init() {
         //ct = new ClientThread("127.0.0.1",9000);
         int windowWidth = 1280;
         int windowHeight = 720;
 
-        window = new Window("Window",windowWidth, windowHeight, this);
+        window = new Window("Window", windowWidth, windowHeight, this);
         windowPointer = window.getWindow();
-       // c = new ClientThread("10.13.98.152",9000);
+        // c = new ClientThread("10.13.98.152",9000);
         //this.start();
-        initShaders();
 
         meshes = new ArrayList<>();
 
+        initShaders();
 
-        player = new Player(0,0,100,100,
-                "/textures/player.png",objectProgramId ,0,0,username);
+
+        boolean foundAnimal;
+
+       // for(int x=0; x<sprites.size(); x++)
+       // {//double x, double y, int width, int height,int programID
+            //if(sprites.getType)
+           // sprites.add(new Animal(Math.random()*windowHeight,Math.random()*windowWidth,50, 50,glCreateProgram() ));
+
+       // }
+
+        player = new Player(0, 0, 100, 100,
+                "/textures/player.png", objectProgramId, 0, 0, username);
 
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
 
-        hud = new HUD(hudProgramId);
+        hud = new HUD(hudProgramId, window.getWidth(), window.getHeight());
 
         background = new Mesh(0, 0, -10.f, windowWidth, windowHeight, "/textures/grass.png", objectProgramId, 0.1f, 0.1f);
     }
 
     public void windowSizeChanged() {
         camera.setScreenSize(window.getWidth(), window.getHeight());
+        hud.setScreenSize(window.getWidth(), window.getHeight());
     }
 
     private void initTextures() {
-        meshes.add(new Mesh((float)player.getX(), (float)player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
+        meshes.add(new Mesh((float) player.getX(), (float) player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
     }
 
     private void initShaders() {
         // create shader program
         objectProgramId = glCreateProgram();
-        if(objectProgramId == 0) {
+        if (objectProgramId == 0) {
             System.err.println("Could not create object shader program.");
             return;
         }
 
         // compile and link vertex shader
         objectVertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-        if(objectVertexShaderId == 0) {
+        if (objectVertexShaderId == 0) {
             System.err.println("Could not create object vertex shader.");
             return;
         }
         glShaderSource(objectVertexShaderId, loadFile("/shaders/objects/vertex.vs"));
         glCompileShader(objectVertexShaderId);
-        if(glGetShaderi(objectVertexShaderId, GL_COMPILE_STATUS) == 0) {
+        if (glGetShaderi(objectVertexShaderId, GL_COMPILE_STATUS) == 0) {
             System.err.println("Could not compile object vertex shader.");
             return;
         }
@@ -170,13 +178,13 @@ public class Game {
 
         // compile and link fragment shader
         objectFragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-        if(objectFragmentShaderId == 0) {
+        if (objectFragmentShaderId == 0) {
             System.err.println("Could not create object fragment shader.");
             return;
         }
         glShaderSource(objectFragmentShaderId, loadFile("/shaders/objects/fragment.fs"));
         glCompileShader(objectFragmentShaderId);
-        if(glGetShaderi(objectFragmentShaderId, GL_COMPILE_STATUS) == 0) {
+        if (glGetShaderi(objectFragmentShaderId, GL_COMPILE_STATUS) == 0) {
             System.err.println("Could not compile object fragment shader.");
             return;
         }
@@ -184,7 +192,7 @@ public class Game {
 
         // link shader program to window
         glLinkProgram(objectProgramId);
-        if(glGetProgrami(objectProgramId, GL_LINK_STATUS) == 0) {
+        if (glGetProgrami(objectProgramId, GL_LINK_STATUS) == 0) {
             System.err.println("Could not link object shader program.");
             return;
         }
@@ -195,26 +203,26 @@ public class Game {
 
         // validate the shader program
         glValidateProgram(objectProgramId);
-        if(glGetProgrami(objectProgramId, GL_VALIDATE_STATUS) == 0) {
+        if (glGetProgrami(objectProgramId, GL_VALIDATE_STATUS) == 0) {
             System.err.println("Warning validating object shader program.");
         }
 
 
         hudProgramId = glCreateProgram();
-        if(hudProgramId == 0) {
+        if (hudProgramId == 0) {
             System.err.println("Could not create HUD shader program.");
             return;
         }
 
         // compile and link vertex shader
         hudVertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-        if(hudVertexShaderId == 0) {
+        if (hudVertexShaderId == 0) {
             System.err.println("Could not create HUD vertex shader.");
             return;
         }
         glShaderSource(hudVertexShaderId, loadFile("/shaders/hud/vertex.vs"));
         glCompileShader(hudVertexShaderId);
-        if(glGetShaderi(hudVertexShaderId, GL_COMPILE_STATUS) == 0) {
+        if (glGetShaderi(hudVertexShaderId, GL_COMPILE_STATUS) == 0) {
             System.err.println("Could not compile HUD vertex shader.");
             return;
         }
@@ -222,13 +230,13 @@ public class Game {
 
         // compile and link fragment shader
         hudFragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-        if(hudFragmentShaderId == 0) {
+        if (hudFragmentShaderId == 0) {
             System.err.println("Could not create HUD fragment shader.");
             return;
         }
         glShaderSource(hudFragmentShaderId, loadFile("/shaders/hud/fragment.fs"));
         glCompileShader(hudFragmentShaderId);
-        if(glGetShaderi(hudFragmentShaderId, GL_COMPILE_STATUS) == 0) {
+        if (glGetShaderi(hudFragmentShaderId, GL_COMPILE_STATUS) == 0) {
             System.err.println("Could not compile HUD fragment shader.");
             return;
         }
@@ -236,7 +244,7 @@ public class Game {
 
         // link shader program to window
         glLinkProgram(hudProgramId);
-        if(glGetProgrami(hudProgramId, GL_LINK_STATUS) == 0) {
+        if (glGetProgrami(hudProgramId, GL_LINK_STATUS) == 0) {
             System.err.println("Could not link HUD shader program.");
             return;
         }
@@ -247,7 +255,7 @@ public class Game {
 
         // validate the shader program
         glValidateProgram(hudProgramId);
-        if(glGetProgrami(hudProgramId, GL_VALIDATE_STATUS) == 0) {
+        if (glGetProgrami(hudProgramId, GL_VALIDATE_STATUS) == 0) {
             System.err.println("Warning validating HUD shader program.");
         }
 
@@ -267,15 +275,13 @@ public class Game {
         float mod = 10;
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
-        meshes.get(0).setPosition((float)player.getX(), (float)player.getY(), 0);
+        meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
     }
 
 
-
-
     private void close() {
-        if(objectProgramId != 0) glDeleteProgram(objectProgramId);
+        if (objectProgramId != 0) glDeleteProgram(objectProgramId);
         meshes.forEach(Mesh::close);
         glfwFreeCallbacks(windowPointer);
         glfwDestroyWindow(windowPointer);
@@ -324,8 +330,9 @@ public class Game {
             case GLFW_KEY_X -> keys[5] = true;
         }
     }
+
     public void keyReleased(long window, int key) {
-        if(key == GLFW_KEY_ESCAPE) {
+        if (key == GLFW_KEY_ESCAPE) {
             close();
         }
         switch (key) {
@@ -337,13 +344,22 @@ public class Game {
             case GLFW_KEY_X -> keys[5] = false;
         }
     }
+
     public void mousePressed(long window, int button) {
 
     }
+
     public void mouseReleased(long window, int button) {
 
     }
 
+    /**
+     * Called whenever the mouse moves.
+     *
+     * @param window the pointer to the window
+     * @param x      the X position of the mouse, in pixels
+     * @param y      the Y position of the mouse, in pixels
+     */
     public void mouseMoved(long window, double x, double y) {
         hud.mouseMoved(x, y);
     }
@@ -357,8 +373,7 @@ public class Game {
 //            s.listen();
 //        });
 //        t.start();
-
-        Game g = new Game("172.20.10.3",5678);
+        Game g = new Game("127.0.0.1", 9000);
         g.init();
         g.run();
     }

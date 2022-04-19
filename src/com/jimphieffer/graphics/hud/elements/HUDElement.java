@@ -6,10 +6,11 @@ import com.jimphieffer.graphics.hud.FloatRectangle;
 public class HUDElement {
     public Mesh mesh;
     public FloatRectangle bounds;
+    protected int windowWidth;
+    protected int windowHeight;
+    protected double mouseX;
+    protected double mouseY;
 
-    public void hover() {
-
-    }
     public void mousePressed(int button) {
 
     }
@@ -22,13 +23,15 @@ public class HUDElement {
     public void keyReleased(int key) {
 
     }
-    public void selected() {
-
-    }
-    public void deselected() {
+    public void mouseMoved(double x, double y) {
 
     }
     public void render() {
         mesh.render();
+    }
+
+    public void setScreenSize(int width, int height) {
+        windowWidth = width;
+        windowHeight = height;
     }
 }

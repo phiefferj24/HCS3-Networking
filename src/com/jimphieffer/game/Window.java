@@ -50,7 +50,6 @@ public class Window {
         glfwSwapInterval(1);
         glfwShowWindow(window);
         glfwSetWindowSizeCallback(window, (window, newWidth, newHeight) -> setWindowSize(newWidth, newHeight));
-
         GL.createCapabilities();
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);

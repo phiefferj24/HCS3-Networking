@@ -21,7 +21,7 @@ public class Animal extends Sprite {
         double left, double top, int width, int height, String image, int programID,
                   double velocityX, double velocityY, String username
          */
-        super(x, y,width,height,"/textures/wall.png",programID);
+        super(x, y,width,height,"/textures/textureMissing.png",programID);
         health  = 15;
         vx = 0.0;
         vy=0.0;
@@ -74,6 +74,8 @@ public class Animal extends Sprite {
         int theta = (int) (System.currentTimeMillis()%1000);
         double tempVX = 3 * Math.sin(theta / Math.PI);
 
+        //movement on animals
+        //
 
         //there is rotate function
 
@@ -103,9 +105,10 @@ public class Animal extends Sprite {
         setY(getY()+vy);
     }
 
-   // public String toString()
-    //{
+    public String toString()
+    {
+        return "null";// I FARTED AND POOPIED ALL OVER THE GROUNDDDDD FARTTTTTT POOOOPPPYYY FART AND FART AND POOP
         //TODO: TIKO IS THIS USERNAME CHANGE OKAY ON TOSTRING WHERE DO YOU USE THIS
         //return "[" + username + ";" + x +";" + y + ";" + width + ";" + height + ";" + "/textures/wall.png" + "]";
-    //}
+    }
 }
