@@ -8,29 +8,28 @@ import java.util.Random;
 public class Animal extends Sprite {
     private double vx;
     private double vy;
+    private double x;
+    private double y;
     private int health;
     private String username;
     private double angle;
+    private String image;
 
-
-    public Animal(double x, double y, int width, int height,int programID)
+    //TODO: change change animal to static and extend it
+    public Animal(String image, double x, double y, int width, int height, double angle, int health,  int programID)
     {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
         //of all sprites and then compute which one
-        /*
-        double left, double top, int width, int height, String image, int programID,
-                  double velocityX, double velocityY, String username
-         */
-        super(x, y,width,height,"/textures/textureMissing.png",programID);
-        health  = 15;
+
+        super(x, y,width,height,image,programID);
+        this.image=image;
+        this.health  = health;
+        this.x=x;
+        this.y=y;
         vx = 0.0;
         vy=0.0;
-        angle = 0.0;
-        Random r = new Random();
-        int low = 1;
-        int high = 10000000;
-        int result = r.nextInt(high-low) + low;
-        username = "ANIMAL" + this.hashCode();
+        this.angle=angle;
+        username = "ANIMAL" + this.hashCode();//change animal to NON-STATIC
 
     }
 
@@ -51,9 +50,12 @@ public class Animal extends Sprite {
         return vx;
     }
 
-    public void setVX(double velocityX)
-    {
+    public void setVX(double velocityX) {
         vx = velocityX;
+    }
+    public void setAngle(double change)
+    {
+        angle=change;
     }
 
     public int getHealth(){return health;}
@@ -72,14 +74,11 @@ public class Animal extends Sprite {
 
         //System.out.println(theta);
         int theta = (int) (System.currentTimeMillis()%1000);
-        double tempVX = 3 * Math.sin(theta / Math.PI);
-
-        //movement on animals
-        //
-
-        //there is rotate function
-
-        //make this use the function to get the y
+        double tempVX = theta;
+        double tempVY = 3 * Math.sin(theta / Math.PI);
+        vx=tempVX;
+        vy=tempVY;
+        /*
         if(vx<0)
             vx+=1;
         if(vx>0)
@@ -93,6 +92,8 @@ public class Animal extends Sprite {
         if(Math.abs(vy)<.3)
             vy = 0;
 
+         */
+
 //        if (getLeft() < -game.getWorldWidth())
 //            vx = Math.abs(vx);
 //        if (getLeft() + getWidth() > game.getWorldWidth())
@@ -105,10 +106,7 @@ public class Animal extends Sprite {
         setY(getY()+vy);
     }
 
-    public String toString()
-    {
-        return "null";// I FARTED AND POOPIED ALL OVER THE GROUNDDDDD FARTTTTTT POOOOPPPYYY FART AND FART AND POOP
-        //TODO: TIKO IS THIS USERNAME CHANGE OKAY ON TOSTRING WHERE DO YOU USE THIS
-        //return "[" + username + ";" + x +";" + y + ";" + width + ";" + height + ";" + "/textures/wall.png" + "]";
+    public String toString(){
+        return ("[" + username + ";" + x +";" + y + ";"  + angle + ";" + image + ";" + vx + ";" + vy + ";" + health + "]");
     }
 }

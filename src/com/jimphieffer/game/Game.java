@@ -50,7 +50,7 @@ public class Game {
 
     private ArrayList<Mesh> meshes;
     private HUD hud;
-
+    private ArrayList<Sprite> sprites;
     private boolean[] keys = new boolean[6];
 
     private Camera camera;

@@ -10,19 +10,20 @@ public class Wall extends Sprite {
     private int width;
     private int height;
     private String username;
-    public Wall(double x, double y, int width, int height,int programID)
+    private Double angle;
+//TODO:CHANGE WALL WITH NON-STATIC AND EXTEND THIS
+    public Wall(double x, double y, int width, int height, double angle, int programID)
     {
         super(x, y,width,height,"/textures/wall.png",programID );
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        Random r = new Random();
-        int low = 1;
-        int high = 10000000;
-        int result = r.nextInt(high-low) + low;
-        username = "WALL" + result;
+        this.angle=angle;
+        username = "WALL" + this.hashCode();
     }
+
+    //public String getType() { return type;}
 
     public String getUsername()
     {
@@ -32,7 +33,7 @@ public class Wall extends Sprite {
     public String toString()
     {
         //TODO: TIKO IS THIS USERNAME CHANGE OKAY ON TOSTRING WHERE DO YOU USE THIS
-        return "[" + username + ";" + x +";" + y + ";" + width + ";" + height + ";" + "/textures/wall.png" + "]";
+      return "gay";
     }
 
 }
