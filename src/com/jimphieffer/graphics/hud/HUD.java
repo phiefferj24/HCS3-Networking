@@ -14,7 +14,7 @@ public class HUD {
     private int windowHeight;
     public HUD(int programId, int windowWidth, int windowHeight) {
         elements = new ArrayList<>();
-        elements.add(new HUDButton(new Mesh(0, 0, 0, 1.f, 0.1f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/156.f), new Mesh(0, 0, 0, 1.f, 0.1f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/156.f), windowWidth, windowHeight));
+        elements.add(new HUDButton(new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/256.f), new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/256.f), windowWidth, windowHeight));
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
     }
@@ -30,5 +30,17 @@ public class HUD {
         windowWidth = width;
         windowHeight = height;
         elements.forEach(hudElement -> hudElement.setScreenSize(width, height));
+    }
+    public void mousePressed(int button) {
+        elements.forEach(hudElement -> hudElement.mousePressed(button));
+    }
+    public void mouseReleased(int button) {
+        elements.forEach(hudElement -> hudElement.mouseReleased(button));
+    }
+    public void keyPressed(int key) {
+        elements.forEach(hudElement -> hudElement.keyPressed(key));
+    }
+    public void keyReleased(int key) {
+        elements.forEach(hudElement -> hudElement.keyReleased(key));
     }
 }
