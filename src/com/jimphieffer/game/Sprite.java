@@ -11,11 +11,13 @@ public class Sprite
     private double y;   //the y-coordinate of the top edge of the sprite
     private int width;
     private int height;
+    private int programID;
     private String image;
     public Mesh mesh;
 
     public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, int programID)
     {
+        this.programID = programID;
         x = theLeft;
         y = theTop;
         width = theWidth;
@@ -155,6 +157,11 @@ public class Sprite
         return image;
     }
 
+    public int getProgramID()
+    {
+        return programID;
+    }
+
     public void setImage(String i)
     {
         image = i;
@@ -167,6 +174,23 @@ public class Sprite
 
     public String toString()
     {
-        return "[" + "SPRITE" +";" + x +";" + y + ";" + width + ";" + height + ";" + image + "]";
+        return "[" + "SPRITE" +";" + x +";" + y + ";" + width + ";" + height + ";" + image + ";" + programID + "]";
+    }
+
+    public static Sprite stringToSprite(String s)
+    {
+        s= s.substring(1,s.length()-1);
+        String[] onGuh = s.split(";");
+        switch(onGuh[0])
+        {
+            case "PLAYER": return new Player(parseDouble(onGuh[1]),parseDouble(onGuh[2]),parseInt(onGuh[3]),parseInt(onGuh[4]),onGuh[5],
+                                            parseInt(onGuh[6]),parseDouble(onGuh[7]),parseDouble(onGuh[8]),onGuh[9]);
+            case "ANIMAL": return null; //new Animal(onGuh[1],parseDouble(onGuh[1]),parseDouble(onGuh[2]),parseInt(onGuh[3]),parseInt(onGuh[4],onGuh[5], parseInt(onGuh[6])))
+            case "WALL": return null; // TODO
+            default: return new Sprite(parseDouble(onGuh[1]),parseDouble(onGuh[2]),parseInt(onGuh[3]),parseInt(onGuh[4]),onGuh[5], parseInt(onGuh[6]));
+    
+        }
+
+        //[" + ID + ";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";"+ getProgramID() + "]";
     }
 }

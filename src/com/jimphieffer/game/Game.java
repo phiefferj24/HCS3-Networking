@@ -106,6 +106,10 @@ public class Game {
             player.setVX(Double.parseDouble(loc[2]));
             player.setVY(Double.parseDouble(loc[3]));
         }
+        if (Message.getType(message).equals(Message.MessageType.SPRITE))
+        {
+            //todo gets all sprites as string "[sprite.toString();sprite.toString;...]"
+        }
     }
 
 

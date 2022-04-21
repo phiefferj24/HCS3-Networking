@@ -91,5 +91,10 @@ public class Player extends Sprite{
     }
 
 
+    public String toString()
+    {
+        return "[" + "SPRITE" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getProgramID() + getVX() + ";" + getVY() + "]";
+    }
+
 
 }
