@@ -193,4 +193,15 @@ public class Sprite
 
         //[" + ID + ";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";"+ getProgramID() + "]";
     }
+
+    public static Sprite stringToSprite(String s)
+    {
+        s= s.substring(1,s.length()-1);
+        String[] onGuh = s.split(";");
+        switch(onGuh[0])
+        {
+            default: return new Sprite(Double.parseDouble(onGuh[1]),Double.parseDouble(onGuh[2]),Integer.parseInt(onGuh[3]),Integer.parseInt(onGuh[4]),onGuh[5], 0);
+
+        }
+    }
 }
