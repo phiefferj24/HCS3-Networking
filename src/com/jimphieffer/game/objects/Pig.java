@@ -1,4 +1,4 @@
 package com.jimphieffer.game.objects;
 
-public class BigBlackBrothaBallsHD {
+public class Pig {
 }

@@ -3,9 +3,7 @@ package com.jimphieffer.game.objects;
 import com.jimphieffer.game.Game;
 import com.jimphieffer.game.Sprite;
 
-import java.util.Random;
-
-public class Animal extends Sprite {
+public class NonStatic extends Sprite {
     private double vx;
     private double vy;
     private double x;
@@ -16,7 +14,7 @@ public class Animal extends Sprite {
     private String image;
 
     //TODO: change change animal to static and extend it
-    public Animal(String image, double x, double y, int width, int height, double angle, int health,  int programID)
+    public NonStatic(String image, double x, double y, int width, int height, double angle, int health,  int programID)
     {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
         //of all sprites and then compute which one
@@ -29,7 +27,7 @@ public class Animal extends Sprite {
         vx = 0.0;
         vy=0.0;
         this.angle=angle;
-        username = "ANIMAL" + this.hashCode();//change animal to NON-STATIC
+        username = "NonStatic" + this.hashCode();//change animal to NON-STATIC
 
     }
 
