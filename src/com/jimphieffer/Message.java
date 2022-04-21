@@ -19,6 +19,7 @@ public class Message {
         SPRITE,
         DISCONNECT,
         COMMAND,
+        SPRITE,
         USERNAME,
         KEY_PRESSED,
         KEY_RELEASED

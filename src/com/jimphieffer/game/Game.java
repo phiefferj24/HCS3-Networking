@@ -333,6 +333,7 @@ public class Game {
             case GLFW_KEY_Z -> keys[4] = true;
             case GLFW_KEY_X -> keys[5] = true;
         }
+        hud.keyPressed(key);
     }
 
     public void keyReleased(long window, int key) {
@@ -347,14 +348,15 @@ public class Game {
             case GLFW_KEY_Z -> keys[4] = false;
             case GLFW_KEY_X -> keys[5] = false;
         }
+        hud.keyReleased(key);
     }
 
     public void mousePressed(long window, int button) {
-
+        hud.mousePressed(button);
     }
 
     public void mouseReleased(long window, int button) {
-
+        hud.mouseReleased(button);
     }
 
     /**
