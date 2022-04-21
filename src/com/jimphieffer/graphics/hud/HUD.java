@@ -14,7 +14,7 @@ public class HUD {
     private int windowHeight;
     public HUD(int programId, int windowWidth, int windowHeight) {
         elements = new ArrayList<>();
-        elements.add(new HUDButton(new Mesh(0, 0, 0, 0.1f, 0.1f, "/textures/edition.png", programId), 0, 0, 0, 0, windowWidth, windowHeight));
+        elements.add(new HUDButton(new Mesh(0, 0, 0, 1.f, 0.1f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/156.f), new Mesh(0, 0, 0, 1.f, 0.1f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/156.f), windowWidth, windowHeight));
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
     }

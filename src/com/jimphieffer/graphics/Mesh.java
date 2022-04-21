@@ -9,6 +9,10 @@ import static org.lwjgl.opengl.GL30.*;
 import org.joml.*;
 
 public class Mesh {
+    public float x;
+    public float y;
+    public float width;
+    public float height;
     private final int vvboId;
     private final int evboId;
     private final int tvboId;
@@ -23,7 +27,14 @@ public class Mesh {
     public Mesh(float x, float y, float z, float width, float height, String texture, int programId, float textureScaleX, float textureScaleY) {
         this(new float[] {-width, -height, -1.f, width, -height, -1.f, -width, height, -1.f, width, height, -1.f}, new int[] {0, 1, 2, 1, 3, 2}, new float[] {0, 1/textureScaleY, 1/textureScaleX, 1/textureScaleY, 0, 0, 1/textureScaleX, 0}, new Texture(texture), x, y, z, programId);
     }
+    public Mesh(float x, float y, float z, float width, float height, String texture, int programId, float texX1, float texY1, float texX2, float texY2) {
+        this(new float[] {-width, -height, -1.f, width, -height, -1.f, -width, height, -1.f, width, height, -1.f}, new int[] {0, 1, 2, 1, 3, 2}, new float[] {texX1, texY2, texX2, texY2, texX1, texY1, texX2, texY1}, new Texture(texture), x, y, z, programId);
+    }
     public Mesh(float[] vertices, int[] indices, float[] textureCoordinates, Texture texture, float x, float y, float z, int programId) {
+        this.x = x;
+        this.y = y;
+        this.width = vertices[3];
+        this.height = -vertices[4];
         this.programId = programId;
         vertexCount = indices.length;
         this.texture = texture;

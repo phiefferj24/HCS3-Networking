@@ -5,19 +5,22 @@ import com.jimphieffer.graphics.hud.FloatRectangle;
 
 
 public class HUDButton extends HUDElement {
-    public HUDButton(Mesh mesh, float x1, float y1, float x2, float y2, int windowWidth, int windowHeight) {
+    private boolean isHovered;
+    private Mesh hoverMesh;
+    public HUDButton(Mesh mesh, Mesh hoverMesh, int windowWidth, int windowHeight) {
         super.mesh = mesh;
-        super.bounds = new FloatRectangle(x1, y1, x2, y2);
+        this.hoverMesh = hoverMesh;
+        super.bounds = new FloatRectangle(mesh.x - mesh.width, mesh.y - mesh.height, mesh.x + mesh.width, mesh.y + mesh.height);
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
     }
     public void mouseMoved(double x, double y) {
-        System.out.println(x + " " + y + " is stupid");
         mouseX = x;
         mouseY = y;
-        System.out.println(mouseX + " " + mouseY);
-        if (bounds.contains((float)mouseX, (float)mouseY)) {
-            System.out.println("Mouse is in bounds");
-        }
+        isHovered = bounds.contains((float)x, (float)y);
+    }
+    public void render() {
+        if(isHovered) hoverMesh.render();
+        else mesh.render();
     }
 }
