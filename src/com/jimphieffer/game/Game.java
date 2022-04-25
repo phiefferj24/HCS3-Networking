@@ -127,8 +127,10 @@ public class Game {
 
         initShaders();
 
+        this.sprites = new ArrayList<Sprite>();
+        //(String image, double x, double y, int width, int height, double angle, int health,  int programID
+        sprites.add(new NonStatic("junk",0.05, 0.05, 100, 100, 30, 15, objectProgramId));
 
-        boolean foundAnimal;
 
        // for(int x=0; x<sprites.size(); x++)
        // {//double x, double y, int width, int height,int programID

@@ -177,6 +177,7 @@ public class Sprite
         return "[" + "SPRITE" +";" + x +";" + y + ";" + width + ";" + height + ";" + image + ";" + programID + "]";
     }
 
+    /*
     public static Sprite stringToSprite(String s)
     {
         s= s.substring(1,s.length()-1);
@@ -193,6 +194,8 @@ public class Sprite
 
         //[" + ID + ";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";"+ getProgramID() + "]";
     }
+
+     */
 
     public static Sprite stringToSprite(String s)
     {

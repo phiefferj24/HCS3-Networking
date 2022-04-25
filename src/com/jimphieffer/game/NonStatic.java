@@ -1,4 +1,4 @@
-package com.jimphieffer.game.objects;
+package com.jimphieffer.game;
 
 import com.jimphieffer.game.Game;
 import com.jimphieffer.game.Sprite;
