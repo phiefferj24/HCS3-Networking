@@ -40,7 +40,7 @@ public class ClientThread extends Thread{
 
     }
     public void run() {
-        soundtrack.add(new File("tetris.wav"));
+        //soundtrack.add(new File("tetris.wav"));
         while(true) {
             try {
                // play("tetris.wav",true);

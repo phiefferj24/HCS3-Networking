@@ -14,6 +14,7 @@ public class Sprite
     private int programID;
     private String image;
     public Mesh mesh;
+    private double rotationDegrees;
 
     public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, int programID)
     {
@@ -166,6 +167,10 @@ public class Sprite
     {
         image = i;
     }
+
+    public double getRotation(){ return rotationDegrees; }
+
+    public void setRotation(double newRotation){ rotationDegrees=newRotation; }
 
     public void step(Game game)
     {

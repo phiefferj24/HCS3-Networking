@@ -91,6 +91,20 @@ public class Game {
             while (glfwGetTime() - lastRenderTime < secondsPerFrame) ;
             //System.out.println("FPS: " + (1/sinceRender));
         }
+        //
+        //Player dupe=player.set(VX)
+        //ct.send(Message.encode());
+
+        String bruh = "";
+        for (Sprite s: sprites)
+        {
+          //  s.step(this);
+            bruh+=s.toString() + ",";
+        }
+        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+
+
+
         close();
         System.exit(0);
     }
@@ -397,6 +411,8 @@ public class Game {
      * @param y      the Y position of the mouse, in pixels
      */
     public void mouseMoved(long window, double x, double y) {
+        player.setRotation(Math.atan2(y,x)*(180/Math.PI));
+        //TODO: handle rotation
         hud.mouseMoved(x, y);
     }
 
