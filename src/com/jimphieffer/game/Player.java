@@ -88,6 +88,8 @@ public class Player extends Sprite{
 //            vy = -Math.abs(vy);
         setX(getX()+vx);
         setY(getY()+vy);
+
+        super.step(game);
     }
 
 

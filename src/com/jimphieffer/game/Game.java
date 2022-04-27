@@ -317,6 +317,10 @@ public class Game {
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
         meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
+        for(Sprite s: nonStaticSprites)
+            s.step(this);
+
+        player.step(this);
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
     }
 
@@ -364,8 +368,9 @@ public class Game {
     public void keyPressed(long window, int key) {
         if(key==87)
         {
-            System.out.println("imgay");
+            System.out.println("imgay"); //this happens
            player.setVY(player.getVY()+1);
+           //Tiko we need that thing to step bruh we cant do anything if we cant just send string
         }
         if(key==83)
        {

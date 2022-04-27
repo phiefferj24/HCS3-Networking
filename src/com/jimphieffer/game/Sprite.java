@@ -174,7 +174,7 @@ public class Sprite
 
     public void step(Game game)
     {
-        //do NOT insert any code here
+        mesh.setPosition((float)x, (float)y,0);
     }
 
     public String toString()
