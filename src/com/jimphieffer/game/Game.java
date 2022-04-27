@@ -1,22 +1,21 @@
 package com.jimphieffer.game;
 
 import com.jimphieffer.Message;
+import com.jimphieffer.game.objects.NonStatic;
 import com.jimphieffer.graphics.Mesh;
-import com.jimphieffer.graphics.Texture;
 import com.jimphieffer.graphics.Uniforms;
 import com.jimphieffer.graphics.hud.HUD;
 import com.jimphieffer.network.client.ClientThread;
-import com.jimphieffer.network.server.Server;
-import org.joml.Matrix4f;
 import org.joml.Vector4f;
-import org.lwjgl.system.Platform;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.lang.String;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
+
 
 import static com.jimphieffer.utils.FileUtilities.*;
 
@@ -51,6 +50,8 @@ public class Game {
     private ArrayList<Mesh> meshes;
     private HUD hud;
     private ArrayList<Sprite> sprites;
+    private ArrayList<Sprite> staticSprites;
+    private ArrayList<Sprite> nonStaticSprites;
     private boolean[] keys = new boolean[6];
 
     private Camera camera;
@@ -94,6 +95,20 @@ public class Game {
         System.exit(0);
     }
 
+    public static ArrayList<String> splitMessage(String message){
+        ArrayList<String> list=new ArrayList<>();
+        int last=0;
+        for(int x=0; x<message.length(); x++)
+        {
+            if(message.charAt(x) == ';')
+            {
+                list.add(message.substring(last,x));
+                last=x+1;
+            }
+        }
+        return list;
+    }
+
     public void onMessage(String message) {
 
         System.out.println("message to game: " + message);
@@ -108,7 +123,11 @@ public class Game {
         }
         if (Message.getType(message).equals(Message.MessageType.SPRITE))
         {
-            //todo gets all sprites as string "[sprite.toString();sprite.toString;...]"
+
+            for(String s: message.split(","))
+            {
+                sprites.add(Sprite.stringToSprite(s));
+            }
         }
     }
 
@@ -127,17 +146,19 @@ public class Game {
 
         initShaders();
 
-        this.sprites = new ArrayList<Sprite>();
+        this.staticSprites=new ArrayList<Sprite>();
+        this.nonStaticSprites=new ArrayList<Sprite>();
+
         //(String image, double x, double y, int width, int height, double angle, int health,  int programID
-        sprites.add(new NonStatic("junk",0.05, 0.05, 100, 100, 30, 15, objectProgramId));
 
 
-       // for(int x=0; x<sprites.size(); x++)
-       // {//double x, double y, int width, int height,int programID
-            //if(sprites.getType)
-           // sprites.add(new Animal(Math.random()*windowHeight,Math.random()*windowWidth,50, 50,glCreateProgram() ));
 
-       // }
+        // for(int x=0; x<sprites.size(); x++)
+        // {//double x, double y, int width, int height,int programID
+        //if(sprites.getType)
+        // sprites.add(new Animal(Math.random()*windowHeight,Math.random()*windowWidth,50, 50,glCreateProgram() ));
+
+        // }
 
         player = new Player(0, 0, 100, 100,
                 "/textures/player.png", objectProgramId, 0, 0, username);
@@ -327,14 +348,24 @@ public class Game {
 
 
     public void keyPressed(long window, int key) {
-        switch (key) {
-            case GLFW_KEY_UP -> keys[0] = true;
-            case GLFW_KEY_DOWN -> keys[1] = true;
-            case GLFW_KEY_LEFT -> keys[2] = true;
-            case GLFW_KEY_RIGHT -> keys[3] = true;
-            case GLFW_KEY_Z -> keys[4] = true;
-            case GLFW_KEY_X -> keys[5] = true;
+        if(key==87)
+        {
+            System.out.println("imgay");
+           player.setVY(player.getVY()+1);
         }
+        if(key==83)
+       {
+           player.setVX(player.getVY()-1);
+        }
+        if(key==65)
+        {
+            player.setVX(player.getVX()-1);
+        }
+       if(key==68)
+        {
+           player.setVX(player.getVX()+1);
+        }
+
         hud.keyPressed(key);
     }
 
@@ -342,14 +373,7 @@ public class Game {
         if (key == GLFW_KEY_ESCAPE) {
             close();
         }
-        switch (key) {
-            case GLFW_KEY_UP -> keys[0] = false;
-            case GLFW_KEY_DOWN -> keys[1] = false;
-            case GLFW_KEY_LEFT -> keys[2] = false;
-            case GLFW_KEY_RIGHT -> keys[3] = false;
-            case GLFW_KEY_Z -> keys[4] = false;
-            case GLFW_KEY_X -> keys[5] = false;
-        }
+        player.setVX(0);
         hud.keyReleased(key);
     }
 
@@ -359,6 +383,10 @@ public class Game {
 
     public void mouseReleased(long window, int button) {
         hud.mouseReleased(button);
+    }
+
+    public void charTyped(long window, char character) {
+        hud.charTyped(character);
     }
 
     /**

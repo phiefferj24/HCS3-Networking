@@ -15,7 +15,7 @@ public class Player extends Sprite{
         vx = velocityX;
         vy = velocityY;
         health  = 15;
-       username = username + this.hashCode();
+        username = username + this.hashCode();
 
     }
 
@@ -70,24 +70,8 @@ public class Player extends Sprite{
 //            vy = Math.abs(vy);
 //        if (getTop() + getHeight() >game.getWorldHeight())
 //            vy = -Math.abs(vy);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         setX(getX()+vx);
         setY(getY()+vy);
-
-
     }
 
 
