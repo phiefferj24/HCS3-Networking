@@ -1,5 +1,8 @@
 package com.jimphieffer.game.objects;
 
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
+
 public class Pig extends NonStatic{
 
     public Pig(String image, double x, double y, double vx, double vy, int width, int height, double angle, int health,  int programID) {

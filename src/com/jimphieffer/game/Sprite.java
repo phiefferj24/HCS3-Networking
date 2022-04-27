@@ -205,11 +205,17 @@ public class Sprite
     public static Sprite stringToSprite(String s)
     {
         s= s.substring(1,s.length()-1);
-        String[] onGuh = s.split(";");
-        switch(onGuh[0])
+        String[] g = s.split(";");
+        switch(g[0])
         {
-            default: return new Sprite(Double.parseDouble(onGuh[1]),Double.parseDouble(onGuh[2]),Integer.parseInt(onGuh[3]),Integer.parseInt(onGuh[4]),onGuh[5], 0);
+            case "PLAYER" : return new Player(g[1],g[2],g[3],g[4],g[5],g[6],g[7],g[8],g[9]);
+            //case "PIG" : return new Pig(g[1],g[2],g[3],g[4]);
+            default: return new Sprite(Double.parseDouble(g[1]),parseDouble(g[2]),Integer.parseInt(g[3]),Integer.parseInt(g[4]),g[5], 0);
 
         }
     }
 }
+
+
+
+//image, x, y, vx, vy, width, height, angle, health, programID
