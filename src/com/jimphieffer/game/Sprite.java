@@ -169,6 +169,7 @@ public class Sprite
 
     public void step(Game game)
     {
+        mesh.translate((float) x, (float) y, 0);
         //do NOT insert any code here
     }
 

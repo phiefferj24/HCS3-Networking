@@ -65,7 +65,7 @@ public class Player extends Sprite{
 
     public void step(Game game)
     {
-
+       /*
         if(vx<0)
             vx+=1;
         if(vx>0)
@@ -100,7 +100,7 @@ public class Player extends Sprite{
 
 
 
-
+        */
 
         setX(getX()+vx);
         setY(getY()+vy);

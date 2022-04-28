@@ -94,7 +94,7 @@ public class Game {
         //
         //Player dupe=player.set(VX)
         //ct.send(Message.encode());
-
+        /*
         String bruh = "";
         for (Sprite s: sprites)
         {
@@ -102,7 +102,7 @@ public class Game {
             bruh+=s.toString() + ",";
         }
         ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-
+        */
 
 
         close();
@@ -316,10 +316,14 @@ public class Game {
         float mod = 10;
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
-        meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
-        for(Sprite s: nonStaticSprites)
+       // meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
+        for(Sprite s: nonStaticSprites) {
             s.step(this);
-
+        }
+        //if(player.get(VX)!=1.6) {
+            player.setVX(1.6);
+        //}
+        System.out.println(player.getVX());
         player.step(this);
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
     }
@@ -368,7 +372,7 @@ public class Game {
     public void keyPressed(long window, int key) {
         if(key==87)
         {
-            System.out.println("imgay"); //this happens
+            System.out.println("w was pressed"); //this happens
            player.setVY(player.getVY()+1);
            //Tiko we need that thing to step bruh we cant do anything if we cant just send string
         }
