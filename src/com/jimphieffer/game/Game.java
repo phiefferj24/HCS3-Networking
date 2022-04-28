@@ -137,11 +137,11 @@ public class Game {
         }
         if (Message.getType(message).equals(Message.MessageType.SPRITE))
         {
-            sprites.clear();
-            message = Message.decode(message);
-            String[] sprs = message.split(",");
-            for(String s: sprs)
+
+            for(String s: message.split(","))
+            {
                 sprites.add(Sprite.stringToSprite(s));
+            }
         }
     }
 
@@ -174,8 +174,8 @@ public class Game {
 
         // }
 
-        player = new Player(0, 0, 100, 100,
-                "/textures/player.png", objectProgramId, 0, 0, username);
+
+        player = new Player(0, 0, 100, 100, "/textures/player.png", null, objectProgramId, 0, 0, username);
 
         initTextures();
 
