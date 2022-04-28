@@ -52,6 +52,7 @@ public class Game {
     private ArrayList<Sprite> sprites;
     private ArrayList<Sprite> staticSprites;
     private ArrayList<Sprite> nonStaticSprites;
+    private boolean[] keys = new boolean[6];
 
     private Camera camera;
 
@@ -93,7 +94,7 @@ public class Game {
         //
         //Player dupe=player.set(VX)
         //ct.send(Message.encode());
-
+        /*
         String bruh = "";
         for (Sprite s: sprites)
         {
@@ -101,7 +102,7 @@ public class Game {
             bruh+=s.toString() + ",";
         }
         ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-
+        */
 
 
         close();
@@ -182,7 +183,7 @@ public class Game {
 
         hud = new HUD(hudProgramId, window.getWidth(), window.getHeight());
 
-        background = new Mesh(0, 0, 10.f, windowWidth, windowHeight, "/textures/grass.png", objectProgramId, 0.1f, 0.1f);
+        background = new Mesh(0, 0, -10.f, windowWidth, windowHeight, "/textures/grass.png", objectProgramId, 0.1f, 0.1f);
     }
 
     public void windowSizeChanged() {
@@ -191,7 +192,7 @@ public class Game {
     }
 
     private void initTextures() {
-        //meshes.add(new Mesh((float) player.getX(), (float) player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
+        meshes.add(new Mesh((float) player.getX(), (float) player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
     }
 
     private void initShaders() {
@@ -306,17 +307,23 @@ public class Game {
         Uniforms.createUniform("color", objectProgramId);
         Uniforms.createUniform("texture_sampler", hudProgramId);
         Uniforms.createUniform("positionMatrix", hudProgramId);
-        Uniforms.createUniform("projectionMatrix", hudProgramId);
         Uniforms.createUniform("color", hudProgramId);
     }
 
     private void tick(double deltaTime) {
 
         //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
-        //meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 5);
-        for(Sprite s: nonStaticSprites)
+        float mod = 10;
+        int dirx = keys[0] ? 1 : -1;
+        int diry = keys[3] ? 1 : -1;
+       // meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
+        for(Sprite s: nonStaticSprites) {
             s.step(this);
-
+        }
+        //if(player.get(VX)!=1.6) {
+            player.setVX(1.6);
+        //}
+        System.out.println(player.getVX());
         player.step(this);
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
     }
@@ -335,8 +342,6 @@ public class Game {
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-
-
         glUseProgram(objectProgramId);
         Uniforms.setUniform("texture_sampler", 0, objectProgramId);
         Uniforms.setUniform("projectionMatrix", camera.projectionMatrix, objectProgramId);
@@ -346,14 +351,13 @@ public class Game {
 
         player.mesh.render();
 
-        //meshes.forEach(Mesh::render);
-
+        meshes.forEach(Mesh::render);
 
         glUseProgram(hudProgramId);
         Uniforms.setUniform("texture_sampler", 0, hudProgramId);
-        Uniforms.setUniform("projectionMatrix", hud.camera.projectionMatrix, hudProgramId);
         Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
         hud.render();
+
         glUseProgram(0);
 
         glfwSwapBuffers(windowPointer);
@@ -368,7 +372,7 @@ public class Game {
     public void keyPressed(long window, int key) {
         if(key==87)
         {
-            System.out.println("imgay"); //this happens
+            System.out.println("w was pressed"); //this happens
            player.setVY(player.getVY()+1);
            //Tiko we need that thing to step bruh we cant do anything if we cant just send string
         }
@@ -416,7 +420,7 @@ public class Game {
      * @param y      the Y position of the mouse, in pixels
      */
     public void mouseMoved(long window, double x, double y) {
-        player.setRotation(Math.atan2(y,x)*(180/Math.PI));
+        //player.setRotation(Math.atan2(y,x)*(180/Math.PI));
         //TODO: handle rotation
         hud.mouseMoved(x, y);
     }

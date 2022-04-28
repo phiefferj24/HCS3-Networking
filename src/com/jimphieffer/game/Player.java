@@ -1,5 +1,8 @@
 package com.jimphieffer.game;
 
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
+
 
 import static java.lang.Double.*;
 import static java.lang.Integer.*;
@@ -20,8 +23,7 @@ public class Player extends Sprite{
         vx = velocityX;
         vy = velocityY;
         health  = 15;
-        username = username + this.hashCode();
-
+       this.username = username + this.hashCode();
     }
 
     public Player(String x, String y, String width, String height, String image, String programID,
@@ -31,7 +33,7 @@ public class Player extends Sprite{
         vx = parseDouble(velocityX);
         vy = parseDouble(velocityY);
         health  = 15;
-        username = username + this.hashCode();
+        this.username = username + this.hashCode();
 
     }
 
@@ -63,7 +65,7 @@ public class Player extends Sprite{
 
     public void step(Game game)
     {
-
+       /*
         if(vx<0)
             vx+=1;
         if(vx>0)
@@ -86,6 +88,20 @@ public class Player extends Sprite{
 //            vy = Math.abs(vy);
 //        if (getTop() + getHeight() >game.getWorldHeight())
 //            vy = -Math.abs(vy);
+
+
+
+
+
+
+
+
+
+
+
+
+        */
+
         setX(getX()+vx);
         setY(getY()+vy);
 
@@ -95,8 +111,7 @@ public class Player extends Sprite{
 
     public String toString()
     {
-        return "[" + "PLAYER" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getProgramID() + getVX() + ";" + getVY() + ";" + getUsername() +"]";
+        return "[" + "PLAYER" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getProgramID()+ ";" + getVX() + ";" + getVY() + ";" + username;
     }
-
 
 }

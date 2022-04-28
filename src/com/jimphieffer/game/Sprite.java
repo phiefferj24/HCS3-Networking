@@ -14,7 +14,6 @@ public class Sprite
     private int programID;
     private String image;
     public Mesh mesh;
-    private double rotationDegrees;
 
     public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, int programID)
     {
@@ -168,13 +167,10 @@ public class Sprite
         image = i;
     }
 
-    public double getRotation(){ return rotationDegrees; }
-
-    public void setRotation(double newRotation){ rotationDegrees=newRotation; }
-
     public void step(Game game)
     {
-        mesh.setPosition((float)x, (float)y,0);
+        mesh.translate((float) x, (float) y, 0);
+        //do NOT insert any code here
     }
 
     public String toString()
@@ -205,17 +201,12 @@ public class Sprite
     public static Sprite stringToSprite(String s)
     {
         s= s.substring(1,s.length()-1);
-        String[] g = s.split(";");
-        switch(g[0])
+        String[] onGuh = s.split(";");
+        switch(onGuh[0])
         {
-            case "PLAYER" : return new Player(g[1],g[2],g[3],g[4],g[5],g[6],g[7],g[8],g[9]);
-            //case "PIG" : return new Pig(g[1],g[2],g[3],g[4]);
-            default: return new Sprite(Double.parseDouble(g[1]),parseDouble(g[2]),Integer.parseInt(g[3]),Integer.parseInt(g[4]),g[5], 0);
+            case "PLAYER": return new Player(onGuh[1],onGuh[2],onGuh[3],onGuh[4],onGuh[5],onGuh[6],onGuh[7],onGuh[8], onGuh[9]);
+            default: return new Sprite(Double.parseDouble(onGuh[1]),Double.parseDouble(onGuh[2]),Integer.parseInt(onGuh[3]),Integer.parseInt(onGuh[4]),onGuh[5], 0);
 
         }
     }
 }
-
-
-
-//image, x, y, vx, vy, width, height, angle, health, programID
