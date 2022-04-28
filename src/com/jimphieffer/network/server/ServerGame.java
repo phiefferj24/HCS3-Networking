@@ -37,6 +37,7 @@ public class ServerGame extends Thread {
         if(protocol== Message.MessageProtocol.SEND)
         {
 
+
             System.out.println("message to server: " + message);
             //CONNECT: USERNAME
             if (type == Message.MessageType.CONNECT)
