@@ -86,6 +86,10 @@ public class ServerGame extends Thread {
 
 
             }
+            else if (type == Message.MessageType.SPRITE)
+            {
+
+            }
         }
         else if (protocol== Message.MessageProtocol.RELAY)
         {

@@ -113,7 +113,5 @@ public class Player extends Sprite{
     {
         return "[" + "PLAYER" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getProgramID()+ ";" + getVX() + ";" + getVY() + ";" + username;
     }
-//  public Player(double left, double top, int width, int height, String image, int programID,
-//                  double velocityX, double velocityY, String username)
 
 }
