@@ -2,6 +2,8 @@ package com.jimphieffer.game;
 
 import com.jimphieffer.graphics.Mesh;
 
+import java.util.UUID;
+
 import static java.lang.Double.*;
 import static java.lang.Integer.*;
 
@@ -13,9 +15,10 @@ public class Sprite
     private int height;
     private int programID;
     private String image;
+    private UUID id;
     public Mesh mesh;
 
-    public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, int programID)
+    public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, UUID id ,int programID)
     {
         this.programID = programID;
         x = theLeft;
@@ -23,7 +26,23 @@ public class Sprite
         width = theWidth;
         height = theHeight;
         setImage(theImage);
+        if(id == null)
+            this.id = UUID.randomUUID();
+        else
+            this.id = id;
         if(programID != 0) mesh = new Mesh((float)x,(float)y,0,width,height,image,programID);
+    }
+    public Sprite(String x, String y, String width, String height, String theImage, String id ,String programID)
+    {
+        this.programID = parseInt(programID);
+        this.x = parseDouble(x);
+        this.y = parseDouble(y);
+        this.width = parseInt(width);
+        this.height = parseInt(height);
+        this.programID = parseInt(programID);
+        setImage(theImage);
+        this.id = UUID.fromString(id);
+        if(this.programID != 0) mesh = new Mesh((float)this.x,(float)this.y ,0,this.width,this.height,image,this.programID);
     }
 
     public Sprite() {
@@ -152,6 +171,16 @@ public class Sprite
         height = h;
     }
 
+    public UUID getID()
+    {
+        return id;
+    }
+
+    public void setID(UUID id)
+    {
+        this.id = id;
+    }
+
     public String getImage()
     {
         return image;
@@ -175,7 +204,7 @@ public class Sprite
 
     public String toString()
     {
-        return "[" + "SPRITE" +";" + x +";" + y + ";" + width + ";" + height + ";" + image + ";" + programID + "]";
+        return "[" + "SPRITE" +";" + x +";" + y + ";" + width + ";" + height + ";" + image + ";" +id.toString()+ ";" + programID + "]";
     }
 
     /*
@@ -204,8 +233,8 @@ public class Sprite
         String[] onGuh = s.split(";");
         switch(onGuh[0])
         {
-            case "PLAYER": return new Player(onGuh[1],onGuh[2],onGuh[3],onGuh[4],onGuh[5],onGuh[6],onGuh[7],onGuh[8], onGuh[9]);
-            default: return new Sprite(Double.parseDouble(onGuh[1]),Double.parseDouble(onGuh[2]),Integer.parseInt(onGuh[3]),Integer.parseInt(onGuh[4]),onGuh[5], 0);
+            case "PLAYER": return new Player(onGuh[1],onGuh[2],onGuh[3],onGuh[4],onGuh[5],onGuh[6],onGuh[7],onGuh[8], onGuh[9],onGuh[10]);
+            default: return new Sprite(onGuh[1],onGuh[2],onGuh[3],onGuh[4],onGuh[5],onGuh[6],onGuh[7]);
 
         }
     }
