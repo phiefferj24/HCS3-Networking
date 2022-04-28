@@ -36,6 +36,7 @@ public class Window {
             if(action == GLFW_PRESS) game.keyPressed(window, key);
             else if(action == GLFW_RELEASE) game.keyReleased(window, key);
         });
+        glfwSetCharCallback(window, (window, code) -> game.charTyped(window, (char)code));
         glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
             if(action == GLFW_PRESS) game.mousePressed(window, button);
             else if(action == GLFW_RELEASE) game.mouseReleased(window, button);

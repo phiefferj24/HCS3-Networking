@@ -3,6 +3,7 @@ package com.jimphieffer.graphics.hud;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.hud.elements.HUDButton;
 import com.jimphieffer.graphics.hud.elements.HUDElement;
+import com.jimphieffer.graphics.hud.elements.HUDTextBox;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,11 @@ public class HUD {
     private int windowHeight;
     public HUD(int programId, int windowWidth, int windowHeight) {
         elements = new ArrayList<>();
-        elements.add(new HUDButton(new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/256.f), new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/256.f), windowWidth, windowHeight));
+        elements.add(new HUDTextBox(
+                new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/256.f),
+                new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/256.f),
+                new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 46/256.f, 200/256.f, 66/256.f),
+                windowWidth, windowHeight, programId, "/fonts/minecraft.png"));
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
     }
@@ -42,5 +47,8 @@ public class HUD {
     }
     public void keyReleased(int key) {
         elements.forEach(hudElement -> hudElement.keyReleased(key));
+    }
+    public void charTyped(char c) {
+        elements.forEach(hudElement -> hudElement.charTyped(c));
     }
 }

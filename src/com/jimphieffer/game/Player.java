@@ -3,6 +3,11 @@ package com.jimphieffer.game;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
+
+import static java.lang.Double.*;
+import static java.lang.Integer.*;
+
+
 public class Player extends Sprite{
 
     private double vx;
@@ -18,7 +23,7 @@ public class Player extends Sprite{
         vx = velocityX;
         vy = velocityY;
         health  = 15;
-       username = username + this.hashCode();
+       this.username = username + this.hashCode();
     }
 
     public Player(String x, String y, String width, String height, String image, String programID,
@@ -28,7 +33,7 @@ public class Player extends Sprite{
         vx = parseDouble(velocityX);
         vy = parseDouble(velocityY);
         health  = 15;
-        username = username + this.hashCode();
+        this.username = username + this.hashCode();
 
     }
 
@@ -100,7 +105,7 @@ public class Player extends Sprite{
         setX(getX()+vx);
         setY(getY()+vy);
 
-
+        super.step(game);
     }
 
 

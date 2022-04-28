@@ -30,6 +30,9 @@ public class HUDElement {
     public void mouseMoved(double x, double y) {
 
     }
+    public void charTyped(char c) {
+
+    }
     public void render() {
         mesh.render();
     }

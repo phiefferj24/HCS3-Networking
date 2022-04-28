@@ -11,7 +11,6 @@ public class Static extends Sprite {
     private String username;
     private Double angle;
     private String image;
-//TODO:CHANGE WALL WITH NON-STATIC AND EXTEND THIS
     public Static(String image, double x, double y, int width, int height, double angle, int programID)
     {
         super(x, y,width,height,image,programID );
@@ -20,7 +19,17 @@ public class Static extends Sprite {
         this.width = width;
         this.height = height;
         this.angle=angle;
-        username = "Static" + this.hashCode();
+        username = "Static;" + this.hashCode();
+    }
+    public Static(String image, double x, double y, int width, int height, double angle, int programID,String username)
+    {
+        super(x, y,width,height,image,programID );
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.angle=angle;
+        this.username = username;
     }
 
     //public String getType() { return type;}
@@ -30,9 +39,11 @@ public class Static extends Sprite {
         return username;
     }
 
+
+    //(String image, double x, double y, int width, int height, double angle, int programID)
     public String toString()
     {
-        return ("[" + username + ";" + x +";" + y + ";"  + angle + ";" + image + "]");
+        return ("[" + image  + ";" + x +";" + y + ";" + getWidth() +";" + getHeight() + ";"  + angle + ";" + username + "]");
     }
 
 }
