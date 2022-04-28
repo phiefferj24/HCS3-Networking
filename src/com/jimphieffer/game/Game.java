@@ -416,7 +416,7 @@ public class Game {
      * @param y      the Y position of the mouse, in pixels
      */
     public void mouseMoved(long window, double x, double y) {
-        player.setRotation(Math.atan2(y,x)*(180/Math.PI));
+        //player.setRotation(Math.atan2(y,x)*(180/Math.PI));
         //TODO: handle rotation
         hud.mouseMoved(x, y);
     }
