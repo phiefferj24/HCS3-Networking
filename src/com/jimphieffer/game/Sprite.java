@@ -24,7 +24,7 @@ public class Sprite
         width = theWidth;
         height = theHeight;
         setImage(theImage);
-        if(programID != 0) mesh = new Mesh((float)x,(float)y,0,width,height,image,programID);
+        if(programID != 0) mesh = new Mesh((float)x,(float)y,2.f,width,height,image,programID);
     }
 
     public Sprite() {

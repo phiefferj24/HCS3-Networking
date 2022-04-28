@@ -1,5 +1,6 @@
 package com.jimphieffer.graphics.hud;
 
+import com.jimphieffer.game.Camera;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.hud.elements.HUDButton;
 import com.jimphieffer.graphics.hud.elements.HUDElement;
@@ -13,15 +14,17 @@ public class HUD {
     private double mouseY = 0;
     private int windowWidth;
     private int windowHeight;
+    public Camera camera;
     public HUD(int programId, int windowWidth, int windowHeight) {
         elements = new ArrayList<>();
         elements.add(new HUDTextBox(
-                new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/256.f),
-                new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/256.f),
-                new Mesh(0, 0, 0, 0.5f, 0.05f, "/textures/widgets.png", programId, 0, 46/256.f, 200/256.f, 66/256.f),
+                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/256.f),
+                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/256.f),
+                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 46/256.f, 200/256.f, 66/256.f),
                 windowWidth, windowHeight, programId, "/fonts/minecraft.png"));
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
+        camera = new Camera(windowWidth, windowHeight);
     }
     public void render() {
         elements.forEach(HUDElement::render);

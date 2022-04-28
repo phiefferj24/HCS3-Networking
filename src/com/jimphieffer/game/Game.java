@@ -52,7 +52,6 @@ public class Game {
     private ArrayList<Sprite> sprites;
     private ArrayList<Sprite> staticSprites;
     private ArrayList<Sprite> nonStaticSprites;
-    private boolean[] keys = new boolean[6];
 
     private Camera camera;
 
@@ -183,7 +182,7 @@ public class Game {
 
         hud = new HUD(hudProgramId, window.getWidth(), window.getHeight());
 
-        background = new Mesh(0, 0, -10.f, windowWidth, windowHeight, "/textures/grass.png", objectProgramId, 0.1f, 0.1f);
+        background = new Mesh(0, 0, 10.f, windowWidth, windowHeight, "/textures/grass.png", objectProgramId, 0.1f, 0.1f);
     }
 
     public void windowSizeChanged() {
@@ -192,7 +191,7 @@ public class Game {
     }
 
     private void initTextures() {
-        meshes.add(new Mesh((float) player.getX(), (float) player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
+        //meshes.add(new Mesh((float) player.getX(), (float) player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
     }
 
     private void initShaders() {
@@ -307,16 +306,14 @@ public class Game {
         Uniforms.createUniform("color", objectProgramId);
         Uniforms.createUniform("texture_sampler", hudProgramId);
         Uniforms.createUniform("positionMatrix", hudProgramId);
+        Uniforms.createUniform("projectionMatrix", hudProgramId);
         Uniforms.createUniform("color", hudProgramId);
     }
 
     private void tick(double deltaTime) {
 
         //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
-        float mod = 10;
-        int dirx = keys[0] ? 1 : -1;
-        int diry = keys[3] ? 1 : -1;
-        meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
+        //meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 5);
         for(Sprite s: nonStaticSprites)
             s.step(this);
 
@@ -338,6 +335,8 @@ public class Game {
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
+
+
         glUseProgram(objectProgramId);
         Uniforms.setUniform("texture_sampler", 0, objectProgramId);
         Uniforms.setUniform("projectionMatrix", camera.projectionMatrix, objectProgramId);
@@ -347,13 +346,14 @@ public class Game {
 
         player.mesh.render();
 
-        meshes.forEach(Mesh::render);
+        //meshes.forEach(Mesh::render);
+
 
         glUseProgram(hudProgramId);
         Uniforms.setUniform("texture_sampler", 0, hudProgramId);
+        Uniforms.setUniform("projectionMatrix", hud.camera.projectionMatrix, hudProgramId);
         Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
         hud.render();
-
         glUseProgram(0);
 
         glfwSwapBuffers(windowPointer);
