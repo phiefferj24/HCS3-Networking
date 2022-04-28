@@ -203,6 +203,7 @@ public class Sprite
         String[] onGuh = s.split(";");
         switch(onGuh[0])
         {
+            case "PLAYER": return new Player(onGuh[1],onGuh[2],onGuh[3],onGuh[4],onGuh[5],onGuh[6],onGuh[7],onGuh[8], onGuh[9]);
             default: return new Sprite(Double.parseDouble(onGuh[1]),Double.parseDouble(onGuh[2]),Integer.parseInt(onGuh[3]),Integer.parseInt(onGuh[4]),onGuh[5], 0);
 
         }
