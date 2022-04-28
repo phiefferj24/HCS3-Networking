@@ -40,7 +40,7 @@ public class HUDTextBox extends HUDElement {
 
     public void render() {
         if(selected) {
-            //selectedMesh.render();
+            selectedMesh.render();
         } else if(hovered) {
             hoverMesh.render();
         } else {
@@ -69,20 +69,17 @@ public class HUDTextBox extends HUDElement {
                 hovered = false;
             }
         }
-        textMeshes.forEach(mesh -> {
-            System.out.println(mesh.x + " " + mesh.y + " " + mesh.width + " " + mesh.height);
-        });
     }
     public void charTyped(char c) {
         System.out.println(c);
         if(selected) {
             setText(getText() + c);
-            float x = mesh.x + (mesh.height * text.length()) / 2;
-            float y = mesh.y;
+            float x = mesh.x + (mesh.height * text.length()) / 2 - mesh.height / 2;
+            float y = mesh.y - mesh.height / 2;
             textMeshes.forEach(mesh -> {
-                mesh.translate(-mesh.height/2, 0, 0);
+                mesh.translate(-mesh.height, 0, 0);
             });
-            textMeshes.add(new TextMesh(c, font, x, y, 0.f, mesh.height/2, mesh.height/2, programId));
+            textMeshes.add(new TextMesh(c, font, x, y, 0.0f, mesh.height/2, mesh.height/2, programId));
         }
     }
 
@@ -92,11 +89,15 @@ public class HUDTextBox extends HUDElement {
                 if (text.length() > 0) {
                     setText(getText().substring(0, getText().length() - 1));
                     textMeshes.remove(textMeshes.size() - 1);
-                    textMeshes.forEach(mesh -> {
-                        mesh.translate(mesh.height / 2, 0, 0);
-                    });
+                    textMeshes.forEach(mesh -> mesh.translate(mesh.height, 0, 0));
                 }
             }
         }
+    }
+    public void close() {
+        textMeshes.forEach(Mesh::close);
+        mesh.close();
+        selectedMesh.close();
+        hoverMesh.close();
     }
 }
