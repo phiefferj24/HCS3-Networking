@@ -43,7 +43,7 @@ public class ClientThread extends Thread{
         //soundtrack.add(new File("tetris.wav"));
         while(true) {
             try {
-               // play("tetris.wav",true);
+                //play(new File(tetris.wav),true);
                 String message = input.readLine();
                 if(message == null) {
                     System.out.println("Server terminated connection.");

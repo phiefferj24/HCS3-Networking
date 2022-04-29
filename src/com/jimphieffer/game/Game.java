@@ -21,7 +21,7 @@ import static com.jimphieffer.utils.FileUtilities.*;
 
 public class Game {
 
-
+    private double playerRotation=0;
     private boolean space = false;
     private String ip;
     private int port;
@@ -137,11 +137,11 @@ public class Game {
         }
         if (Message.getType(message).equals(Message.MessageType.SPRITE))
         {
-            sprites.clear();
-            message = Message.decode(message);
-            String[] sprs = message.split(",");
-            for(String s: sprs)
+
+            for(String s: message.split(","))
+            {
                 sprites.add(Sprite.stringToSprite(s));
+            }
         }
     }
 
@@ -320,10 +320,11 @@ public class Game {
         for(Sprite s: nonStaticSprites) {
             s.step(this);
         }
-        //if(player.get(VX)!=1.6) {
-            player.setVX(1.6);
-        //}
+
+       // player.setVX(1.6);
+        System.out.println(player.getVY());
         System.out.println(player.getVX());
+
         player.step(this);
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
     }
@@ -370,24 +371,7 @@ public class Game {
 
 
     public void keyPressed(long window, int key) {
-        if(key==87)
-        {
-            System.out.println("w was pressed"); //this happens
-           player.setVY(player.getVY()+1);
-           //Tiko we need that thing to step bruh we cant do anything if we cant just send string
-        }
-        if(key==83)
-       {
-           player.setVX(player.getVY()-1);
-        }
-        if(key==65)
-        {
-            player.setVX(player.getVX()-1);
-        }
-       if(key==68)
-        {
-           player.setVX(player.getVX()+1);
-        }
+
 
         hud.keyPressed(key);
     }
@@ -395,6 +379,22 @@ public class Game {
     public void keyReleased(long window, int key) {
         if (key == GLFW_KEY_ESCAPE) {
             close();
+        }
+        if(key==GLFW_KEY_W)
+        {
+            player.setVY(player.getVY()+0.1);
+        }
+        if(key==GLFW_KEY_S)
+        {
+            player.setVX(player.getVY()-0.1);
+        }
+        if(key==GLFW_KEY_A)
+        {
+            player.setVX(player.getVX()-0.1);
+        }
+        if(key==GLFW_KEY_D)
+        {
+            player.setVX(player.getVX()+0.1);
         }
         player.setVX(0);
         hud.keyReleased(key);
@@ -420,7 +420,7 @@ public class Game {
      * @param y      the Y position of the mouse, in pixels
      */
     public void mouseMoved(long window, double x, double y) {
-        //player.setRotation(Math.atan2(y,x)*(180/Math.PI));
+        playerRotation=(Math.atan2(y,x)*(180/Math.PI));
         //TODO: handle rotation
         hud.mouseMoved(x, y);
     }

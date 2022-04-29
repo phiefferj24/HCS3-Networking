@@ -75,11 +75,11 @@ public class HUDTextBox extends HUDElement {
         if(selected) {
             setText(getText() + c);
             float x = mesh.x + (mesh.height * text.length()) / 2 - mesh.height / 2;
-            float y = mesh.y - mesh.height / 2;
+            float y = mesh.y;
             textMeshes.forEach(mesh -> {
                 mesh.translate(-mesh.height, 0, 0);
             });
-            textMeshes.add(new TextMesh(c, font, x, y, 0.0f, mesh.height/2, mesh.height/2, programId));
+            textMeshes.add(new TextMesh(c, font, x, y, 0.5f, mesh.height/2, mesh.height/2, programId));
         }
     }
 

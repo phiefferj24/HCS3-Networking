@@ -18,7 +18,7 @@ public class Sprite
     private UUID id;
     public Mesh mesh;
 
-    public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, UUID id ,int programID)
+    public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, int programID)
     {
         this.programID = programID;
         x = theLeft;
