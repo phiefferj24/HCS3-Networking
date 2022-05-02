@@ -6,6 +6,7 @@ import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.Uniforms;
 import com.jimphieffer.graphics.hud.HUD;
 import com.jimphieffer.network.client.ClientThread;
+import com.jimphieffer.network.server.Server;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
@@ -378,21 +379,20 @@ public class Game {
 
 
     public void keyPressed(long window, int key) {
-        if(key==87)
+        if(key==GLFW_KEY_W)
         {
-            System.out.println("w was pressed"); //this happens
            player.setVY(player.getVY()+1);
            //Tiko we need that thing to step bruh we cant do anything if we cant just send string
         }
-        if(key==83)
+        if(key==GLFW_KEY_S)
        {
-           player.setVX(player.getVY()-1);
+           player.setVY(player.getVY()-1);
         }
-        if(key==65)
+        if(key==GLFW_KEY_A)
         {
             player.setVX(player.getVX()-1);
         }
-       if(key==68)
+       if(key==GLFW_KEY_D)
         {
            player.setVX(player.getVX()+1);
         }
