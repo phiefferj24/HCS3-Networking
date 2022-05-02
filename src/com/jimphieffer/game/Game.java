@@ -39,11 +39,11 @@ public class Game {
     private int vx;
     private int vy;
 
-    private int objectProgramId;
+    public static int objectProgramId;
     private int objectVertexShaderId;
     private int objectFragmentShaderId;
 
-    private int hudProgramId;
+    public static int hudProgramId;
     private int hudVertexShaderId;
     private int hudFragmentShaderId;
 
@@ -307,6 +307,7 @@ public class Game {
         Uniforms.createUniform("color", objectProgramId);
         Uniforms.createUniform("texture_sampler", hudProgramId);
         Uniforms.createUniform("positionMatrix", hudProgramId);
+        Uniforms.createUniform("projectionMatrix", hudProgramId);
         Uniforms.createUniform("color", hudProgramId);
     }
 
@@ -356,6 +357,7 @@ public class Game {
 
         glUseProgram(hudProgramId);
         Uniforms.setUniform("texture_sampler", 0, hudProgramId);
+        Uniforms.setUniform("projectionMatrix", hud.camera.projectionMatrix, hudProgramId);
         Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
         hud.render();
 

@@ -21,7 +21,7 @@ public class Player extends Sprite{
     public Player(double x, double y, int width, int height, String image, UUID id, int programID,
                   double velocityX, double velocityY, String username)
     {
-        super(x, y, width, height, image,programID);
+        super(x, y, width, height, image, id, programID);
         vx = velocityX;
         vy = velocityY;
         health  = 15;
