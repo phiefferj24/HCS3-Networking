@@ -37,6 +37,7 @@ public class ServerGame extends Thread {
         if(protocol== Message.MessageProtocol.SEND)
         {
 
+
             System.out.println("message to server: " + message);
             //CONNECT: USERNAME
             if (type == Message.MessageType.CONNECT)
@@ -88,7 +89,11 @@ public class ServerGame extends Thread {
             }
             else if (type == Message.MessageType.SPRITE)
             {
-
+                sprites.clear();
+                for(String s: message.split(","))
+                {
+                    sprites.add(Sprite.stringToSprite(s));
+                }
             }
         }
         else if (protocol== Message.MessageProtocol.RELAY)

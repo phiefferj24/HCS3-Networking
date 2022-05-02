@@ -1,5 +1,8 @@
 package com.jimphieffer.game;
 
+import com.jimphieffer.game.objects.NonStatic;
+import com.jimphieffer.game.objects.Pig;
+import com.jimphieffer.game.objects.Static;
 import com.jimphieffer.graphics.Mesh;
 
 import java.util.UUID;
@@ -18,11 +21,11 @@ public class Sprite
     private UUID id;
     public Mesh mesh;
 
-    public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, int programID)
+    public Sprite(double x, double y, int theWidth, int theHeight, String theImage, UUID id, int programID)
     {
         this.programID = programID;
-        x = theLeft;
-        y = theTop;
+        this.x = x;
+        this.y = y;
         width = theWidth;
         height = theHeight;
         setImage(theImage);
@@ -231,11 +234,12 @@ public class Sprite
     {
         s= s.substring(1,s.length()-1);
         String[] onGuh = s.split(";");
-        switch(onGuh[0])
-        {
-            case "PLAYER": return new Player(onGuh[1],onGuh[2],onGuh[3],onGuh[4],onGuh[5],onGuh[6],onGuh[7],onGuh[8], onGuh[9],onGuh[10]);
-            default: return new Sprite(onGuh[1],onGuh[2],onGuh[3],onGuh[4],onGuh[5],onGuh[6],onGuh[7]);
-
-        }
+        return switch (onGuh[0]) {
+            case "PLAYER"       -> new Player(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9], onGuh[10]);
+            case "PIG"          -> new Pig(         onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9], onGuh[10]);
+            case "NONSTATIC"    -> new NonStatic(   onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
+            case "STATIC"       -> new Static(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7]);
+            default             -> new Sprite(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7]);
+        };
     }
 }

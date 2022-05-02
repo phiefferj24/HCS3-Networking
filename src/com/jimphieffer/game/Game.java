@@ -21,7 +21,7 @@ import static com.jimphieffer.utils.FileUtilities.*;
 
 public class Game {
 
-
+    private double playerRotation=0;
     private boolean space = false;
     private String ip;
     private int port;
@@ -39,11 +39,11 @@ public class Game {
     private int vx;
     private int vy;
 
-    public static int objectProgramId;
+    private int objectProgramId;
     private int objectVertexShaderId;
     private int objectFragmentShaderId;
 
-    public static int hudProgramId;
+    private int hudProgramId;
     private int hudVertexShaderId;
     private int hudFragmentShaderId;
 
@@ -192,7 +192,7 @@ public class Game {
     }
 
     private void initTextures() {
-        //meshes.add(new Mesh((float) player.getX(), (float) player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
+        meshes.add(new Mesh((float) player.getX(), (float) player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
     }
 
     private void initShaders() {
@@ -307,7 +307,6 @@ public class Game {
         Uniforms.createUniform("color", objectProgramId);
         Uniforms.createUniform("texture_sampler", hudProgramId);
         Uniforms.createUniform("positionMatrix", hudProgramId);
-        Uniforms.createUniform("projectionMatrix", hudProgramId);
         Uniforms.createUniform("color", hudProgramId);
     }
 
@@ -321,10 +320,11 @@ public class Game {
         for(Sprite s: nonStaticSprites) {
             s.step(this);
         }
-        //if(player.get(VX)!=1.6) {
-            player.setVX(1.6);
-        //}
-        //System.out.println(player.getVX());
+
+       // player.setVX(1.6);
+        System.out.println(player.getVY());
+        System.out.println(player.getVX());
+
         player.step(this);
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
     }
@@ -354,9 +354,8 @@ public class Game {
 
         meshes.forEach(Mesh::render);
 
-        //glUseProgram(hudProgramId);
+        glUseProgram(hudProgramId);
         Uniforms.setUniform("texture_sampler", 0, hudProgramId);
-        Uniforms.setUniform("projectionMatrix", hud.camera.projectionMatrix, hudProgramId);
         Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
         hud.render();
 
@@ -397,6 +396,22 @@ public class Game {
     public void keyReleased(long window, int key) {
         if (key == GLFW_KEY_ESCAPE) {
             close();
+        }
+        if(key==GLFW_KEY_W)
+        {
+            player.setVY(player.getVY()+0.1);
+        }
+        if(key==GLFW_KEY_S)
+        {
+            player.setVX(player.getVY()-0.1);
+        }
+        if(key==GLFW_KEY_A)
+        {
+            player.setVX(player.getVX()-0.1);
+        }
+        if(key==GLFW_KEY_D)
+        {
+            player.setVX(player.getVX()+0.1);
         }
         player.setVX(0);
         hud.keyReleased(key);

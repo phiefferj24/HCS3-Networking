@@ -1,30 +1,38 @@
 package com.jimphieffer.game.objects;
 
+import java.util.UUID;
+
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
 public class Pig extends NonStatic{
+    private int health;
 
-    public Pig(String image, double x, double y, double vx, double vy, int width, int height, double angle, int health,  int programID) {
+    public Pig(double x, double y, int width, int height, String image, UUID id, int programID,
+               double vx, double vy, int health) {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
-        //of all sprites and then compute which one
-
-        super(image, x, y, vx, vy, width, height, angle, health, programID);
+        //of all sprites and then compute which on
+        super(x, y, width, height, image, id, programID, vx, vy);
+        this.health = health;
     }
-    /*
-    public Pig(String image, String x, String y, String vx, String vy, String width, String height, String angle, String health,  String programID) {
+    public Pig(String x, String y, String width, String height, String image, String id, String programID,
+               String vx, String vy, String health) {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
-        //of all sprites and then compute which one
-
-        //super(image, parseDouble(x), parseDouble(y), parseDouble(vx), parseDouble(vy), parseInt(width), parseInt(height), image,parseInt(programID));
-        //super(image, x, y, vx, vy, width, height, angle, health, programID);
+        //of all sprites and then compute which on
+        super(x, y, width, height, image, id, programID, vx, vy);
+        this.health = parseInt(health);
     }
 
-     */
+
+
+    public int getHealth(){return health;}
+
+
 
     public String toString()
     {
-        return null;
-        //return ("[" +image + ";" + x + ";" + y + ";"+vx+";"+vy+";"+getWidth()+";"+getHeight()+";"+ username  +";"  + angle + ";"  + health + ";" + getProgramID()+ "]");
+        return "[" + "PIG" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";" +  getProgramID()+ ";" + getVX() + ";" + getVY() +";" + getHealth()+ "]";
+
+        //(String image, double x, double y, double vx, double vy, int width, int height, UUID id, int programID, double angle, int health) {
     }
 }
