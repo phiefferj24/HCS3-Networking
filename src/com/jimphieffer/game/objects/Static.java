@@ -1,49 +1,36 @@
 package com.jimphieffer.game.objects;
 
 import com.jimphieffer.game.Sprite;
+import com.jimphieffer.graphics.Mesh;
+
+import java.util.UUID;
+
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
 
 
 public class Static extends Sprite {
-    private double x;
-    private double y;
-    private int width;
-    private int height;
-    private String username;
-    private Double angle;
-    private String image;
-    public Static(String image, double x, double y, int width, int height, double angle, int programID)
+
+    public Static(double x, double y, int width, int height, String image, UUID id, int programID) //Exact same as sprite
     {
-        super(x, y,width,height,image,programID );
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.angle=angle;
-        username = "Static;" + this.hashCode();
+        super(x,y,width,height,image,id,programID);
+
     }
-    public Static(String image, double x, double y, int width, int height, double angle, int programID,String username)
+    public Static(String x, String y, String width, String height, String image, String id ,String programID)
     {
-        super(x, y,width,height,image,programID );
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.angle=angle;
-        this.username = username;
+        super(x,y,width,height,image,id,programID);
+
+
     }
 
     //public String getType() { return type;}
 
-    public String getUsername()
-    {
-        return username;
-    }
 
 
     //(String image, double x, double y, int width, int height, double angle, int programID)
     public String toString()
     {
-        return ("[" + image  + ";" + x +";" + y + ";" + getWidth() +";" + getHeight() + ";"  + angle + ";" + username + "]");
+        return "[" + "NONSTATIC" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";" +  getProgramID()+ "]";
     }
 
 }

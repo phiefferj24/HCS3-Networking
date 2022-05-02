@@ -18,11 +18,11 @@ public class Sprite
     private UUID id;
     public Mesh mesh;
 
-    public Sprite(double theLeft, double theTop, int theWidth, int theHeight, String theImage, int programID)
+    public Sprite(double x, double y, int theWidth, int theHeight, String theImage, UUID id, int programID)
     {
         this.programID = programID;
-        x = theLeft;
-        y = theTop;
+        this.x = x;
+        this.y = y;
         width = theWidth;
         height = theHeight;
         setImage(theImage);
