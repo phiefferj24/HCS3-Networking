@@ -89,7 +89,11 @@ public class ServerGame extends Thread {
             }
             else if (type == Message.MessageType.SPRITE)
             {
-
+                sprites.clear();
+                for(String s: message.split(","))
+                {
+                    sprites.add(Sprite.stringToSprite(s));
+                }
             }
         }
         else if (protocol== Message.MessageProtocol.RELAY)

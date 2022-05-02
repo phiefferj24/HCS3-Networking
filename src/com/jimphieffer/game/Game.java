@@ -137,7 +137,7 @@ public class Game {
         }
         if (Message.getType(message).equals(Message.MessageType.SPRITE))
         {
-
+            sprites.clear();
             for(String s: message.split(","))
             {
                 sprites.add(Sprite.stringToSprite(s));

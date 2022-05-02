@@ -9,14 +9,14 @@ public class Pig extends NonStatic{
     private int health;
 
     public Pig(double x, double y, int width, int height, String image, UUID id, int programID,
-               double vx, double vy, int health,double angle) {
+               double vx, double vy, int health) {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
         //of all sprites and then compute which on
         super(x, y, width, height, image, id, programID, vx, vy);
         this.health = health;
     }
     public Pig(String x, String y, String width, String height, String image, String id, String programID,
-               String vx, String vy, String health,String angle) {
+               String vx, String vy, String health) {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
         //of all sprites and then compute which on
         super(x, y, width, height, image, id, programID, vx, vy);
