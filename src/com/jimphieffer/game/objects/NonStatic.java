@@ -17,13 +17,13 @@ public class NonStatic extends Sprite {
     private String image;
 
     //TODO: change change animal to static and extend it
-    public NonStatic(double x, double y, int width, int height, String image, UUID id, int programID,
+    public NonStatic(double x, double y, int width, int height, String image, UUID id,
                      double vx, double vy)
     {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
         //of all sprites and then compute which one
 
-        super(x, y,width,height,image,id,programID);
+        super(x, y,width,height,image,id);
         this.image=image;
         this.health  = health;
         this.x=x;
@@ -32,13 +32,13 @@ public class NonStatic extends Sprite {
         this.vy=vy;
         this.image = image;
     }
-    public NonStatic(String x, String y, String width, String height, String image, String id, String programID,
+    public NonStatic(String x, String y, String width, String height, String image, String id,
                      String vx, String vy)
     {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
         //of all sprites and then compute which one
 
-        super(x, y,width,height,image,id,programID);
+        super(x, y,width,height,image,id);
         this.image=image;
         this.health  = health;
         this.x=parseDouble(x);
@@ -91,7 +91,7 @@ public class NonStatic extends Sprite {
     //String image, double x, double y, int width, int height, double angle, int health,  int programID)
 
     public String toString(){
-        return "[" + "NONSTATIC" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";" +  getProgramID()+ ";" + getVX() + ";" + getVY() + "]";
+        return "[" + "NONSTATIC" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";"  + getVX() + ";" + getVY() + "]";
         //return ("[" +image + ";" + x + ";" + y + ";"+vx+";"+vy+";"+getWidth()+";"+getHeight()+";"+ username  +";"  + angle + ";"  + health + ";" + getProgramID()+ "]");
     }
 }

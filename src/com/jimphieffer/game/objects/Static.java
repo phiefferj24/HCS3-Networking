@@ -11,14 +11,14 @@ import static java.lang.Integer.parseInt;
 
 public class Static extends Sprite {
 
-    public Static(double x, double y, int width, int height, String image, UUID id, int programID) //Exact same as sprite
+    public Static(double x, double y, int width, int height, String image, UUID id) //Exact same as sprite
     {
-        super(x,y,width,height,image,id,programID);
+        super(x,y,width,height,image,id);
 
     }
-    public Static(String x, String y, String width, String height, String image, String id ,String programID)
+    public Static(String x, String y, String width, String height, String image, String id )
     {
-        super(x,y,width,height,image,id,programID);
+        super(x,y,width,height,image,id);
 
 
     }
@@ -30,7 +30,7 @@ public class Static extends Sprite {
     //(String image, double x, double y, int width, int height, double angle, int programID)
     public String toString()
     {
-        return "[" + "NONSTATIC" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";" +  getProgramID()+ "]";
+        return "[" + "NONSTATIC" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";" + "]";
     }
 
 }
