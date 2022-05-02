@@ -43,7 +43,7 @@ public class Sprite
         this.height = parseInt(height);
         setImage(theImage);
         this.id = UUID.fromString(id);
-        if(Game.objectProgramId != 0) mesh = new Mesh((float)this.x,(float)this.y ,0,this.width,this.height,image,Game.objectProgramId);
+        if(Game.objectProgramId != 0) mesh = new Mesh((float)this.x,(float)this.y ,-1.f,this.width,this.height,image,Game.objectProgramId);
     }
 
     public Sprite() {

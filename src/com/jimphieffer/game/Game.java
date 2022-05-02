@@ -192,7 +192,7 @@ public class Game {
     }
 
     private void initTextures() {
-        meshes.add(new Mesh((float) player.getX(), (float) player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
+        //meshes.add(new Mesh((float) player.getX(), (float) player.getY(), 0, 0.05f, 0.05f, player.getImage(), objectProgramId));
     }
 
     private void initShaders() {
@@ -344,6 +344,13 @@ public class Game {
     public void render() { //DO NOT CALL FROM INSIDE THREAD!
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
+        glUseProgram(hudProgramId);
+        Uniforms.setUniform("texture_sampler", 0, hudProgramId);
+        Uniforms.setUniform("projectionMatrix", hud.camera.projectionMatrix, hudProgramId);
+        Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
+        hud.render();
+
+
         glUseProgram(objectProgramId);
         Uniforms.setUniform("texture_sampler", 0, objectProgramId);
         Uniforms.setUniform("projectionMatrix", camera.projectionMatrix, objectProgramId);
@@ -358,12 +365,6 @@ public class Game {
         player.mesh.render();
 
         meshes.forEach(Mesh::render);
-
-        glUseProgram(hudProgramId);
-        Uniforms.setUniform("texture_sampler", 0, hudProgramId);
-        Uniforms.setUniform("projectionMatrix", hud.camera.projectionMatrix, hudProgramId);
-        Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
-        hud.render();
 
         glUseProgram(0);
 
