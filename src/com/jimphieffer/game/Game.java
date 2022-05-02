@@ -324,8 +324,8 @@ public class Game {
         }
 
        // player.setVX(1.6);
-        System.out.println(player.getVY());
-        System.out.println(player.getVX());
+//        System.out.println(player.getVY());
+//        System.out.println(player.getVX());
 
         player.step(this);
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
@@ -348,7 +348,11 @@ public class Game {
         glUseProgram(objectProgramId);
         Uniforms.setUniform("texture_sampler", 0, objectProgramId);
         Uniforms.setUniform("projectionMatrix", camera.projectionMatrix, objectProgramId);
-        Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), objectProgramId);
+        if(hud.visible) {
+            Uniforms.setUniform("color", new Vector4f(0.5f, 0.5f, 0.5f, 1), objectProgramId);
+        } else {
+            Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), objectProgramId);
+        }
 
         background.render();
 
@@ -391,6 +395,9 @@ public class Game {
         {
            player.setVX(player.getVX()+1);
         }
+       if(key == GLFW_KEY_GRAVE_ACCENT) {
+           hud.visible = !hud.visible;
+       }
 
         hud.keyPressed(key);
     }
