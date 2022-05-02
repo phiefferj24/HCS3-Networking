@@ -14,9 +14,7 @@ public class HUDElement {
     protected double mouseY;
 
     public void mousePressed(int button) {
-        if(button == GLFW_MOUSE_BUTTON_LEFT && bounds.contains((float)mouseX, (float)mouseY)) {
-            System.out.println("among us sussy balls");
-        }
+
     }
     public void mouseReleased(int button) {
 
@@ -41,4 +39,5 @@ public class HUDElement {
         windowWidth = width;
         windowHeight = height;
     }
+    public void close() {}
 }

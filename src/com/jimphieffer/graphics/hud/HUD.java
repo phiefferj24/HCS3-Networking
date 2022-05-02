@@ -15,6 +15,7 @@ public class HUD {
     private int windowWidth;
     private int windowHeight;
     public Camera camera;
+    public boolean visible = false;
     public HUD(int programId, int windowWidth, int windowHeight) {
         elements = new ArrayList<>();
         elements.add(new HUDTextBox(
@@ -22,12 +23,17 @@ public class HUD {
                 new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/256.f),
                 new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 46/256.f, 200/256.f, 66/256.f),
                 windowWidth, windowHeight, programId, "/fonts/minecraft.png"));
+//        elements.add(new HUDButton(
+//                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/256.f),
+//                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/256.f),
+//                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 46/256.f, 200/256.f, 66/256.f),
+//                windowWidth, windowHeight, programId, "/fonts/minecraft.png", "Button"));
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
         camera = new Camera(windowWidth, windowHeight);
     }
     public void render() {
-        elements.forEach(HUDElement::render);
+        if(visible) elements.forEach(HUDElement::render);
     }
     public void mouseMoved(double x, double y) {
         mouseX = x / (windowWidth / 2.) - 1;
@@ -37,6 +43,7 @@ public class HUD {
     public void setScreenSize(int width, int height) {
         windowWidth = width;
         windowHeight = height;
+        camera.setScreenSize(width, height);
         elements.forEach(hudElement -> hudElement.setScreenSize(width, height));
     }
     public void mousePressed(int button) {
@@ -54,4 +61,5 @@ public class HUD {
     public void charTyped(char c) {
         elements.forEach(hudElement -> hudElement.charTyped(c));
     }
+    public void close() { elements.forEach(HUDElement::close); }
 }

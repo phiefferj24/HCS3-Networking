@@ -52,26 +52,15 @@ public class HUDTextBox extends HUDElement {
     @Override
     public void mousePressed(int button) {
         if(button == GLFW_MOUSE_BUTTON_LEFT) {
-            if (bounds.contains((float) mouseX, (float) mouseY)) {
-                selected = true;
-            } else {
-                selected = false;
-            }
+            selected = hovered;
         }
     }
 
     @Override
     public void mouseMoved(double x, double y) {
-        if(!selected) {
-            if (bounds.contains((float) mouseX, (float) mouseY)) {
-                hovered = true;
-            } else {
-                hovered = false;
-            }
-        }
+        hovered = bounds.contains((float) mouseX, (float) mouseY);
     }
     public void charTyped(char c) {
-        System.out.println(c);
         if(selected) {
             setText(getText() + c);
             float x = mesh.x + (mesh.height * text.length()) / 2 - mesh.height / 2;
