@@ -18,20 +18,20 @@ public class Player extends Sprite{
     private int amtStone = 0;
     private String username;
 
-    public Player(double x, double y, int width, int height, String image, UUID id, int programID,
+    public Player(double x, double y, int width, int height, String image, UUID id,
                   double velocityX, double velocityY, String username)
     {
-        super(x, y, width, height, image, id, programID);
+        super(x, y, width, height, image, id);
         vx = velocityX;
         vy = velocityY;
         health  = 15;
        this.username = username + this.hashCode();
     }
 
-    public Player(String x, String y, String width, String height, String image, String id, String programID,
+    public Player(String x, String y, String width, String height, String image, String id,
                   String velocityX, String velocityY, String username)
     {
-        super(x, y, width, height, image,id,programID);
+        super(x, y, width, height, image,id);
         vx = parseDouble(velocityX);
         vy = parseDouble(velocityY);
         health  = 15;
@@ -113,7 +113,7 @@ public class Player extends Sprite{
 
     public String toString()
     {
-        return "[" + "PLAYER" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";" +  getProgramID()+ ";" + getVX() + ";" + getVY() + ";" + username + "]";
+        return "[" + "PLAYER" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";"  + getVX() + ";" + getVY() + ";" + username + "]";
     }
 
 }

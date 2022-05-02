@@ -175,7 +175,7 @@ public class Game {
         // }
 
 
-        player = new Player(0, 0, 100, 100, "/textures/player.png", null, objectProgramId, 0, 0, username);
+        player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
 
         initTextures();
 

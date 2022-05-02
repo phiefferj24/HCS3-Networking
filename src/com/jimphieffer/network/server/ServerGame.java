@@ -3,6 +3,7 @@ package com.jimphieffer.network.server;
 import com.jimphieffer.Message;
 import com.jimphieffer.game.Player;
 import com.jimphieffer.game.Sprite;
+import com.jimphieffer.game.objects.Pig;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class ServerGame extends Thread {
 
     public ServerGame(Server server) {
         sprites = new ArrayList<>();
+        sprites.add(new Pig(400,400));
         spritesNames = new ArrayList<>();
         this.server = server;
     }
@@ -43,7 +45,7 @@ public class ServerGame extends Thread {
             if (type == Message.MessageType.CONNECT)
             {
                 //todo if(name doesnt already exist) {
-                sprites.add(new Player(50,50,50,50,"src/com/jimphieffer/game/sprites/player.png",null,0,0,0,message));
+                sprites.add(new Player(50,50,50,50,"src/com/jimphieffer/game/sprites/player.png",null,0,0,message));
                 spritesNames.add(message);
                 server.send(Message.encode("SUCCESS",Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
                 //} else {send message FAILED}

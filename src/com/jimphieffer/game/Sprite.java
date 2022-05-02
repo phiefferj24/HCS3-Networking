@@ -16,14 +16,14 @@ public class Sprite
     private double y;   //the y-coordinate of the top edge of the sprite
     private int width;
     private int height;
-    private int programID;
+
     private String image;
     private UUID id;
     public Mesh mesh;
 
-    public Sprite(double x, double y, int theWidth, int theHeight, String theImage, UUID id, int programID)
+    public Sprite(double x, double y, int theWidth, int theHeight, String theImage, UUID id)
     {
-        this.programID = programID;
+
         this.x = x;
         this.y = y;
         width = theWidth;
@@ -33,19 +33,17 @@ public class Sprite
             this.id = UUID.randomUUID();
         else
             this.id = id;
-        if(programID != 0) mesh = new Mesh((float)x,(float)y,0,width,height,image,programID);
+        if(Game.objectProgramId != 0) mesh = new Mesh((float)x,(float)y,0,width,height,image,Game.objectProgramId);
     }
-    public Sprite(String x, String y, String width, String height, String theImage, String id ,String programID)
+    public Sprite(String x, String y, String width, String height, String theImage, String id)
     {
-        this.programID = parseInt(programID);
         this.x = parseDouble(x);
         this.y = parseDouble(y);
         this.width = parseInt(width);
         this.height = parseInt(height);
-        this.programID = parseInt(programID);
         setImage(theImage);
         this.id = UUID.fromString(id);
-        if(this.programID != 0) mesh = new Mesh((float)this.x,(float)this.y ,0,this.width,this.height,image,this.programID);
+        if(Game.objectProgramId != 0) mesh = new Mesh((float)this.x,(float)this.y ,0,this.width,this.height,image,Game.objectProgramId);
     }
 
     public Sprite() {
@@ -189,10 +187,6 @@ public class Sprite
         return image;
     }
 
-    public int getProgramID()
-    {
-        return programID;
-    }
 
     public void setImage(String i)
     {
@@ -207,7 +201,7 @@ public class Sprite
 
     public String toString()
     {
-        return "[" + "SPRITE" +";" + x +";" + y + ";" + width + ";" + height + ";" + image + ";" +id.toString()+ ";" + programID + "]";
+        return "[" + "SPRITE" +";" + x +";" + y + ";" + width + ";" + height + ";" + image + ";" +id.toString()+ "]";
     }
 
     /*
@@ -225,7 +219,7 @@ public class Sprite
     
         }
 
-        //[" + ID + ";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";"+ getProgramID() + "]";
+        //[" + ID + ";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";"+ getGame.objectProgramId() + "]";
     }
 
      */
@@ -235,11 +229,11 @@ public class Sprite
         s= s.substring(1,s.length()-1);
         String[] onGuh = s.split(";");
         return switch (onGuh[0]) {
-            case "PLAYER"       -> new Player(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9], onGuh[10]);
-            case "PIG"          -> new Pig(         onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9], onGuh[10]);
-            case "NONSTATIC"    -> new NonStatic(   onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
-            case "STATIC"       -> new Static(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7]);
-            default             -> new Sprite(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7]);
+            case "PLAYER"       -> new Player(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
+            case "PIG"          -> new Pig(         onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
+            case "NONSTATIC"    -> new NonStatic(   onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8]);
+            case "STATIC"       -> new Static(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6]);
+            default             -> new Sprite(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6]);
         };
     }
 }
