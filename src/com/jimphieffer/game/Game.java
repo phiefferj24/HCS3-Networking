@@ -422,19 +422,19 @@ public class Game {
     public void keyReleased(long window, int key) {
         if(key==GLFW_KEY_W)
         {
-            player.setVY(player.getVY()+0.1);
+            player.setVY(0.1);
         }
         if(key==GLFW_KEY_S)
         {
-            player.setVX(player.getVY()-0.1);
+            player.setVX(-0.1);
         }
         if(key==GLFW_KEY_A)
         {
-            player.setVX(player.getVX()-0.1);
+            player.setVX(-0.1);
         }
         if(key==GLFW_KEY_D)
         {
-            player.setVX(player.getVX()+0.1);
+            player.setVX(0.1);
         }
         player.setVX(0);
         hud.keyReleased(key);
@@ -457,7 +457,7 @@ public class Game {
     }
 
     public void mouseMoved(long window, double x, double y) {
-        //player.setRotation(Math.atan2(y,x)*(180/Math.PI));
+         //.rotate(Math.atan2(y,x)*(180/Math.PI));
         //TODO: handle rotation
         hud.mouseMoved(x, y);
         if(mainMenu != null) mainMenu.mouseMoved(x, y);
