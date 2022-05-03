@@ -33,7 +33,7 @@ public class Sprite
             this.id = UUID.randomUUID();
         else
             this.id = id;
-        if(Game.objectProgramId != 0) mesh = new Mesh((float)x,(float)y,0,width,height,image,Game.objectProgramId);
+        if(Game.objectProgramId != 0 && Thread.currentThread().getName().equals("main")) mesh = new Mesh((float)x,(float)y,0,width,height,image,Game.objectProgramId);
     }
     public Sprite(String x, String y, String width, String height, String theImage, String id)
     {
@@ -43,7 +43,7 @@ public class Sprite
         this.height = parseInt(height);
         setImage(theImage);
         this.id = UUID.fromString(id);
-        if(Game.objectProgramId != 0) mesh = new Mesh((float)this.x,(float)this.y ,-1.f,this.width,this.height,image,Game.objectProgramId);
+        if(Game.objectProgramId != 0 && Thread.currentThread().getName().equals("main")) mesh = new Mesh((float)this.x,(float)this.y ,-1.f,this.width,this.height,image,Game.objectProgramId);
     }
 
     public Sprite() {

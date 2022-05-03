@@ -9,35 +9,29 @@ import com.jimphieffer.graphics.hud.elements.HUDTextBox;
 import java.util.ArrayList;
 
 public class HUD {
-    private ArrayList<HUDElement> elements;
+    public ArrayList<HUDElement> elements;
     private double mouseX = 0;
     private double mouseY = 0;
     private int windowWidth;
     private int windowHeight;
     public Camera camera;
-    public boolean visible = false;
-    public HUD(int programId, int windowWidth, int windowHeight) {
+    public boolean visible;
+    public HUD(int programId, int windowWidth, int windowHeight, boolean visible) {
         elements = new ArrayList<>();
-        elements.add(new HUDTextBox(
-                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/256.f),
-                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/256.f),
-                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 46/256.f, 200/256.f, 66/256.f),
-                windowWidth, windowHeight, programId, "/fonts/minecraft.png"));
-//        elements.add(new HUDButton(
-//                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 66/256.f, 200/256.f, 86/256.f),
-//                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 86/256.f, 200/256.f, 106/256.f),
-//                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", programId, 0, 46/256.f, 200/256.f, 66/256.f),
-//                windowWidth, windowHeight, programId, "/fonts/minecraft.png", "Button"));
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
         camera = new Camera(windowWidth, windowHeight);
+        this.visible = visible;
     }
     public void render() {
         if(visible) elements.forEach(HUDElement::render);
     }
     public void mouseMoved(double x, double y) {
-        mouseX = x / (windowWidth / 2.) - 1;
-        mouseY = - y / (windowHeight / 2.) + 1;
+        mouseX = x * 2 - windowWidth;
+        mouseY = -y * 2 + windowHeight;
+        //print camera's projection matrix width and height
+//        mouseX = x / (windowWidth / 2.) - 1;
+//        mouseY = - y / (windowHeight / 2.) + 1;
         elements.forEach(hudElement -> hudElement.mouseMoved(mouseX, mouseY));
     }
     public void setScreenSize(int width, int height) {

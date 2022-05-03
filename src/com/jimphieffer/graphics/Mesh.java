@@ -110,9 +110,13 @@ public class Mesh {
         glBindVertexArray(0);
     }
     public void translate(float x, float y, float z) {
+        this.x += x;
+        this.y += y;
         positionMatrix.translate(x, y, z);
     }
     public void setPosition(float x, float y, float z) {
+        this.x = x;
+        this.y = y;
         positionMatrix.identity().translate(x, y, z);
     }
     public void scale(float factor) {

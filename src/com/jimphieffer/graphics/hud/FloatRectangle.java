@@ -12,6 +12,7 @@ public class FloatRectangle {
         this.y2 = y2;
     }
     public boolean contains(float x, float y) {
-        return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+        if(y2 >= y1) return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+        else return x >= x1 && x <= x2 && y <= y1 && y >= y2;
     }
 }

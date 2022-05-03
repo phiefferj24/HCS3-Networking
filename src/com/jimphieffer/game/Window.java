@@ -43,8 +43,8 @@ public class Window {
         });
         glfwSetCursorPosCallback(window, game::mouseMoved);
         glfwSetFramebufferSizeCallback(window, (window, nwidth, nheight) -> {
-            this.width = nwidth;
-            this.height = nheight;
+            this.width = nwidth/2;
+            this.height = nheight/2;
             game.windowSizeChanged();
         });
         glfwMakeContextCurrent(window);

@@ -5,6 +5,8 @@ import com.jimphieffer.game.objects.NonStatic;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.Uniforms;
 import com.jimphieffer.graphics.hud.HUD;
+import com.jimphieffer.graphics.hud.elements.HUDButton;
+import com.jimphieffer.graphics.hud.elements.HUDTextBox;
 import com.jimphieffer.network.client.ClientThread;
 import com.jimphieffer.network.server.Server;
 import org.joml.Vector4f;
@@ -22,6 +24,8 @@ import static com.jimphieffer.utils.FileUtilities.*;
 
 public class Game {
 
+    public interface Method { void run(); }
+
     private double playerRotation=0;
     private boolean space = false;
     private String ip;
@@ -33,7 +37,7 @@ public class Game {
     private double framesPerSecond = 60.d;
     private Window window;
     private long windowPointer;
-    private ClientThread ct;
+    public ClientThread ct;
 
     private int x;
     private int y;
@@ -61,19 +65,32 @@ public class Game {
 
     private Mesh background;
 
-    public Game(String ip, int port) {
+    private int windowWidth;
+    private int windowHeight;
+    private String windowTitle;
 
-        Scanner s = new Scanner(System.in);
-        System.out.println("username: ");
-        username = s.nextLine();
+    private HUD mainMenu;
+
+    public Game(int windowWidth, int windowHeight, String windowTitle) {
 
         x = 50;
         y = 50;
         vx = 0;
         vy = 0;
 
+        this.windowWidth = windowWidth;
+        this.windowHeight = windowHeight;
+        this.windowTitle = windowTitle;
+
+    }
+
+    public void connect(String ip, int port) {
         ct = new ClientThread(ip, port, this);
         ct.start();
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 
@@ -149,10 +166,8 @@ public class Game {
 
     public void init() {
         //ct = new ClientThread("127.0.0.1",9000);
-        int windowWidth = 1280;
-        int windowHeight = 720;
 
-        window = new Window("Window", windowWidth, windowHeight, this);
+        window = new Window(windowTitle, windowWidth, windowHeight, this);
         windowPointer = window.getWindow();
         // c = new ClientThread("10.13.98.152",9000);
         //this.start();
@@ -182,7 +197,7 @@ public class Game {
 
         camera = new Camera(window.getWidth(), window.getHeight());
 
-        hud = new HUD(hudProgramId, window.getWidth(), window.getHeight());
+        hud = new HUD(hudProgramId, window.getWidth(), window.getHeight(), false);
 
         background = new Mesh(0, 0, -10.f, windowWidth, windowHeight, "/textures/grass.png", objectProgramId, 0.1f, 0.1f);
     }
@@ -396,17 +411,15 @@ public class Game {
         {
            player.setVX(player.getVX()+1);
         }
-       if(key == GLFW_KEY_GRAVE_ACCENT) {
-           hud.visible = !hud.visible;
+       if(key == GLFW_KEY_ESCAPE) {
+           if(mainMenu == null) hud.visible = !hud.visible;
        }
 
         hud.keyPressed(key);
+       if(mainMenu != null) mainMenu.keyPressed(key);
     }
 
     public void keyReleased(long window, int key) {
-        if (key == GLFW_KEY_ESCAPE) {
-            close();
-        }
         if(key==GLFW_KEY_W)
         {
             player.setVY(player.getVY()+0.1);
@@ -425,44 +438,101 @@ public class Game {
         }
         player.setVX(0);
         hud.keyReleased(key);
+        if(mainMenu != null) mainMenu.keyReleased(key);
     }
 
     public void mousePressed(long window, int button) {
         hud.mousePressed(button);
+        if(mainMenu != null) mainMenu.mousePressed(button);
     }
 
     public void mouseReleased(long window, int button) {
         hud.mouseReleased(button);
+        if(mainMenu != null) mainMenu.mouseReleased(button);
     }
 
     public void charTyped(long window, char character) {
         hud.charTyped(character);
+        if(mainMenu != null) mainMenu.charTyped(character);
     }
 
-    /**
-     * Called whenever the mouse moves.
-     *
-     * @param window the pointer to the window
-     * @param x      the X position of the mouse, in pixels
-     * @param y      the Y position of the mouse, in pixels
-     */
     public void mouseMoved(long window, double x, double y) {
         //player.setRotation(Math.atan2(y,x)*(180/Math.PI));
         //TODO: handle rotation
         hud.mouseMoved(x, y);
+        if(mainMenu != null) mainMenu.mouseMoved(x, y);
+    }
+
+    public void menu() {
+        mainMenu = new HUD(hudProgramId, windowWidth, windowHeight, true);
+        mainMenu.elements.add(new HUDTextBox(
+                new Mesh(0, 150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 66/256.f, 200/256.f, 86/256.f),
+                new Mesh(0, 150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 86/256.f, 200/256.f, 106/256.f),
+                new Mesh(0, 150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 46/256.f, 200/256.f, 66/256.f),
+                windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Username"));
+        mainMenu.elements.add(new HUDTextBox(
+                new Mesh(0, 50, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 66/256.f, 200/256.f, 86/256.f),
+                new Mesh(0, 50, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 86/256.f, 200/256.f, 106/256.f),
+                new Mesh(0, 50, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 46/256.f, 200/256.f, 66/256.f),
+                windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Address"));
+        mainMenu.elements.add(new HUDButton(
+                new Mesh(0, -50, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 66/256.f, 200/256.f, 86/256.f),
+                new Mesh(0, -50, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 86/256.f, 200/256.f, 106/256.f),
+                new Mesh(0, -50, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 46/256.f, 200/256.f, 66/256.f),
+                windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Join", false));
+        mainMenu.elements.add(new HUDButton(
+                new Mesh(0, -150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 66/256.f, 200/256.f, 86/256.f),
+                new Mesh(0, -150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 86/256.f, 200/256.f, 106/256.f),
+                new Mesh(0, -150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 46/256.f, 200/256.f, 66/256.f),
+                windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Quit Game", false));
+        System.out.println(mainMenu.elements.get(2).getClass());
+        mainMenu.elements.get(2).setCallback("selected", () -> {
+            if(!((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}):([0-9]{1,5})$") || !((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) return;
+            mainMenu.visible = false;
+            setUsername(((HUDTextBox)mainMenu.elements.get(0)).getText());
+            connect(((HUDTextBox)mainMenu.elements.get(1)).getText().split(":")[0],Integer.parseInt(((HUDTextBox)mainMenu.elements.get(1)).getText().split(":")[1]));
+        });
+        mainMenu.elements.get(3).setCallback("selected", () -> {
+            mainMenu.close();
+            close();
+        });
+        double lastRenderTime = glfwGetTime();
+        final double secondsPerFrame = 1.d / framesPerSecond;
+        while (!glfwWindowShouldClose(windowPointer) && ct == null) {
+            glfwPollEvents();
+                glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+                glUseProgram(hudProgramId);
+                Uniforms.setUniform("texture_sampler", 0, hudProgramId);
+                Uniforms.setUniform("projectionMatrix", mainMenu.camera.projectionMatrix, hudProgramId);
+                Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
+                mainMenu.render();
+
+                glUseProgram(0);
+                glfwSwapBuffers(windowPointer);
+            lastRenderTime = glfwGetTime();
+            while (glfwGetTime() - lastRenderTime < secondsPerFrame) ;
+            //System.out.println("FPS: " + (1/sinceRender));
+        }
+        mainMenu.close();
+        System.out.println("run");
     }
 
 
     // use but dont touch
 
     public static void main(String[] args) {
-//        Thread t = new Thread(() -> {
-//            Server s = new Server(9000);
-//            s.listen();
-//        });
-//        t.start();
-        Game g = new Game("127.0.0.1", 9000);
+        Thread t = new Thread(() -> {
+            Server s = new Server(9000);
+            s.listen();
+        });
+        t.start();
+
+        // join menu
+        System.out.println(Thread.currentThread().getName());
+        Game g = new Game(1280, 720, "Game");
         g.init();
+        g.menu();
         g.run();
     }
 }
