@@ -337,7 +337,8 @@ public class Game {
         for(Sprite s: nonStaticSprites) {
             s.step(this);
         }
-        player.mesh.rotate((float)player.getRotation());
+        //(float)player.getRotation()
+        player.mesh.setRotation(player.getRotation());
        // player.setVX(1.6);
 //        System.out.println(player.getVY());
 //        System.out.println(player.getVX());
@@ -396,19 +397,19 @@ public class Game {
     public void keyPressed(long window, int key) {
         if(key==GLFW_KEY_W)
         {
-           player.setVY(0.1);
+           player.setVY(player.getVY()+10);
         }
         if(key==GLFW_KEY_S)
        {
-           player.setVY(player.getVY()-1);
+           player.setVY(player.getVY()-10);
         }
         if(key==GLFW_KEY_A)
         {
-            player.setVX(player.getVX()-1);
+            player.setVX(player.getVX()-10);
         }
        if(key==GLFW_KEY_D)
         {
-           player.setVX(player.getVX()+1);
+           player.setVX(player.getVX()+10);
         }
        if(key == GLFW_KEY_ESCAPE) {
            if(mainMenu == null) hud.visible = !hud.visible;
@@ -456,7 +457,7 @@ public class Game {
     }
 
     public void mouseMoved(long window, double x, double y) {
-         player.setRotation(Math.atan2(y,x)*(180/Math.PI));
+         player.setLocalRotation(10*(float)Math.atan2(y,x));
         //TODO: handle rotation
         hud.mouseMoved(x, y);
         if(mainMenu != null) mainMenu.mouseMoved(x, y);
