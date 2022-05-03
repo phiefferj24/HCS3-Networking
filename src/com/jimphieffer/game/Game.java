@@ -337,7 +337,7 @@ public class Game {
         for(Sprite s: nonStaticSprites) {
             s.step(this);
         }
-
+        player.mesh.rotate((float)player.getRotation());
        // player.setVX(1.6);
 //        System.out.println(player.getVY());
 //        System.out.println(player.getVX());
@@ -396,8 +396,7 @@ public class Game {
     public void keyPressed(long window, int key) {
         if(key==GLFW_KEY_W)
         {
-           player.setVY(player.getVY()+1);
-           //Tiko we need that thing to step bruh we cant do anything if we cant just send string
+           player.setVY(0.1);
         }
         if(key==GLFW_KEY_S)
        {
@@ -457,7 +456,7 @@ public class Game {
     }
 
     public void mouseMoved(long window, double x, double y) {
-         //.rotate(Math.atan2(y,x)*(180/Math.PI));
+         player.setRotation(Math.atan2(y,x)*(180/Math.PI));
         //TODO: handle rotation
         hud.mouseMoved(x, y);
         if(mainMenu != null) mainMenu.mouseMoved(x, y);

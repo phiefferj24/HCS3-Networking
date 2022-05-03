@@ -17,7 +17,7 @@ public class Player extends Sprite{
     private int health;
     private int amtStone = 0;
     private String username;
-
+    private double rotation;
     public Player(double x, double y, int width, int height, String image, UUID id,
                   double velocityX, double velocityY, String username)
     {
@@ -64,6 +64,15 @@ public class Player extends Sprite{
     public String getUsername(){return username;}
 
     public void setHealth(int health){this.health=health;}
+
+    public void setRotation(double angle)
+    {
+        rotation=angle;
+    }
+    public double getRotation()
+    {
+        return rotation;
+    }
 
     public void step(Game game)
     {
