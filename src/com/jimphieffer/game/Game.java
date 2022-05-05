@@ -146,6 +146,7 @@ public class Game {
         System.out.println("thisRAN");
         System.out.println("message to game: " + message);
         if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
+            System.out.println("capitolbiludoing");
             message = message.substring(message.indexOf(":"), message.length());
             message = message.substring(1, message.length());
             String[] loc = message.split(",");
@@ -155,7 +156,7 @@ public class Game {
             player.setVY(Double.parseDouble(loc[3]));
         }
         if (Message.getType(message).equals(Message.MessageType.SPRITE))
-        {
+        {   System.out.println("blowup");
 
             for(String s: message.split(","))
             {
@@ -330,7 +331,7 @@ public class Game {
 
     private void tick(double deltaTime) {
 
-       ct.relay(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
+       //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
         float mod = 10;
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
@@ -345,7 +346,7 @@ public class Game {
         {
             bruh+=s.toString() + ",";
         }
-        ct.relay(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
     }
 
 
@@ -519,6 +520,7 @@ public class Game {
             //System.out.println("FPS: " + (1/sinceRender));
         }
         mainMenu.close();
+        mainMenu = null;
         System.out.println("run");
     }
 
