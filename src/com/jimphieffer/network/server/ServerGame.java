@@ -25,13 +25,18 @@ public class ServerGame extends Thread {
 
     public void run()
     {
-        String bruh = "";
-        for (Sprite s: sprites)
-        {
-            bruh+=s.toString() + ",";
-        }
-        server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
 
+        while(true)
+        {
+            System.out.println("sending?");
+            String bruh = "";
+            for (Sprite s: sprites)
+            {
+                bruh+=s.toString() + ",";
+            }
+            server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+
+        }
 
     }
 
