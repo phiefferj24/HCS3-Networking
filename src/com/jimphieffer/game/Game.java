@@ -113,6 +113,15 @@ public class Game {
         //Player dupe=player.set(VX)
         //ct.send(Message.encode());
 
+        /*
+        String bruh = "";
+        for (Sprite s: sprites)
+        {
+          //  s.step(this);
+            bruh+=s.toString() + ",";
+        }
+
+        */
 
 
         close();
@@ -148,9 +157,6 @@ public class Game {
         if (Message.getType(message).equals(Message.MessageType.SPRITE))
         {
 
-            System.out.println();
-            System.out.println();
-            System.out.println(message);
             for(String s: message.split(","))
             {
                 sprites.add(Sprite.stringToSprite(s));
@@ -188,8 +194,6 @@ public class Game {
         sprites = new ArrayList<>();
         player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
         sprites.add(player);
-
-
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -326,9 +330,7 @@ public class Game {
 
     private void tick(double deltaTime) {
 
-
-
-
+       // ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
         float mod = 10;
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
@@ -343,6 +345,7 @@ public class Game {
 //        System.out.println(player.getVX());
 
         //player.step(this);
+        //player.step(this);
 
 
 
@@ -355,6 +358,13 @@ public class Game {
         ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
 
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
+        String bruh = "";
+        for (Sprite s: sprites)
+        {
+            //  s.step(this);
+            bruh+=s.toString() + ",";
+        }
+        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
     }
 
 

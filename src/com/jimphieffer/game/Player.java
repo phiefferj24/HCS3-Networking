@@ -69,7 +69,7 @@ public class Player extends Sprite{
     {
         rotation=angle;
     }
-    public float getRotation()
+    public float getLocalRotation()
     {
         return rotation;
     }
