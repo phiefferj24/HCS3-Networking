@@ -507,7 +507,7 @@ public class Game {
                 windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Quit Game", false));
         System.out.println(mainMenu.elements.get(2).getClass());
         mainMenu.elements.get(2).setCallback("selected", () -> {
-            if(((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^(([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}))|localhost:([0-9]{1,5})$") && ((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) {
+            if(((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^((([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}))|localhost):([0-9]{1,5})$") && ((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) {
                 mainMenu.visible = false;
                 setUsername(((HUDTextBox) mainMenu.elements.get(0)).getText());
                 connect(((HUDTextBox) mainMenu.elements.get(1)).getText().split(":")[0], Integer.parseInt(((HUDTextBox) mainMenu.elements.get(1)).getText().split(":")[1]));
