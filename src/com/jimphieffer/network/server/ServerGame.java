@@ -18,7 +18,6 @@ public class ServerGame extends Thread {
 
     public ServerGame(Server server) {
         sprites = new ArrayList<>();
-        sprites.add(new Pig(400,400));
         spritesNames = new ArrayList<>();
         this.server = server;
     }
@@ -83,7 +82,7 @@ public class ServerGame extends Thread {
                                 break;
                             Player player = (Player)sprites.get(i);
 
-
+                            System.out.println("itgetstotis");
                             if(!player.touchingAfterDisplacement(sprites.get(j),vx,vy))
                             {
                                 server.send(Message.encode("SUCCESS",Message.MessageProtocol.SEND,Message.MessageType.CONNECT),socket);

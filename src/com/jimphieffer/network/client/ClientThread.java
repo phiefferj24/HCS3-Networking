@@ -59,7 +59,7 @@ public class ClientThread extends Thread{
     }
     public void send(String message) {
         output.println(Message.encode(message, Message.MessageProtocol.SEND, Message.MessageType.MESSAGE));
-        System.out.println("Sent: " + message);
+       //System.out.println("Sent: " + message);
     }
     public void relay(String message) {
         output.println(Message.encode(message, Message.MessageProtocol.RELAY, Message.MessageType.MESSAGE));

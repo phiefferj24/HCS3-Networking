@@ -143,7 +143,7 @@ public class Game {
     }
 
     public void onMessage(String message) {
-
+        System.out.println("thisRAN");
         System.out.println("message to game: " + message);
         if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
             message = message.substring(message.indexOf(":"), message.length());
@@ -330,41 +330,22 @@ public class Game {
 
     private void tick(double deltaTime) {
 
-       // ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
+       ct.relay(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
         float mod = 10;
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
        // meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
-        for(Sprite s: nonStaticSprites) {
+        for(Sprite s: sprites) {
             s.step(this);
         }
-        //(float)player.getRotation()
-        //player.mesh.setRotation(player.getRotation());
-       // player.setVX(1.6);
-//        System.out.println(player.getVY());
-//        System.out.println(player.getVX());
-
-        //player.step(this);
-        //player.step(this);
-
-
-
-        String bruh = "";
-        for (Sprite s:  sprites)
-        {
-            //  s.step(this);
-            bruh+=s.toString() + ",";
-        }
-        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-
+        player.mesh.setRotation(player.getLocalRotation());
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
-        //String bruh = "";
+        String bruh = "";
         for (Sprite s: sprites)
         {
-            //  s.step(this);
             bruh+=s.toString() + ",";
         }
-        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+        ct.relay(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
     }
 
 
@@ -477,7 +458,9 @@ public class Game {
     }
 
     public void mouseMoved(long window, double x, double y) {
-         player.setLocalRotation(10*(float)Math.atan2(y,x));
+        float angely = (float)Math.atan2(y,x);
+         player.setLocalRotation((float)(360*angely));
+         //System.out.println(angely);
         //TODO: handle rotation
         hud.mouseMoved(x, y);
         if(mainMenu != null) mainMenu.mouseMoved(x, y);
@@ -507,11 +490,10 @@ public class Game {
                 windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Quit Game", false));
         System.out.println(mainMenu.elements.get(2).getClass());
         mainMenu.elements.get(2).setCallback("selected", () -> {
-            if(((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^(([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}))|localhost:([0-9]{1,5})$") && ((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) {
-                mainMenu.visible = false;
-                setUsername(((HUDTextBox) mainMenu.elements.get(0)).getText());
-                connect(((HUDTextBox) mainMenu.elements.get(1)).getText().split(":")[0], Integer.parseInt(((HUDTextBox) mainMenu.elements.get(1)).getText().split(":")[1]));
-            }
+            if(!((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}):([0-9]{1,5})$") || !((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) return;
+            mainMenu.visible = false;
+            setUsername(((HUDTextBox)mainMenu.elements.get(0)).getText());
+            connect(((HUDTextBox)mainMenu.elements.get(1)).getText().split(":")[0],Integer.parseInt(((HUDTextBox)mainMenu.elements.get(1)).getText().split(":")[1]));
         });
         mainMenu.elements.get(3).setCallback("selected", () -> {
             mainMenu.close();
@@ -536,7 +518,6 @@ public class Game {
             //System.out.println("FPS: " + (1/sinceRender));
         }
         mainMenu.close();
-        mainMenu = null;
         System.out.println("run");
     }
 
@@ -551,6 +532,7 @@ public class Game {
         t.start();
 
         // join menu
+        System.out.println(Thread.currentThread().getName());
         Game g = new Game(1280, 720, "Game");
         g.init();
         g.menu();
