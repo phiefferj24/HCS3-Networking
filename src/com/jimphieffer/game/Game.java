@@ -119,7 +119,7 @@ public class Game {
           //  s.step(this);
             bruh+=s.toString() + ",";
         }
-        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+
         */
 
 
@@ -190,9 +190,9 @@ public class Game {
 
         // }
 
-
+        sprites = new ArrayList<>();
         player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
-
+        sprites.add(player);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -329,7 +329,7 @@ public class Game {
 
     private void tick(double deltaTime) {
 
-        //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
+       // ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
         float mod = 10;
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
@@ -338,13 +338,20 @@ public class Game {
             s.step(this);
         }
         //(float)player.getRotation()
-        player.mesh.setRotation(player.getRotation());
+        player.mesh.setRotation(player.getLocalRotation());
        // player.setVX(1.6);
 //        System.out.println(player.getVY());
 //        System.out.println(player.getVX());
 
-        player.step(this);
+        //player.step(this);
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
+        String bruh = "";
+        for (Sprite s: sprites)
+        {
+            //  s.step(this);
+            bruh+=s.toString() + ",";
+        }
+        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
     }
 
 
@@ -457,7 +464,9 @@ public class Game {
     }
 
     public void mouseMoved(long window, double x, double y) {
-         player.setLocalRotation(10*(float)Math.atan2(y,x));
+        float angely = (float)Math.atan2(y,x);
+         player.setLocalRotation(10*angely);
+         System.out.println(angely);
         //TODO: handle rotation
         hud.mouseMoved(x, y);
         if(mainMenu != null) mainMenu.mouseMoved(x, y);
