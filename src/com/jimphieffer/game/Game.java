@@ -339,7 +339,7 @@ public class Game {
             s.step(this);
         }
         //(float)player.getRotation()
-        player.mesh.setRotation(player.getRotation());
+        //player.mesh.setRotation(player.getRotation());
        // player.setVX(1.6);
 //        System.out.println(player.getVY());
 //        System.out.println(player.getVX());
@@ -358,7 +358,7 @@ public class Game {
         ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
 
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
-        String bruh = "";
+        //String bruh = "";
         for (Sprite s: sprites)
         {
             //  s.step(this);
@@ -507,10 +507,11 @@ public class Game {
                 windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Quit Game", false));
         System.out.println(mainMenu.elements.get(2).getClass());
         mainMenu.elements.get(2).setCallback("selected", () -> {
-            if(!((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}):([0-9]{1,5})$") || !((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) return;
-            mainMenu.visible = false;
-            setUsername(((HUDTextBox)mainMenu.elements.get(0)).getText());
-            connect(((HUDTextBox)mainMenu.elements.get(1)).getText().split(":")[0],Integer.parseInt(((HUDTextBox)mainMenu.elements.get(1)).getText().split(":")[1]));
+            if(((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^(([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}))|localhost:([0-9]{1,5})$") && ((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) {
+                mainMenu.visible = false;
+                setUsername(((HUDTextBox) mainMenu.elements.get(0)).getText());
+                connect(((HUDTextBox) mainMenu.elements.get(1)).getText().split(":")[0], Integer.parseInt(((HUDTextBox) mainMenu.elements.get(1)).getText().split(":")[1]));
+            }
         });
         mainMenu.elements.get(3).setCallback("selected", () -> {
             mainMenu.close();
@@ -535,6 +536,7 @@ public class Game {
             //System.out.println("FPS: " + (1/sinceRender));
         }
         mainMenu.close();
+        mainMenu = null;
         System.out.println("run");
     }
 
@@ -549,7 +551,6 @@ public class Game {
         t.start();
 
         // join menu
-        System.out.println(Thread.currentThread().getName());
         Game g = new Game(1280, 720, "Game");
         g.init();
         g.menu();

@@ -32,7 +32,7 @@ public class HUD {
         //print camera's projection matrix width and height
 //        mouseX = x / (windowWidth / 2.) - 1;
 //        mouseY = - y / (windowHeight / 2.) + 1;
-        elements.forEach(hudElement -> hudElement.mouseMoved(mouseX, mouseY));
+        if(visible) elements.forEach(hudElement -> hudElement.mouseMoved(mouseX, mouseY));
     }
     public void setScreenSize(int width, int height) {
         windowWidth = width;
@@ -41,19 +41,19 @@ public class HUD {
         elements.forEach(hudElement -> hudElement.setScreenSize(width, height));
     }
     public void mousePressed(int button) {
-        elements.forEach(hudElement -> hudElement.mousePressed(button));
+        if(visible) elements.forEach(hudElement -> hudElement.mousePressed(button));
     }
     public void mouseReleased(int button) {
-        elements.forEach(hudElement -> hudElement.mouseReleased(button));
+        if(visible) elements.forEach(hudElement -> hudElement.mouseReleased(button));
     }
     public void keyPressed(int key) {
-        elements.forEach(hudElement -> hudElement.keyPressed(key));
+        if(visible) elements.forEach(hudElement -> hudElement.keyPressed(key));
     }
     public void keyReleased(int key) {
-        elements.forEach(hudElement -> hudElement.keyReleased(key));
+        if(visible) elements.forEach(hudElement -> hudElement.keyReleased(key));
     }
     public void charTyped(char c) {
-        elements.forEach(hudElement -> hudElement.charTyped(c));
+        if(visible) elements.forEach(hudElement -> hudElement.charTyped(c));
     }
     public void close() { elements.forEach(HUDElement::close); }
 }

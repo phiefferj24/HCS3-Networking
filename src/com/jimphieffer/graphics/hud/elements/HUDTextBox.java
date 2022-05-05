@@ -67,12 +67,12 @@ public class HUDTextBox extends HUDElement {
             selected = hovered;
         }
         if (callbacks.get("mousePressed") != null) callbacks.get("mousePressed").run();
-        if (!callbackForSelect && selected && callbacks.get("selected") != null) {
-            callbacks.get("selected").run();
+        if (!callbackForSelect && selected) {
+            if(callbacks.get("selected") != null) callbacks.get("selected").run();
             callbackForSelect = true;
         }
-        if (callbackForSelect && !selected && callbacks.get("unselected") != null) {
-            callbacks.get("unselected").run();
+        if (callbackForSelect && !selected) {
+            if(callbacks.get("unselected") != null) callbacks.get("unselected").run();
             callbackForSelect = false;
         }
     }
@@ -83,12 +83,12 @@ public class HUDTextBox extends HUDElement {
         mouseY = y;
         hovered = bounds.contains((float) mouseX, (float) mouseY);
         if (callbacks.get("mouseMoved") != null) callbacks.get("mouseMoved").run();
-        if (!callbackForHover && hovered && callbacks.get("hovered") != null) {
-            callbacks.get("hovered").run();
+        if (!callbackForHover && hovered) {
+            if(callbacks.get("hovered") != null) callbacks.get("hovered").run();
             callbackForHover = true;
         }
-        if (callbackForHover && !hovered && callbacks.get("unhovered") != null) {
-            callbacks.get("unhovered").run();
+        if (callbackForHover && !hovered) {
+            if(callbacks.get("unhovered") != null) callbacks.get("unhovered").run();
             callbackForHover = false;
         }
     }
