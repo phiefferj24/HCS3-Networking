@@ -1,4 +1,4 @@
-package com.jimphieffer.game.objects;
+package com.jimphieffer.game;
 
 import com.jimphieffer.game.Game;
 import com.jimphieffer.game.Sprite;
@@ -53,6 +53,10 @@ public class NonStatic extends Sprite {
     {
 
         return vy;
+    }
+
+    public String getClassType(){
+        return "NonStatic";
     }
 
     public void setVY(double velocityY)

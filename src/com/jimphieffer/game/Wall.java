@@ -1,4 +1,4 @@
-package com.jimphieffer.game.objects;
+package com.jimphieffer.game;
 
 import java.util.UUID;
 

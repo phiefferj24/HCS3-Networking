@@ -1,11 +1,12 @@
 package com.jimphieffer.game.objects;
 
+import com.jimphieffer.game.NonStatic;
+
 import java.util.UUID;
 
-import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
-public class Pig extends NonStatic{
+public class Pig extends NonStatic {
     private int health;
 
     public Pig(double x, double y, int width, int height, String image, UUID id,

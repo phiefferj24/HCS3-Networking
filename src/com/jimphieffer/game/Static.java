@@ -1,4 +1,4 @@
-package com.jimphieffer.game.objects;
+package com.jimphieffer.game;
 
 import com.jimphieffer.game.Sprite;
 import com.jimphieffer.graphics.Mesh;
@@ -23,6 +23,14 @@ public class Static extends Sprite {
 
     }
 
+    public String getClassType(){
+        return "Static";
+    }
+    public void step(Game game)
+    {
+        super.step(game);
+    }
+
     //public String getType() { return type;}
 
 
@@ -30,7 +38,7 @@ public class Static extends Sprite {
     //(String image, double x, double y, int width, int height, double angle, int programID)
     public String toString()
     {
-        return "[" + "NONSTATIC" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";" + "]";
+        return "[" + "STATIC" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";" + "]";
     }
 
 }

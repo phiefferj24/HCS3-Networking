@@ -1,8 +1,6 @@
 package com.jimphieffer.game;
 
-import com.jimphieffer.game.objects.NonStatic;
 import com.jimphieffer.game.objects.Pig;
-import com.jimphieffer.game.objects.Static;
 import com.jimphieffer.graphics.Mesh;
 
 import java.util.UUID;
@@ -10,7 +8,7 @@ import java.util.UUID;
 import static java.lang.Double.*;
 import static java.lang.Integer.*;
 
-public class Sprite
+public abstract class Sprite
 {
     private double x;  //the x-coordinate of the left edge of the sprite
     private double y;   //the y-coordinate of the top edge of the sprite
@@ -177,6 +175,10 @@ public class Sprite
         return id;
     }
 
+    public String getClassType(){
+        return "Sprite";
+    }
+
     public void setID(UUID id)
     {
         this.id = id;
@@ -226,14 +228,14 @@ public class Sprite
 
     public static Sprite stringToSprite(String s)
     {
-        s= s.substring(1,s.length()-1);
+        s= s.substring(s.indexOf('[')+1,s.length()-1);
         String[] onGuh = s.split(";");
         return switch (onGuh[0]) {
             case "PLAYER"       -> new Player(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
             case "PIG"          -> new Pig(         onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
             case "NONSTATIC"    -> new NonStatic(   onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8]);
             case "STATIC"       -> new Static(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6]);
-            default             -> new Sprite(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6]);
+            default             -> new Static(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6]);
         };
     }
 }

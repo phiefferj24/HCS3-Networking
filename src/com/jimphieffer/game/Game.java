@@ -1,7 +1,6 @@
 package com.jimphieffer.game;
 
 import com.jimphieffer.Message;
-import com.jimphieffer.game.objects.NonStatic;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.Uniforms;
 import com.jimphieffer.graphics.hud.HUD;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 import java.lang.String;
+import java.util.UUID;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -60,6 +60,9 @@ public class Game {
     private ArrayList<Sprite> staticSprites;
     private ArrayList<Sprite> nonStaticSprites;
     private boolean[] keys = new boolean[6];
+    private boolean started=false;
+    private boolean newRound=false;
+    private UUID waitingScreen;
 
     private Camera camera;
 
@@ -148,7 +151,6 @@ public class Game {
         System.out.println("--------------------MESSAGE TO " + player.getUsername() + "-------------------");
         System.out.println("message to game: " + message);
         if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
-            System.out.println("capitolbiludoing");
             message = message.substring(message.indexOf(":"), message.length());
             message = message.substring(1, message.length());
             String[] loc = message.split(",");
@@ -336,18 +338,88 @@ public class Game {
     }
 
     private void tick(double deltaTime) {
-
-       //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
-        float mod = 10;
-        int dirx = keys[0] ? 1 : -1;
-        int diry = keys[3] ? 1 : -1;
-       // meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
-        for(Sprite s: sprites) {
-            s.step(this);
+        //Static(double x, double y, int width, int height, String image, UUID id) /
+        int numPlayers=0;
+        for(int i=0; i<sprites.size(); i++) {
+            if(sprites.get(i).getClassType()=="Player")
+                numPlayers++;
+            /*
+            if(sprites.get(i).getClassType()=="Static")
+                System.out.println(sprites.get(i).getImage());
+            */
         }
-        player.step(this);
-        ct.send(Message.encode(player.toString(),Message.MessageProtocol.SEND,Message.MessageType.MOVEMENT));
-        player.mesh.setRotation(player.getLocalRotation());
+        if(numPlayers>=2)
+        {
+            started=true;
+        }
+        if(!started)
+        {
+            waitingScreen= UUID.randomUUID();
+            sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
+            //TextBox waiting = new TextBox(hudProgramId, )
+            System.out.println("getsToHere");
+            if(numPlayers>=2){
+                started=true;
+                newRound=true;
+            }
+            for(Sprite s:sprites)
+            {
+                if(s.getClassType()=="Static")
+                s.step(this);
+                ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+            }
+        }
+        else {
+            System.out.println("Thisruns??");
+            if (newRound)
+            {
+                for(Sprite s:sprites)
+                {
+                    if(s.getID()==waitingScreen)
+                    {
+                        sprites.remove(s);
+                        s.mesh.close();
+                    }
+                    else if(s.getClassType()=="Player") {
+                        s.setX(windowWidth * Math.random());
+                        s.setY(windowWidth * Math.random());
+                       // s.setHealth(100);
+                        //Tiko this is the line:
+                        ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                        player.mesh.setRotation(player.getLocalRotation());
+                        s.step(this);
+                    }
+                    else if(s.getClassType()=="Static")
+                    {
+                        s.setX(windowWidth * Math.random());
+                        s.setY(windowWidth * Math.random());
+                        //Tiko this is the line:
+                        ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                        s.step(this);
+                    }
+                    else {
+                        s.step(this);
+                    }
+                }
+            }
+            else
+            {
+                System.out.println("thisacctuallyworks");
+                for(Sprite s:sprites)
+                {
+                    s.step(this);
+                    ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                    player.mesh.setRotation(player.getLocalRotation());
+                }
+            }
+            newRound=false;
+        }
+        //float mod = 10;
+       // int dirx = keys[0] ? 1 : -1;
+       // int diry = keys[3] ? 1 : -1;
+       // meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
+        //player.step(this);
+
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
         /*
         String bruh = "";

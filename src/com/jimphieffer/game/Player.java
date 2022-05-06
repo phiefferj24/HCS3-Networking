@@ -25,7 +25,7 @@ public class Player extends Sprite{
         vx = velocityX;
         vy = velocityY;
         health  = 15;
-       this.username = username + this.hashCode();
+       this.username = username + id;
     }
 
     public Player(String x, String y, String width, String height, String image, String id,
@@ -35,7 +35,7 @@ public class Player extends Sprite{
         vx = parseDouble(velocityX);
         vy = parseDouble(velocityY);
         health  = 15;
-        this.username = username + this.hashCode();
+        this.username = username;
 
     }
 
@@ -62,6 +62,10 @@ public class Player extends Sprite{
     public int getHealth(){return health;}
 
     public String getUsername(){return username;}
+
+    public String getClassType(){
+        return "Player";
+    }
 
     public void setHealth(int health){this.health=health;}
 
