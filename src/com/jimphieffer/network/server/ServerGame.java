@@ -18,6 +18,7 @@ public class ServerGame extends Thread {
 
     public ServerGame(Server server) {
         sprites = new ArrayList<>();
+        sprites.add(new Pig(100,100));
         spritesNames = new ArrayList<>();
         this.server = server;
     }
@@ -40,19 +41,30 @@ public class ServerGame extends Thread {
     }
 
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
-        System.out.println("Server Recieved Message");
+        System.out.println("===============================MESSAGE TO SERVER===============================");
+
+        if(message.contains("/") && message.contains(":"))
+            type = Message.MessageType.SPRITE;
+
+        System.out.println("message: " + message);
+
+
+
         if(protocol== Message.MessageProtocol.SEND)
         {
-            System.out.println("Client Thread Recieved a send message");
-            System.out.println("message to server: " + message);
+
             //CONNECT: USERNAME
             if (type == Message.MessageType.CONNECT)
             {
 
                 //todo if(name doesnt already exist) {
-                sprites.add(new Player(50,50,50,50,"src/com/jimphieffer/game/sprites/player.png",null,0,0,message));
-                spritesNames.add(message);
-                server.send(Message.encode("SUCCESS",Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
+                StringBuilder bruh = new StringBuilder();
+                for (Sprite s: sprites)
+                {
+                    bruh.append(s.toString()).append(",");
+                }
+                server.send(Message.encode(bruh.toString(), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
+
                 //} else {send message FAILED}
             }
             else if (type == Message.MessageType.DISCONNECT)
@@ -66,9 +78,8 @@ public class ServerGame extends Thread {
                     }
                 }
             }//protocol == Message.MessageProtocol.SEND
-            else if (type == Message.MessageType.SPRITE)//username,x,y,vy,vy
+            else if (type == Message.MessageType.MOVEMENT)//username,x,y,vy,vy
             {
-                System.out.println("itgetshere");
                String[] locs =  message.split(",");
                String username = locs[0];
                double curX = Double.parseDouble(locs[1]);
@@ -97,11 +108,20 @@ public class ServerGame extends Thread {
             }
             else if (type == Message.MessageType.SPRITE)
             {
+                System.out.println("SPRITE ran");
                 sprites.clear();
                 for(String s: message.split(","))
                 {
                     sprites.add(Sprite.stringToSprite(s));
                 }
+
+                String bruh = "";
+                for (Sprite s: sprites)
+                {
+                    bruh+=s.toString() + ",";
+                }
+                server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+
             }
         }
         else if (protocol== Message.MessageProtocol.RELAY)
@@ -113,6 +133,10 @@ public class ServerGame extends Thread {
             System.out.println("tried an illegal protocol");
         }
 
+        System.out.println("=============================================================================================");
+
+        System.out.println();
+        System.out.println();
 
     }
 }

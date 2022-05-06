@@ -55,7 +55,7 @@ public class Game {
 
     private ArrayList<Mesh> meshes;
     private HUD hud;
-    private ArrayList<Sprite> sprites;
+    private ArrayList<Sprite> sprites = new ArrayList<>();
     private ArrayList<Sprite> staticSprites;
     private ArrayList<Sprite> nonStaticSprites;
     private boolean[] keys = new boolean[6];
@@ -146,7 +146,16 @@ public class Game {
     public void onMessage(String message) {
         System.out.println("--------------------MESSAGE TO " + player.getUsername() + "-------------------");
         System.out.println("message to game: " + message);
-        if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
+        if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
+            System.out.println("CONNECT ran");
+
+            for(String s: message.split(","))
+            {
+                sprites.add(Sprite.stringToSprite(s));
+            }
+            sprites.add(player);
+        }
+        else if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
             System.out.println("capitolbiludoing");
             message = message.substring(message.indexOf(":"), message.length());
             message = message.substring(1, message.length());
@@ -156,9 +165,10 @@ public class Game {
             player.setVX(Double.parseDouble(loc[2]));
             player.setVY(Double.parseDouble(loc[3]));
         }
-        if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE))
+        else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE))
         {
             System.out.println("SPRITE ran");
+            sprites.clear();
 
             for(String s: message.split(","))
             {
@@ -199,7 +209,6 @@ public class Game {
 
         sprites = new ArrayList<>();
         player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
-        sprites.add(player);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -344,11 +353,11 @@ public class Game {
         for(Sprite s: sprites) {
             s.step(this);
         }
-        player.step(this);
-        ct.send(Message.encode(player.toString(),Message.MessageProtocol.SEND,Message.MessageType.MOVEMENT));
+        //player.step(this);
+        //ct.send(Message.encode(player.toString(),Message.MessageProtocol.SEND,Message.MessageType.MOVEMENT));
         player.mesh.setRotation(player.getLocalRotation());
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
-        /*
+
         String bruh = "";
         for (Sprite s: sprites)
         {
@@ -356,7 +365,7 @@ public class Game {
 
         }
         ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-        */
+
 
     }
 
@@ -394,7 +403,9 @@ public class Game {
 
         player.mesh.render();
 
-        meshes.forEach(Mesh::render);
+        sprites.forEach(sprite -> {
+            if(sprite.mesh != null) sprite.mesh.render();
+        });
 
         glUseProgram(0);
 

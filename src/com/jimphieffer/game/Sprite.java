@@ -195,7 +195,8 @@ public class Sprite
 
     public void step(Game game)
     {
-        mesh.translate((float) x, (float) y, 0);
+        if(mesh!=null)
+            mesh.translate((float) x, (float) y, 0);
         //do NOT insert any code here
     }
 
@@ -226,8 +227,9 @@ public class Sprite
 
     public static Sprite stringToSprite(String s)
     {
-        s= s.substring(1,s.length()-1);
+        s= s.substring(s.indexOf('[')+1,s.length()-1);
         String[] onGuh = s.split(";");
+        System.out.println(onGuh[0]);
         return switch (onGuh[0]) {
             case "PLAYER"       -> new Player(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
             case "PIG"          -> new Pig(         onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
