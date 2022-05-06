@@ -5,6 +5,7 @@ import com.jimphieffer.game.objects.NonStatic;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.Uniforms;
 import com.jimphieffer.graphics.hud.HUD;
+import com.jimphieffer.graphics.hud.TextBox;
 import com.jimphieffer.graphics.hud.elements.HUDButton;
 import com.jimphieffer.graphics.hud.elements.HUDTextBox;
 import com.jimphieffer.network.client.ClientThread;
