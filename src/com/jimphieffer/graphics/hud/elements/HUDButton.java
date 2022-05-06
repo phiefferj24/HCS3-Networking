@@ -37,11 +37,11 @@ public class HUDButton extends HUDElement {
         textMeshes = new ArrayList<>();
         this.textUtilities = new TextUtilities(font, 1);
         for(int i = 0; i < text.length(); i++) {
-            float x = mesh.x + TextUtilities.getCombinedWidth(text, textUtilities) / 16 * mesh.height;
+            float x = mesh.x + TextUtilities.getCombinedWidth(text.substring(0, i), textUtilities) / 16 * mesh.height;
             float y = mesh.y;
             char c = text.charAt(i);
             textMeshes.forEach(mesh1 -> {
-                mesh1.translate(-textUtilities.getWidth(c)/8*this.mesh.height/2, 0, 0);
+                mesh1.translate(-textUtilities.getWidth(c)/16*mesh.height, 0, 0);
             });
             textMeshes.add(new TextMesh(c, font, x, y, 0.5f, mesh.height/2, textUtilities, programId));
         }
