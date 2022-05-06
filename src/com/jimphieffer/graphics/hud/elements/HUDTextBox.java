@@ -4,15 +4,18 @@ import com.jimphieffer.game.Game;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.hud.FloatRectangle;
 import com.jimphieffer.graphics.hud.TextMesh;
+import com.jimphieffer.utils.TextUtilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.IntStream;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class HUDTextBox extends HUDElement {
 
     private String text = "";
+    private TextUtilities textUtilities;
     private Mesh selectedMesh;
     private Mesh hoverMesh;
     private boolean selected = false;
@@ -33,12 +36,15 @@ public class HUDTextBox extends HUDElement {
         this.windowHeight = windowHeight;
         this.programId = programId;
         this.font = font;
+        this.textUtilities = new TextUtilities(font, 1);
+        float textWidth = TextUtilities.getCombinedWidth(placeholder, textUtilities) / 8 * mesh.height;
         for(int i = 0; i < placeholder.length(); i++) {
-            float x = mesh.x + (mesh.height * placeholder.length()) / 2 - mesh.height / 2;
+            float offset = TextUtilities.getCombinedWidth(placeholder.substring(0, i + 1), textUtilities) / 8 * mesh.height;
+            float x = mesh.x + offset - textWidth / 2;
             float y = mesh.y;
-            placeholderTextMeshes.forEach(mesh1 -> mesh1.translate(-mesh1.height*2, 0, 0));
-            placeholderTextMeshes.add(new TextMesh(placeholder.charAt(i), font, x, y, 0.5f, mesh.height/2, mesh.height/2, programId));
+            placeholderTextMeshes.add(new TextMesh(placeholder.charAt(i), font, x, y, 0.5f, mesh.height / 2, textUtilities, programId));
         }
+        //IntStream.range(0, placeholderTextMeshes.size()).forEach(i -> placeholderTextMeshes.get(i).translate(-TextUtilities.getCombinedWidth(placeholderTextMeshes, i, placeholder.length()) * 2, 0, 0));
     }
 
     public String getText() {
@@ -94,16 +100,16 @@ public class HUDTextBox extends HUDElement {
     }
     public void charTyped(char c) {
         if(selected) {
-            if((text.length() + 1) * mesh.height > Math.abs(bounds.x2 - bounds.x1) - mesh.height) {
+            if(TextUtilities.getCombinedWidth(text, textUtilities)/8*mesh.height> Math.abs(bounds.x2 - bounds.x1) - mesh.height) {
                 return;
             }
-            setText(getText() + c);
-            float x = mesh.x + (mesh.height * text.length()) / 2 - mesh.height / 2;
+            float x = mesh.x + TextUtilities.getCombinedWidth(text, textUtilities) / 16 * mesh.height;
             float y = mesh.y;
             textMeshes.forEach(mesh -> {
-                mesh.translate(-mesh.height, 0, 0);
+                mesh.translate(-textUtilities.getWidth(c)/8*this.mesh.height/2, 0, 0);
             });
-            textMeshes.add(new TextMesh(c, font, x, y, 0.5f, mesh.height/2, mesh.height/2, programId));
+            textMeshes.add(new TextMesh(c, font, x, y, 0.5f, mesh.height/2, textUtilities, programId));
+            setText(getText() + c);
         }
         if (callbacks.get("charTyped") != null) callbacks.get("charTyped").run();
     }
@@ -112,9 +118,9 @@ public class HUDTextBox extends HUDElement {
         if (selected) {
             if (key == GLFW_KEY_BACKSPACE || key == GLFW_KEY_DELETE) {
                 if (text.length() > 0) {
-                    setText(getText().substring(0, getText().length() - 1));
                     textMeshes.remove(textMeshes.size() - 1).close();
-                    textMeshes.forEach(mesh -> mesh.translate(mesh.height, 0, 0));
+                    textMeshes.forEach(mesh -> mesh.translate(textUtilities.getWidth(text.charAt(text.length() - 1))/8*this.mesh.height/2, 0, 0));
+                    setText(getText().substring(0, getText().length() - 1));
                 }
             }
         }

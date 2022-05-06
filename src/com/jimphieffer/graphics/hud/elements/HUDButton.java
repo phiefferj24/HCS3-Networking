@@ -4,9 +4,11 @@ import com.jimphieffer.game.Game;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.hud.FloatRectangle;
 import com.jimphieffer.graphics.hud.TextMesh;
+import com.jimphieffer.utils.TextUtilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.IntStream;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -18,10 +20,11 @@ public class HUDButton extends HUDElement {
     private boolean callbackForSelect = false;
     private Mesh hoverMesh;
     private Mesh selectedMesh;
-    private ArrayList<Mesh> textMeshes;
+    private ArrayList<TextMesh> textMeshes;
     private String text;
     private int programId;
     private boolean holdsState;
+    private TextUtilities textUtilities;
     public HUDButton(Mesh mesh, Mesh hoverMesh, Mesh selectedMesh, int windowWidth, int windowHeight, int programId, String font, String text, boolean holdsState) {
         super.mesh = mesh;
         this.hoverMesh = hoverMesh;
@@ -32,11 +35,15 @@ public class HUDButton extends HUDElement {
         this.text = text;
         this.programId = programId;
         textMeshes = new ArrayList<>();
+        this.textUtilities = new TextUtilities(font, 1);
         for(int i = 0; i < text.length(); i++) {
-            float x = mesh.x + (mesh.height * text.length()) / 2 - mesh.height / 2;
+            float x = mesh.x + TextUtilities.getCombinedWidth(text, textUtilities) / 16 * mesh.height;
             float y = mesh.y;
-            textMeshes.forEach(mesh1 -> mesh1.translate(-mesh1.height * 2, 0, 0));
-            textMeshes.add(new TextMesh(text.charAt(i), font, x, y, 0.5f, mesh.height/2, mesh.height/2, programId));
+            char c = text.charAt(i);
+            textMeshes.forEach(mesh1 -> {
+                mesh1.translate(-textUtilities.getWidth(c)/8*this.mesh.height/2, 0, 0);
+            });
+            textMeshes.add(new TextMesh(c, font, x, y, 0.5f, mesh.height/2, textUtilities, programId));
         }
         this.holdsState = holdsState;
     }
@@ -82,6 +89,7 @@ public class HUDButton extends HUDElement {
         if (selected) selectedMesh.render();
         else if(hovered) hoverMesh.render();
         else mesh.render();
+        textMeshes.forEach(TextMesh::render);
     }
 
     public void close() {

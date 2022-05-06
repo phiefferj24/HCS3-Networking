@@ -2,10 +2,7 @@ package com.jimphieffer.utils;
 
 
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.stream.Collectors;
@@ -18,5 +15,13 @@ public class FileUtilities {
             e.printStackTrace();
         }
         return "";
+    }
+    public static byte[] loadFileAsBytes(String path) {
+        try(InputStream input = FileUtilities.class.getResourceAsStream(path)) {
+            return input.readAllBytes();
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
     }
 }
