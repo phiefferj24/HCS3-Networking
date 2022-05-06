@@ -143,7 +143,7 @@ public class Game {
     }
 
     public void onMessage(String message) {
-        System.out.println("thisRAN");
+        System.out.println("Game Recieved Message");
         System.out.println("message to game: " + message);
         if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
             System.out.println("capitolbiludoing");
@@ -194,7 +194,7 @@ public class Game {
 
         sprites = new ArrayList<>();
         player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
-        sprites.add(player);
+        //sprites.add(player);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -339,14 +339,20 @@ public class Game {
         for(Sprite s: sprites) {
             s.step(this);
         }
+        player.step(this);
+        ct.send(Message.encode(player.toString(),Message.MessageProtocol.SEND,Message.MessageType.MOVEMENT));
         player.mesh.setRotation(player.getLocalRotation());
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
+        /*
         String bruh = "";
         for (Sprite s: sprites)
         {
             bruh+=s.toString() + ",";
+
         }
         ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+        */
+
     }
 
 
@@ -399,7 +405,7 @@ public class Game {
     public void keyPressed(long window, int key) {
         if(key==GLFW_KEY_W)
         {
-           player.setVY(player.getVY()+10);
+            player.setVY(player.getVY()+10);
         }
         if(key==GLFW_KEY_S)
        {

@@ -40,14 +40,15 @@ public class ServerGame extends Thread {
     }
 
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
+        System.out.println("Server Recieved Message");
         if(protocol== Message.MessageProtocol.SEND)
         {
-
-
+            System.out.println("Client Thread Recieved a send message");
             System.out.println("message to server: " + message);
             //CONNECT: USERNAME
             if (type == Message.MessageType.CONNECT)
             {
+
                 //todo if(name doesnt already exist) {
                 sprites.add(new Player(50,50,50,50,"src/com/jimphieffer/game/sprites/player.png",null,0,0,message));
                 spritesNames.add(message);
@@ -64,9 +65,10 @@ public class ServerGame extends Thread {
                         break;
                     }
                 }
-            }
-            else if (type == Message.MessageType.MOVEMENT)//username,x,y,vy,vy
+            }//protocol == Message.MessageProtocol.SEND
+            else if (type == Message.MessageType.SPRITE)//username,x,y,vy,vy
             {
+                System.out.println("itgetshere");
                String[] locs =  message.split(",");
                String username = locs[0];
                double curX = Double.parseDouble(locs[1]);
@@ -82,7 +84,7 @@ public class ServerGame extends Thread {
                                 break;
                             Player player = (Player)sprites.get(i);
 
-                            System.out.println("itgetstotis");
+                           // System.out.println("itgetstotis");
                             if(!player.touchingAfterDisplacement(sprites.get(j),vx,vy))
                             {
                                 server.send(Message.encode("SUCCESS",Message.MessageProtocol.SEND,Message.MessageType.CONNECT),socket);
