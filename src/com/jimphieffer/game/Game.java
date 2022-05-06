@@ -13,6 +13,7 @@ import com.jimphieffer.network.server.Server;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 import java.lang.String;
 
@@ -144,7 +145,7 @@ public class Game {
     }
 
     public void onMessage(String message) {
-        System.out.println("Game Recieved Message");
+        System.out.println("--------------------MESSAGE TO " + player.getUsername() + "-------------------");
         System.out.println("message to game: " + message);
         if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
             System.out.println("capitolbiludoing");
@@ -156,14 +157,18 @@ public class Game {
             player.setVX(Double.parseDouble(loc[2]));
             player.setVY(Double.parseDouble(loc[3]));
         }
-        if (Message.getType(message).equals(Message.MessageType.SPRITE))
-        {   System.out.println("blowup");
+        if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE))
+        {
+            System.out.println("SPRITE ran");
 
             for(String s: message.split(","))
             {
                 sprites.add(Sprite.stringToSprite(s));
             }
         }
+        System.out.println("------------------------------------------------------");
+        System.out.println();
+        System.out.println();
     }
 
 
@@ -195,7 +200,7 @@ public class Game {
 
         sprites = new ArrayList<>();
         player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
-        //sprites.add(player);
+        sprites.add(player);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
