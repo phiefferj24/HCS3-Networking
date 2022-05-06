@@ -19,7 +19,7 @@ public class Mesh {
     public final int vaoId;
     public final int vertexCount;
     private final Texture texture;
-    public final Matrix4f positionMatrix = new Matrix4f();
+    public Matrix4f positionMatrix = new Matrix4f();
     private final int programId;
     public Mesh(float x, float y, float z, float width, float height, String texture, int programId) {
         this(new float[] {-width, -height, -1.f, width, -height, -1.f, -width, height, -1.f, width, height, -1.f}, new int[] {0, 1, 2, 1, 3, 2}, new float[] {0, 1, 1, 1, 0, 0, 1, 0}, new Texture(texture), x, y, z, programId);
@@ -117,12 +117,15 @@ public class Mesh {
     public void setPosition(float x, float y, float z) {
         this.x = x;
         this.y = y;
-        positionMatrix.identity().translate(x, y, z);
+        positionMatrix = new Matrix4f().translate(x, y, z);
     }
     public void scale(float factor) {
         positionMatrix.scale(factor);
     }
     public void rotate(float degrees) {
         positionMatrix.rotateZ((float) Math.toRadians(degrees));
+    }
+    public void setRotation(float degrees) {
+        positionMatrix = new Matrix4f().rotateZ((float) Math.toRadians(degrees));
     }
 }

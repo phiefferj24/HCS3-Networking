@@ -112,6 +112,7 @@ public class Game {
         //
         //Player dupe=player.set(VX)
         //ct.send(Message.encode());
+
         /*
         String bruh = "";
         for (Sprite s: sprites)
@@ -119,7 +120,7 @@ public class Game {
           //  s.step(this);
             bruh+=s.toString() + ",";
         }
-        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+
         */
 
 
@@ -142,9 +143,10 @@ public class Game {
     }
 
     public void onMessage(String message) {
-
+        System.out.println("Game Recieved Message");
         System.out.println("message to game: " + message);
         if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
+            System.out.println("capitolbiludoing");
             message = message.substring(message.indexOf(":"), message.length());
             message = message.substring(1, message.length());
             String[] loc = message.split(",");
@@ -154,7 +156,7 @@ public class Game {
             player.setVY(Double.parseDouble(loc[3]));
         }
         if (Message.getType(message).equals(Message.MessageType.SPRITE))
-        {
+        {   System.out.println("blowup");
 
             for(String s: message.split(","))
             {
@@ -190,9 +192,9 @@ public class Game {
 
         // }
 
-
+        sprites = new ArrayList<>();
         player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
-
+        //sprites.add(player);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -329,21 +331,28 @@ public class Game {
 
     private void tick(double deltaTime) {
 
-        //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
+       //ct.send(Message.encode(username + ", " + x + ", " + y + ", " + vx + ", " + vy,Message.MessageProtocol.SEND, Message.MessageType.MOVEMENT));
         float mod = 10;
         int dirx = keys[0] ? 1 : -1;
         int diry = keys[3] ? 1 : -1;
        // meshes.get(0).setPosition((float) player.getX(), (float) player.getY(), 0);
-        for(Sprite s: nonStaticSprites) {
+        for(Sprite s: sprites) {
             s.step(this);
         }
-        player.mesh.rotate((float)player.getRotation());
-       // player.setVX(1.6);
-//        System.out.println(player.getVY());
-//        System.out.println(player.getVX());
-
         player.step(this);
+        ct.send(Message.encode(player.toString(),Message.MessageProtocol.SEND,Message.MessageType.MOVEMENT));
+        player.mesh.setRotation(player.getLocalRotation());
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
+        /*
+        String bruh = "";
+        for (Sprite s: sprites)
+        {
+            bruh+=s.toString() + ",";
+
+        }
+        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+        */
+
     }
 
 
@@ -396,19 +405,19 @@ public class Game {
     public void keyPressed(long window, int key) {
         if(key==GLFW_KEY_W)
         {
-           player.setVY(0.1);
+            player.setVY(player.getVY()+10);
         }
         if(key==GLFW_KEY_S)
        {
-           player.setVY(player.getVY()-1);
+           player.setVY(player.getVY()-10);
         }
         if(key==GLFW_KEY_A)
         {
-            player.setVX(player.getVX()-1);
+            player.setVX(player.getVX()-10);
         }
        if(key==GLFW_KEY_D)
         {
-           player.setVX(player.getVX()+1);
+           player.setVX(player.getVX()+10);
         }
        if(key == GLFW_KEY_ESCAPE) {
            if(mainMenu == null) hud.visible = !hud.visible;
@@ -456,7 +465,9 @@ public class Game {
     }
 
     public void mouseMoved(long window, double x, double y) {
-         player.setRotation(Math.atan2(y,x)*(180/Math.PI));
+        float angely = (float)Math.atan2(y,x);
+         player.setLocalRotation((float)(360*angely));
+         //System.out.println(angely);
         //TODO: handle rotation
         hud.mouseMoved(x, y);
         if(mainMenu != null) mainMenu.mouseMoved(x, y);
@@ -486,10 +497,11 @@ public class Game {
                 windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Quit Game", false));
         System.out.println(mainMenu.elements.get(2).getClass());
         mainMenu.elements.get(2).setCallback("selected", () -> {
-            if(!((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}):([0-9]{1,5})$") || !((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) return;
-            mainMenu.visible = false;
-            setUsername(((HUDTextBox)mainMenu.elements.get(0)).getText());
-            connect(((HUDTextBox)mainMenu.elements.get(1)).getText().split(":")[0],Integer.parseInt(((HUDTextBox)mainMenu.elements.get(1)).getText().split(":")[1]));
+            if(((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^((([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}))|localhost):([0-9]{1,5})$") && ((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) {
+                mainMenu.visible = false;
+                setUsername(((HUDTextBox) mainMenu.elements.get(0)).getText());
+                connect(((HUDTextBox) mainMenu.elements.get(1)).getText().split(":")[0], Integer.parseInt(((HUDTextBox) mainMenu.elements.get(1)).getText().split(":")[1]));
+            }
         });
         mainMenu.elements.get(3).setCallback("selected", () -> {
             mainMenu.close();
@@ -514,6 +526,7 @@ public class Game {
             //System.out.println("FPS: " + (1/sinceRender));
         }
         mainMenu.close();
+        mainMenu = null;
         System.out.println("run");
     }
 
@@ -528,7 +541,6 @@ public class Game {
         t.start();
 
         // join menu
-        System.out.println(Thread.currentThread().getName());
         Game g = new Game(1280, 720, "Game");
         g.init();
         g.menu();
