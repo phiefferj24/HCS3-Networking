@@ -367,7 +367,7 @@ public class Game {
         {
             waitingScreen= UUID.randomUUID();
             sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
-            //TextBox waiting = new TextBox(hudProgramId, )
+            TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30);
             System.out.println("getsToHere");
             if(numPlayers>=2){
                 started=true;
