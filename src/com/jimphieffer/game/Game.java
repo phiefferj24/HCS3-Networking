@@ -67,6 +67,7 @@ public class Game {
     private boolean started=false;
     private boolean newRound=false;
     private UUID waitingScreen;
+    private ArrayList<TextBox> waitingStuff = new ArrayList<TextBox>();
 
     private Camera camera;
 
@@ -367,17 +368,18 @@ public class Game {
             if(sprites.get(i).getClassType()=="Player")
                 numPlayers++;
         }
-        if(numPlayers>=1)
+        if(numPlayers>=2)
         {
             started=true;
         }
         if(!started)
         {
             waitingScreen= UUID.randomUUID();
-            //sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
-            TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30);
+            sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
+            waitingStuff.add(new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30));
+
             //how to initalize
-            if(numPlayers>=1){
+            if(numPlayers>=2){
                 started=true;
                 newRound=true;
             }
@@ -483,7 +485,7 @@ public class Game {
         Uniforms.setUniform("projectionMatrix", hud.camera.projectionMatrix, hudProgramId);
         Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
         hud.render();
-
+        waitingStuff.forEach(TextBox::render);
 
         glUseProgram(objectProgramId);
         Uniforms.setUniform("texture_sampler", 0, objectProgramId);
@@ -501,6 +503,7 @@ public class Game {
         sprites.forEach(sprite -> {
             if(sprite.mesh != null) sprite.mesh.render();
         });
+
 
 
         glUseProgram(0);
