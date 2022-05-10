@@ -16,6 +16,8 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.lang.String;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -27,6 +29,8 @@ import static com.jimphieffer.utils.FileUtilities.*;
 public class Game {
 
     public interface Method { void run(); }
+
+    public BlockingQueue<Method> methods = new LinkedBlockingQueue<>();
 
     private double playerRotation=0;
     private boolean space = false;
@@ -111,6 +115,13 @@ public class Game {
             tick(glfwGetTime() - lastRenderTime);
             render();
             lastRenderTime = glfwGetTime();
+            while (!methods.isEmpty()) {
+                try {
+                    methods.take().run();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             while (glfwGetTime() - lastRenderTime < secondsPerFrame) ;
             //System.out.println("FPS: " + (1/sinceRender));
         }
@@ -150,6 +161,7 @@ public class Game {
     public void onMessage(String message) {
         System.out.println("--------------------MESSAGE TO " + player.getUsername() + "-------------------");
         System.out.println("message to game: " + message);
+        System.out.println(Thread.currentThread().getName());
         if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
             System.out.println("CONNECT ran");
 
@@ -160,7 +172,7 @@ public class Game {
             sprites.add(player);
         }
         else if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
-            System.out.println("capitolbiludoing");
+            //System.out.println("capitolbiludoing");
             message = message.substring(message.indexOf(":"), message.length());
             message = message.substring(1, message.length());
             String[] loc = message.split(",");

@@ -66,7 +66,7 @@ public class ClientThread extends Thread{
         output.println(Message.encode(message, Message.MessageProtocol.RELAY, Message.MessageType.MESSAGE));
     }
     public void onMessage(String message) {
-        game.onMessage(message);
+        game.methods.add(() -> game.onMessage(message));
     }
 
     public static void play(File file, Boolean repeat)
