@@ -16,6 +16,8 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.lang.String;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -27,6 +29,8 @@ import static com.jimphieffer.utils.FileUtilities.*;
 public class Game {
 
     public interface Method { void run(); }
+
+    public BlockingQueue<Method> methods = new LinkedBlockingQueue<>();
 
     private double playerRotation=0;
     private boolean space = false;
@@ -63,6 +67,7 @@ public class Game {
     private boolean started=false;
     private boolean newRound=false;
     private UUID waitingScreen;
+    private ArrayList<TextBox> waitingStuff = new ArrayList<TextBox>();
 
     private Camera camera;
 
@@ -111,6 +116,13 @@ public class Game {
             tick(glfwGetTime() - lastRenderTime);
             render();
             lastRenderTime = glfwGetTime();
+            while (!methods.isEmpty()) {
+                try {
+                    methods.take().run();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             while (glfwGetTime() - lastRenderTime < secondsPerFrame) ;
             //System.out.println("FPS: " + (1/sinceRender));
         }
@@ -173,6 +185,7 @@ public class Game {
     public void onMessage(String message) {
         System.out.println("--------------------MESSAGE TO " + player.getUsername() + "-------------------");
         System.out.println("message to game: " + message);
+        System.out.println(Thread.currentThread().getName());
         if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
             System.out.println("CONNECT ran");
 
@@ -361,10 +374,6 @@ public class Game {
         for(int i=0; i<sprites.size(); i++) {
             if(sprites.get(i).getClassType()=="Player")
                 numPlayers++;
-            /*
-            if(sprites.get(i).getClassType()=="Static")
-                System.out.println(sprites.get(i).getImage());
-            */
         }
         if(numPlayers>=1)
         {
@@ -374,15 +383,24 @@ public class Game {
         {
             waitingScreen= UUID.randomUUID();
             sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
+            waitingStuff.add(new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30));
+
+            //how to initalize
+            if(numPlayers>=2){
             TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30);
             System.out.println("getsToHere");
             if(numPlayers>=1){
                 started=true;
                 newRound=true;
             }
+            for(int a=0; a<sprites.size(); a++)
             StringBuilder spriteMessage = new StringBuilder();
             for(Sprite s:sprites)
             {
+                if(sprites.get(a).getClassType()=="Static") {
+                    sprites.get(a).step(this);
+                    ct.send(Message.encode(sprites.get(a).toString(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                }
                 if(s.getClassType().equals("Static"))
                 s.step(this);
                 spriteMessage.append(s.toString());
@@ -390,50 +408,68 @@ public class Game {
             ct.send(Message.encode(spriteMessage.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
         }
         else {
-            System.out.println("Thisruns??");
             if (newRound)
             {
+                ArrayList<Sprite> remove = new ArrayList<Sprite>();
+                for(int i=0; i<sprites.size(); i++)
                 StringBuilder spriteMessage = new StringBuilder();
                 for(Sprite s:sprites)
                 {
-                    if(s.getID()==waitingScreen)
+                    if(sprites.get(i).getID()==waitingScreen)
                     {
                         sprites.remove(s);
                         s.mesh.close();
                         spriteMessage.append(s.toString());
+                        remove.add(sprites.get(i));
+                        sprites.get(i).mesh.close();
                     }
-                    else if(s.getClassType()=="Player") {
-                        s.setX(windowWidth * Math.random());
-                        s.setY(windowWidth * Math.random());
+                    else if(sprites.get(i).getClassType()=="Player") {
+                        sprites.get(i).setX(windowWidth * Math.random());
+                        sprites.get(i).setY(windowWidth * Math.random());
                        // s.setHealth(100);
                         //Tiko this is the line:
+                        ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                         player.mesh.setRotation(player.getLocalRotation());
-                        s.step(this);
+                        for(int l=0; l<remove.size(); l++)
+                        {
+                            remove.remove(l);
+                        }
+                        sprites.get(i).step(this);
                     }
-                    else if(s.getClassType()=="Static")
+                    else if(sprites.get(i).getClassType()=="Static")
                     {
-                        s.setX(windowWidth * Math.random());
-                        s.setY(windowWidth * Math.random());
+                        sprites.get(i).setX(windowWidth * Math.random());
+                        sprites.get(i).setY(windowWidth * Math.random());
                         //Tiko this is the line:
-                        s.step(this);
+                        ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                        for(int j=0; j<remove.size(); j++)
+                        {
+                            remove.remove(j);
+                        }
+                        sprites.get(i).step(this);
                     }
                     else {
-                        s.step(this);
+                        for(int k=0; k<remove.size(); k++)
+                        {
+                            remove.remove(k);
+                        }
+                        sprites.get(i).step(this);
                     }
                     ct.send(Message.encode(spriteMessage.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                 }
             }
             else
             {
-                for(Sprite s:sprites)
+                for(int d=0; d<sprites.size(); d++)
                 {
-                    s.step(this);
-                    ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                    sprites.get(d).step(this);
+                    ct.send(Message.encode(sprites.get(d).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                     player.mesh.setRotation(player.getLocalRotation());
                 }
             }
             newRound=false;
         }
+
         //float mod = 10;
        // int dirx = keys[0] ? 1 : -1;
        // int diry = keys[3] ? 1 : -1;
@@ -471,7 +507,7 @@ public class Game {
         Uniforms.setUniform("projectionMatrix", hud.camera.projectionMatrix, hudProgramId);
         Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), hudProgramId);
         hud.render();
-
+        waitingStuff.forEach(TextBox::render);
 
         glUseProgram(objectProgramId);
         Uniforms.setUniform("texture_sampler", 0, objectProgramId);
@@ -489,6 +525,8 @@ public class Game {
         sprites.forEach(sprite -> {
             if(sprite.mesh != null) sprite.mesh.render();
         });
+
+
 
         glUseProgram(0);
 
