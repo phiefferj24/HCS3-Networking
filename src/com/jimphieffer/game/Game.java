@@ -368,7 +368,7 @@ public class Game {
             if(sprites.get(i).getClassType()=="Player")
                 numPlayers++;
         }
-        if(numPlayers>=2)
+        if(numPlayers>=1)
         {
             started=true;
         }
@@ -379,7 +379,7 @@ public class Game {
             waitingStuff.add(new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30));
 
             //how to initalize
-            if(numPlayers>=2){
+            if(numPlayers>=1){
                 started=true;
                 newRound=true;
             }
@@ -387,7 +387,7 @@ public class Game {
             {
                 if(sprites.get(a).getClassType()=="Static") {
                     sprites.get(a).step(this);
-                    ct.send(Message.encode(sprites.get(a).toString(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                   // ct.send(Message.encode(sprites.get(a).toString(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
                 }
             }
         }
@@ -406,8 +406,11 @@ public class Game {
                         sprites.get(i).setX(windowWidth * Math.random());
                         sprites.get(i).setY(windowWidth * Math.random());
                        // s.setHealth(100);
+
                         //Tiko this is the line:
-                        ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                       // ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                        //
+
                         player.mesh.setRotation(player.getLocalRotation());
                         for(int l=0; l<remove.size(); l++)
                         {
@@ -419,8 +422,12 @@ public class Game {
                     {
                         sprites.get(i).setX(windowWidth * Math.random());
                         sprites.get(i).setY(windowWidth * Math.random());
+
                         //Tiko this is the line:
-                        ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                       // ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                        //
+
+
                         for(int j=0; j<remove.size(); j++)
                         {
                             remove.remove(j);
@@ -441,7 +448,7 @@ public class Game {
                 for(int d=0; d<sprites.size(); d++)
                 {
                     sprites.get(d).step(this);
-                    ct.send(Message.encode(sprites.get(d).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                    //ct.send(Message.encode(sprites.get(d).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                     player.mesh.setRotation(player.getLocalRotation());
                 }
             }
@@ -463,7 +470,6 @@ public class Game {
 
         }
         ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-
     }
 
 
