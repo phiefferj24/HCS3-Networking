@@ -354,10 +354,6 @@ public class Game {
         for(int i=0; i<sprites.size(); i++) {
             if(sprites.get(i).getClassType()=="Player")
                 numPlayers++;
-            /*
-            if(sprites.get(i).getClassType()=="Static")
-                System.out.println(sprites.get(i).getImage());
-            */
         }
         if(numPlayers>=2)
         {
@@ -368,54 +364,66 @@ public class Game {
             waitingScreen= UUID.randomUUID();
             sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
             TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30);
-            System.out.println("getsToHere");
+            //how to initalize
             if(numPlayers>=2){
                 started=true;
                 newRound=true;
             }
-            for(Sprite s:sprites)
+            for(int a=0; a<sprites.size(); a++)
             {
-                if(s.getClassType()=="Static")
-                s.step(this);
-                ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                if(sprites.get(a).getClassType()=="Static") {
+                    sprites.get(a).step(this);
+                    ct.send(Message.encode(sprites.get(a).toString(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                }
             }
         }
         else {
-            System.out.println("Thisruns??");
             if (newRound)
             {
-                for(Sprite s:sprites)
+                ArrayList<Sprite> remove = new ArrayList<Sprite>();
+                for(int i=0; i<sprites.size(); i++)
                 {
-                    if(s.getID()==waitingScreen)
+                    if(sprites.get(i).getID()==waitingScreen)
                     {
-                        sprites.remove(s);
-                        s.mesh.close();
+                        remove.add(sprites.get(i));
+                        sprites.get(i).mesh.close();
                     }
-                    else if(s.getClassType()=="Player") {
-                        s.setX(windowWidth * Math.random());
-                        s.setY(windowWidth * Math.random());
+                    else if(sprites.get(i).getClassType()=="Player") {
+                        sprites.get(i).setX(windowWidth * Math.random());
+                        sprites.get(i).setY(windowWidth * Math.random());
                        // s.setHealth(100);
                         //Tiko this is the line:
-                        ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                        ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                         player.mesh.setRotation(player.getLocalRotation());
-                        s.step(this);
+                        for(int l=0; l<remove.size(); l++)
+                        {
+                            remove.remove(l);
+                        }
+                        sprites.get(i).step(this);
                     }
-                    else if(s.getClassType()=="Static")
+                    else if(sprites.get(i).getClassType()=="Static")
                     {
-                        s.setX(windowWidth * Math.random());
-                        s.setY(windowWidth * Math.random());
+                        sprites.get(i).setX(windowWidth * Math.random());
+                        sprites.get(i).setY(windowWidth * Math.random());
                         //Tiko this is the line:
-                        ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-                        s.step(this);
+                        ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                        for(int j=0; j<remove.size(); j++)
+                        {
+                            remove.remove(j);
+                        }
+                        sprites.get(i).step(this);
                     }
                     else {
-                        s.step(this);
+                        for(int k=0; k<remove.size(); k++)
+                        {
+                            remove.remove(k);
+                        }
+                        sprites.get(i).step(this);
                     }
                 }
             }
             else
             {
-                System.out.println("thisacctuallyworks");
                 for(Sprite s:sprites)
                 {
                     s.step(this);
@@ -425,6 +433,7 @@ public class Game {
             }
             newRound=false;
         }
+
         //float mod = 10;
        // int dirx = keys[0] ? 1 : -1;
        // int diry = keys[3] ? 1 : -1;
@@ -480,6 +489,7 @@ public class Game {
         sprites.forEach(sprite -> {
             if(sprite.mesh != null) sprite.mesh.render();
         });
+
 
         glUseProgram(0);
 
