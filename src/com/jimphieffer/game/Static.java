@@ -23,6 +23,11 @@ public class Static extends Sprite {
 
     }
 
+    public void changeAll(String x, String y) {
+        setX(parseDouble(x));
+        setY(parseDouble(y));
+    }
+
     public String getClassType(){
         return "Static";
     }

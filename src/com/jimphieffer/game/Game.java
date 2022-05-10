@@ -147,37 +147,44 @@ public class Game {
         return list;
     }
 
+    public void addSprites(String message) //Is supposed to add any new sprites and change the rest
+    {
+        for(String s: message.split(","))
+        {
+            for(int i = 0; i < sprites.size(); i++)
+            {
+             Sprite n = sprites.get(i);
+                if(n.getUUID().equals(Sprite.getUUIDFromString(s)))
+                {
+                    String spr= message.substring(message.indexOf('[')+1, message.length()-1);
+                    String[] onGuh = spr.split(";");
+                    if(n instanceof Static)
+                        ((Static) n).changeAll(onGuh[1],onGuh[2]);
+                    else
+                        ((NonStatic)(n)).changeAll(onGuh[1],onGuh[2],onGuh[7],onGuh[8]);
+                }
+                else
+                    sprites.add(Sprite.stringToSprite(s));
+            }
+
+        }
+    }
+
     public void onMessage(String message) {
         System.out.println("--------------------MESSAGE TO " + player.getUsername() + "-------------------");
         System.out.println("message to game: " + message);
         if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
             System.out.println("CONNECT ran");
 
-            for(String s: message.split(","))
-            {
-                sprites.add(Sprite.stringToSprite(s));
-            }
+            addSprites(message);
             sprites.add(player);
-        }
-        else if (Message.getType(message).equals(Message.MessageType.MOVEMENT)) {
-            System.out.println("capitolbiludoing");
-            message = message.substring(message.indexOf(":"), message.length());
-            message = message.substring(1, message.length());
-            String[] loc = message.split(",");
-            player.setX(Double.parseDouble(loc[0]));
-            player.setY(Double.parseDouble(loc[1]));
-            player.setVX(Double.parseDouble(loc[2]));
-            player.setVY(Double.parseDouble(loc[3]));
         }
         else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE))
         {
             System.out.println("SPRITE ran");
-            sprites.clear();
 
-            for(String s: message.split(","))
-            {
-                sprites.add(Sprite.stringToSprite(s));
-            }
+
+            addSprites(message);
         }
         System.out.println("------------------------------------------------------");
         System.out.println();
@@ -359,7 +366,7 @@ public class Game {
                 System.out.println(sprites.get(i).getImage());
             */
         }
-        if(numPlayers>=2)
+        if(numPlayers>=1)
         {
             started=true;
         }
@@ -369,34 +376,37 @@ public class Game {
             sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
             TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30);
             System.out.println("getsToHere");
-            if(numPlayers>=2){
+            if(numPlayers>=1){
                 started=true;
                 newRound=true;
             }
+            StringBuilder spriteMessage = new StringBuilder();
             for(Sprite s:sprites)
             {
-                if(s.getClassType()=="Static")
+                if(s.getClassType().equals("Static"))
                 s.step(this);
-                ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                spriteMessage.append(s.toString());
             }
+            ct.send(Message.encode(spriteMessage.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
         }
         else {
             System.out.println("Thisruns??");
             if (newRound)
             {
+                StringBuilder spriteMessage = new StringBuilder();
                 for(Sprite s:sprites)
                 {
                     if(s.getID()==waitingScreen)
                     {
                         sprites.remove(s);
                         s.mesh.close();
+                        spriteMessage.append(s.toString());
                     }
                     else if(s.getClassType()=="Player") {
                         s.setX(windowWidth * Math.random());
                         s.setY(windowWidth * Math.random());
                        // s.setHealth(100);
                         //Tiko this is the line:
-                        ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                         player.mesh.setRotation(player.getLocalRotation());
                         s.step(this);
                     }
@@ -405,17 +415,16 @@ public class Game {
                         s.setX(windowWidth * Math.random());
                         s.setY(windowWidth * Math.random());
                         //Tiko this is the line:
-                        ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                         s.step(this);
                     }
                     else {
                         s.step(this);
                     }
+                    ct.send(Message.encode(spriteMessage.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                 }
             }
             else
             {
-                System.out.println("thisacctuallyworks");
                 for(Sprite s:sprites)
                 {
                     s.step(this);
@@ -433,13 +442,13 @@ public class Game {
 
         //camera.translate((keys[2] || keys[3]) ? (float)deltaTime * diry * mod: 0, (keys[0] || keys[1]) ? (float)deltaTime * dirx * mod: 0, 0);
 
-        String bruh = "";
-        for (Sprite s: sprites)
-        {
-            bruh+=s.toString() + ",";
-
-        }
-        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+//        String bruh = "";
+//        for (Sprite s: sprites)
+//        {
+//            bruh+=s.toString() + ",";
+//
+//        }
+//        ct.send(Message.encode(bruh, Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
 
     }
 

@@ -78,6 +78,13 @@ public class NonStatic extends Sprite {
         angle=change;
     }
 
+    public void changeAll(String x, String y,String vx,String vy)
+    {
+        this.x = parseDouble(x);
+        this.y = parseDouble(y);
+        this.vx = parseDouble(vx);
+        this.vy = parseDouble(vy);
+    }
 
 
     public void setHealth(int health){this.health=health;}
