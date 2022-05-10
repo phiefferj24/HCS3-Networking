@@ -355,17 +355,17 @@ public class Game {
             if(sprites.get(i).getClassType()=="Player")
                 numPlayers++;
         }
-        if(numPlayers>=2)
+        if(numPlayers>=1)
         {
             started=true;
         }
         if(!started)
         {
             waitingScreen= UUID.randomUUID();
-            sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
+            //sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
             TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30);
             //how to initalize
-            if(numPlayers>=2){
+            if(numPlayers>=1){
                 started=true;
                 newRound=true;
             }
@@ -424,10 +424,10 @@ public class Game {
             }
             else
             {
-                for(Sprite s:sprites)
+                for(int d=0; d<sprites.size(); d++)
                 {
-                    s.step(this);
-                    ct.send(Message.encode(s.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                    sprites.get(d).step(this);
+                    ct.send(Message.encode(sprites.get(d).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                     player.mesh.setRotation(player.getLocalRotation());
                 }
             }
