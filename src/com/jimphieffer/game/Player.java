@@ -15,9 +15,11 @@ public class Player extends NonStatic{
     private double vx;
     private double vy;
     private int health;
-    private int amtStone = 0;
+    private int amtWood = 0;
     private String username;
     private float rotation;
+    private boolean isAttacking;
+
     public Player(double x, double y, int width, int height, String image, UUID id,
                   double velocityX, double velocityY, String username)
     {
@@ -34,7 +36,7 @@ public class Player extends NonStatic{
         super(x, y, width, height, image,id,velocityX,velocityY);
         vx = parseDouble(velocityX);
         vy = parseDouble(velocityY);
-        health  = 15;
+        health  = 100;
         this.username = username;
 
     }
@@ -78,10 +80,15 @@ public class Player extends NonStatic{
     {
         rotation=angle;
     }
+
     public float getLocalRotation()
     {
         return rotation;
     }
+
+    public int getAmtWood(){ return amtWood; }
+
+    public boolean isAttacking(){ return isAttacking;}
 
     public void step(Game game)
     {

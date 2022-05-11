@@ -381,7 +381,7 @@ public class Game {
             if(sprites.get(i).getClassType()=="Player")
                 numPlayers++;
         }
-        if(numPlayers>=2)
+        if(numPlayers>=1)
         {
             started=true;
         }
@@ -395,7 +395,7 @@ public class Game {
             sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
             waitingStuff.add(new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30));
             //how to initalize
-            if(numPlayers>=2){
+            if(numPlayers>=1){
             TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30);
             System.out.println("getsToHere");
             if(numPlayers>=1){
@@ -440,7 +440,16 @@ public class Game {
                     else if(sprites.get(i).getClassType()=="Player") {
                         sprites.get(i).setX(windowWidth * Math.random());
                         sprites.get(i).setY(windowWidth * Math.random());
-                       // s.setHealth(100);
+                        if(((Player)sprites.get(i)).getHealth()==0)
+                        {
+                            sprites.remove(i);
+                            sprites.get(i).mesh.close();
+                        }
+                        //if(((Player)sprites.get(i)).isAttacking() && sprites.get(i).isTouchingAfter)
+                        //{
+
+                       // }
+                        //s.setHealth(100);
 
                         //Tiko this is the line:
                        // ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
@@ -658,7 +667,7 @@ public class Game {
                 new Mesh(0, -150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 66/256.f, 200/256.f, 86/256.f),
                 new Mesh(0, -150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 86/256.f, 200/256.f, 106/256.f),
                 new Mesh(0, -150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 46/256.f, 200/256.f, 66/256.f),
-                windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "ntfli", false));
+                windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Quit Game", false));
         System.out.println(mainMenu.elements.get(2).getClass());
         mainMenu.elements.get(2).setCallback("selected", () -> {
             if(((HUDTextBox)mainMenu.elements.get(1)).getText().matches("^((([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}))|localhost):([0-9]{1,5})$") && ((HUDTextBox)mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) {
