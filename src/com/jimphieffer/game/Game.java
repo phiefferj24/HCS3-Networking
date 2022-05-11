@@ -160,7 +160,7 @@ public class Game {
     }
 
     public void onMessage(String message) {
-        System.out.println("--------------------MESSAGE TO " + player.getUsername() + "-------------------");
+        System.out.println("--------------------MESSAGE RECIEVED BY " + player.getUsername() + "-------------------");
         System.out.println("message to game: " + message);
         System.out.println(Thread.currentThread().getName());
         if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
@@ -186,9 +186,9 @@ public class Game {
         String[] sprs = message.split(",");
         for(int i = 0; i < sprs.length; i++)
         {
-            for(int j = 0; j<sprites.size(); i++)
+            for(int j = 0; j<sprites.size(); j++)
             {
-                String[] onGuh = sprs[j].split(";");
+                String[] onGuh = sprs[i].split(";");
                 if(sprites.get(j).getUUID().equals(Sprite.getUUIDFromString(message)))
                 {
                     Sprite s = sprites.get(j);
