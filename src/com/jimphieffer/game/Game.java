@@ -236,7 +236,7 @@ public class Game {
         // }
 
         sprites = new ArrayList<>();
-        player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
+        player = new Player(0, 0, 100, 100, "/textures/wall.png", null, 0, 0, username);
         sprites.add(player);
         initTextures();
 
@@ -379,18 +379,21 @@ public class Game {
             if(sprites.get(i).getClassType()=="Player")
                 numPlayers++;
         }
-        if(numPlayers>=1)
+        if(numPlayers>=2)
         {
             started=true;
         }
         if(!started)
         {
+            for(int i=0; i<sprites.size(); i++) {
+                if(sprites.get(i).getClassType()=="Player")
+                    sprites.get(i).setImage("/textures/wall.png");
+            }
             waitingScreen= UUID.randomUUID();
             sprites.add(new Static(0,0,window.getWidth(),window.getHeight(),"/textures/wall.png",waitingScreen));
             waitingStuff.add(new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30));
-
             //how to initalize
-            if(numPlayers>=1){
+            if(numPlayers>=2){
             TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30);
             System.out.println("getsToHere");
             if(numPlayers>=1){
@@ -412,6 +415,10 @@ public class Game {
             }
         }
         else {
+            for(int i=0; i<sprites.size(); i++) {
+                if(sprites.get(i).getClassType()=="Player")
+                    sprites.get(i).setImage("/textures/player.png");
+            }
             if (newRound)
             {
                 ArrayList<Sprite> remove = new ArrayList<Sprite>();
