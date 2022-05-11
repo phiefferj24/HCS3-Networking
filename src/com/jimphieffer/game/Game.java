@@ -197,6 +197,30 @@ public class Game {
         System.out.println();
     }
 
+    private void addSprites(String message) {
+        message = message.substring(message.indexOf("["),message.length()-1);
+        String[] sprs = message.split(",");
+        for(int i = 0; i < sprs.length; i++)
+        {
+            for(int j = 0; j<sprites.size(); i++)
+            {
+                String[] onGuh = sprs[j].split(";");
+                if(sprites.get(j).getUUID().equals(Sprite.getUUIDFromString(message)))
+                {
+                    Sprite s = sprites.get(j);
+                    if(s instanceof Static)
+                        ((Static) s).changeAll(onGuh[1],onGuh[2]);
+                    else
+                       ((NonStatic) s).changeAll(onGuh[1],onGuh[2],onGuh[7],onGuh[8]);
+                }
+                else
+                {
+                    sprites.add(Sprite.stringToSprite(sprs[i]));
+                }
+            }
+        }
+    }
+
 
     public void init() {
         //ct = new ClientThread("127.0.0.1",9000);
