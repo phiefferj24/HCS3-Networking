@@ -486,7 +486,7 @@ public class Game {
                         sprites.get(i).step(this);
                     }
                 }
-
+                //worked?
             }
             else
             {
