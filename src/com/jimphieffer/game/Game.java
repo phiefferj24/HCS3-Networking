@@ -365,10 +365,12 @@ public class Game {
         //Static(double x, double y, int width, int height, String image, UUID id) /
         int numPlayers=0;
         for(int i=0; i<sprites.size(); i++) {
-            if(sprites.get(i).getClassType()=="Player")
+            if(sprites.get(i).getClassType()=="Player") {
                 numPlayers++;
+                //sprites.remove(i);
+            }
         }
-        if(numPlayers>=1)
+        if(numPlayers>=2)
         {
             started=true;
         }
@@ -379,7 +381,7 @@ public class Game {
             waitingStuff.add(new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30));
 
             //how to initalize
-            if(numPlayers>=1){
+            if(numPlayers>=2){
                 started=true;
                 newRound=true;
             }
@@ -405,6 +407,7 @@ public class Game {
                     else if(sprites.get(i).getClassType()=="Player") {
                         sprites.get(i).setX(windowWidth * Math.random());
                         sprites.get(i).setY(windowWidth * Math.random());
+
                        // s.setHealth(100);
 
                         //Tiko this is the line:
