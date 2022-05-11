@@ -24,7 +24,7 @@ public class Player extends NonStatic{
         super(x, y, width, height, image, id,velocityX,velocityY);
         vx = velocityX;
         vy = velocityY;
-        health  = 15;
+        health  = 100;
        this.username = username + id;
     }
 
