@@ -166,6 +166,7 @@ public class Game {
         if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
             System.out.println("CONNECT ran");
 
+
             addSprites(message);
             sprites.add(player);
         }
@@ -463,8 +464,8 @@ public class Game {
                         }
                         sprites.get(i).step(this);
                     }
-                    ct.send(Message.encode(spriteMessage.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                 }
+                //TODO ct.send(Message.encode(spriteMessage.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
             }
             else
             {
