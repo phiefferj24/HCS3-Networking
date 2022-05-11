@@ -129,7 +129,6 @@ public abstract class Sprite
         return false;
     }
 
-
     public double getX()
     {
         return x;
@@ -189,6 +188,10 @@ public abstract class Sprite
         return image;
     }
 
+    public UUID getUUID()
+    {
+        return id;
+    }
 
     public void setImage(String i)
     {
@@ -227,16 +230,19 @@ public abstract class Sprite
 
      */
 
+    public static UUID getUUIDFromString(String s)
+    {
+        return UUID.fromString(s.substring(s.indexOf('[')+1,s.length()-1).split(";")[6]);
+    }
+
     public static Sprite stringToSprite(String s)
     {
         s= s.substring(s.indexOf('[')+1,s.length()-1);
         String[] onGuh = s.split(";");
-        System.out.println(onGuh[0]);
         return switch (onGuh[0]) {
             case "PLAYER"       -> new Player(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
             case "PIG"          -> new Pig(         onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
             case "NONSTATIC"    -> new NonStatic(   onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8]);
-            case "STATIC"       -> new Static(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6]);
             default             -> new Static(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6]);
         };
     }

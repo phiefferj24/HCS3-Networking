@@ -10,7 +10,7 @@ import static java.lang.Double.*;
 import static java.lang.Integer.*;
 
 
-public class Player extends Sprite{
+public class Player extends NonStatic{
 
     private double vx;
     private double vy;
@@ -21,7 +21,7 @@ public class Player extends Sprite{
     public Player(double x, double y, int width, int height, String image, UUID id,
                   double velocityX, double velocityY, String username)
     {
-        super(x, y, width, height, image, id);
+        super(x, y, width, height, image, id,velocityX,velocityY);
         vx = velocityX;
         vy = velocityY;
         health  = 100;
@@ -31,7 +31,7 @@ public class Player extends Sprite{
     public Player(String x, String y, String width, String height, String image, String id,
                   String velocityX, String velocityY, String username)
     {
-        super(x, y, width, height, image,id);
+        super(x, y, width, height, image,id,velocityX,velocityY);
         vx = parseDouble(velocityX);
         vy = parseDouble(velocityY);
         health  = 15;
