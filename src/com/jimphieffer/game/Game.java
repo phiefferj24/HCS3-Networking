@@ -442,10 +442,10 @@ public class Game {
                             sprites.remove(i);
                             sprites.get(i).mesh.close();
                         }
-                        //if(((Player)sprites.get(i)).isAttacking() && sprites.get(i).isTouchingAfter)
-                        //{
-
-                       // }
+                        if(((Player)sprites.get(i)).isAttacking() && sprites.get(i).touchingAfterDisplacement(sprites.get(i).getX(), sprites.get(i).getY(), 0,0))
+                        {
+                            //des this do the thingnasdg;alskdfjasdf?
+                        }
                         //s.setHealth(100);
 
                         //Tiko this is the line:
