@@ -237,8 +237,13 @@ public abstract class Sprite
 
     public static Sprite stringToSprite(String s)
     {
+        System.out.println("This is what stringToSprite got: " + s);
+
         s= s.substring(s.indexOf('[')+1,s.length()-1);
         String[] onGuh = s.split(";");
+
+
+
         return switch (onGuh[0]) {
             case "PLAYER"       -> new Player(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
             case "PIG"          -> new Pig(         onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);

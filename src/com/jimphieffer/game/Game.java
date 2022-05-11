@@ -66,6 +66,7 @@ public class Game {
     private boolean[] keys = new boolean[6];
     private boolean started=false;
     private boolean newRound=false;
+    private boolean recievedConnect = false;
     private UUID waitingScreen;
     private ArrayList<TextBox> waitingStuff = new ArrayList<TextBox>();
 
@@ -97,6 +98,7 @@ public class Game {
     public void connect(String ip, int port) {
         ct = new ClientThread(ip, port, this);
         ct.start();
+
     }
 
     public void setUsername(String username) {
@@ -171,6 +173,7 @@ public class Game {
 
             addSprites(message);
             sprites.add(player);
+            recievedConnect = true;
         }
         else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE))
         {
@@ -237,7 +240,6 @@ public class Game {
 
         sprites = new ArrayList<>();
         player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
-        sprites.add(player);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -408,13 +410,14 @@ public class Game {
                         s.step(this);
                     spriteMessage.append(s.toString());
                 }
-                ct.send(Message.encode(spriteMessage.toString(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+
             }
         }
         else {
             if (newRound)
             {
                 ArrayList<Sprite> remove = new ArrayList<Sprite>();
+                String messsageToSend = "[";
                 for(int i=0; i<sprites.size(); i++)
                 {
                 StringBuilder spriteMessage = new StringBuilder();
@@ -468,17 +471,22 @@ public class Game {
                     }
                 }
 
-                //TODO ct.send(Message.encode(spriteMessage.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
             }
             else
             {
+                String messsageToSend = "";
                 for(int d=0; d<sprites.size(); d++)
                 {
+                    messsageToSend+=(sprites.get(d).toString()+",");
                     sprites.get(d).step(this);
                     //ct.send(Message.encode(sprites.get(d).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                     player.mesh.setRotation(player.getLocalRotation());
                 }
+
+                if(recievedConnect)
+                    ct.send(Message.encode(messsageToSend.substring(0,messsageToSend.length()-1), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
             }
+
             newRound=false;
         }
 
