@@ -393,28 +393,28 @@ public class Game {
                 started=true;
                 newRound=true;
             }
-            for(int a=0; a<sprites.size(); a++)
-            StringBuilder spriteMessage = new StringBuilder();
-            for(Sprite s:sprites)
-            {
-                if(sprites.get(a).getClassType()=="Static") {
-                    sprites.get(a).step(this);
-                    ct.send(Message.encode(sprites.get(a).toString(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                StringBuilder spriteMessage = new StringBuilder();
+            for(int a=0; a<sprites.size(); a++) {
+                Sprite s = sprites.get(a);
+                    if (sprites.get(a).getClassType() == "Static") {
+                        sprites.get(a).step(this);
+                        //ct.send(Message.encode(sprites.get(a).toString(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                    }
+                    if (s.getClassType().equals("Static"))
+                        s.step(this);
+                    spriteMessage.append(s.toString());
                 }
-                if(s.getClassType().equals("Static"))
-                s.step(this);
-                spriteMessage.append(s.toString());
+                ct.send(Message.encode(spriteMessage.toString(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
             }
-            ct.send(Message.encode(spriteMessage.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
         }
         else {
             if (newRound)
             {
                 ArrayList<Sprite> remove = new ArrayList<Sprite>();
                 for(int i=0; i<sprites.size(); i++)
-                StringBuilder spriteMessage = new StringBuilder();
-                for(Sprite s:sprites)
                 {
+                StringBuilder spriteMessage = new StringBuilder();
+               Sprite s = sprites.get(i);
                     if(sprites.get(i).getID()==waitingScreen)
                     {
                         sprites.remove(s);
