@@ -239,7 +239,7 @@ public class Game {
         // }
 
         sprites = new ArrayList<>();
-        player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
+        player = new Player(0, 0, 100, 100, "/textures/wall.png", null, 0, 0, username);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
