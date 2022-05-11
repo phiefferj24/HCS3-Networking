@@ -101,6 +101,8 @@ public class Game {
 
     public void setUsername(String username) {
         this.username = username;
+        player.setUsername(username);
+
     }
 
 
@@ -160,7 +162,7 @@ public class Game {
     }
 
     public void onMessage(String message) {
-        System.out.println("--------------------MESSAGE RECIEVED BY " + player.getUsername() + "-------------------");
+        System.out.println("--------------------MESSAGE RECIEVED BY " + username + "-------------------");
         System.out.println("message to game: " + message);
         System.out.println(Thread.currentThread().getName());
         if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
@@ -388,7 +390,7 @@ public class Game {
             waitingStuff.add(new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30));
 
             //how to initalize
-            if(numPlayers>=2){
+            if(numPlayers>=1){
             TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0,0,0,30);
             System.out.println("getsToHere");
             if(numPlayers>=1){
@@ -465,6 +467,7 @@ public class Game {
                         sprites.get(i).step(this);
                     }
                 }
+
                 //TODO ct.send(Message.encode(spriteMessage.toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
             }
             else
