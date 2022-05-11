@@ -39,6 +39,11 @@ public class Player extends NonStatic{
 
     }
 
+    public void setUsername(String name)
+    {
+        username = name;
+    }
+
     public double getVY()
     {
         return vy;
