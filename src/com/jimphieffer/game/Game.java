@@ -159,29 +159,6 @@ public class Game {
         return list;
     }
 
-    public void addSprites(String message) //Is supposed to add any new sprites and change the rest
-    {
-        for(String s: message.split(","))
-        {
-            for(int i = 0; i < sprites.size(); i++)
-            {
-             Sprite n = sprites.get(i);
-                if(n.getUUID().equals(Sprite.getUUIDFromString(s)))
-                {
-                    String spr= message.substring(message.indexOf('[')+1, message.length()-1);
-                    String[] onGuh = spr.split(";");
-                    if(n instanceof Static)
-                        ((Static) n).changeAll(onGuh[1],onGuh[2]);
-                    else
-                        ((NonStatic)(n)).changeAll(onGuh[1],onGuh[2],onGuh[7],onGuh[8]);
-                }
-                else
-                    sprites.add(Sprite.stringToSprite(s));
-            }
-
-        }
-    }
-
     public void onMessage(String message) {
         System.out.println("--------------------MESSAGE TO " + player.getUsername() + "-------------------");
         System.out.println("message to game: " + message);
@@ -427,8 +404,11 @@ public class Game {
                         sprites.get(i).setX(windowWidth * Math.random());
                         sprites.get(i).setY(windowWidth * Math.random());
                        // s.setHealth(100);
+
                         //Tiko this is the line:
-                        ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                       // ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                        //
+
                         player.mesh.setRotation(player.getLocalRotation());
                         for(int l=0; l<remove.size(); l++)
                         {
@@ -440,8 +420,12 @@ public class Game {
                     {
                         sprites.get(i).setX(windowWidth * Math.random());
                         sprites.get(i).setY(windowWidth * Math.random());
+
                         //Tiko this is the line:
-                        ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                       // ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                        //
+
+
                         for(int j=0; j<remove.size(); j++)
                         {
                             remove.remove(j);
@@ -463,7 +447,7 @@ public class Game {
                 for(int d=0; d<sprites.size(); d++)
                 {
                     sprites.get(d).step(this);
-                    ct.send(Message.encode(sprites.get(d).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                    //ct.send(Message.encode(sprites.get(d).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
                     player.mesh.setRotation(player.getLocalRotation());
                 }
             }
