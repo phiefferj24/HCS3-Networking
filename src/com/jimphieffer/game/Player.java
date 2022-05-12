@@ -90,7 +90,7 @@ public class Player extends NonStatic{
 
     public boolean isAttacking(){ return isAttacking;}
 
-    public void step(Game game)
+    public void step()
     {
        /*
         if(vx<0)
@@ -132,7 +132,7 @@ public class Player extends NonStatic{
         setX(getX()+vx);
         setY(getY()+vy);
 
-        super.step(game);
+        super.step();
     }
 
 

@@ -31,9 +31,9 @@ public class Static extends Sprite {
     public String getClassType(){
         return "Static";
     }
-    public void step(Game game)
+    public void step()
     {
-        super.step(game);
+        super.step();
     }
 
     //public String getType() { return type;}

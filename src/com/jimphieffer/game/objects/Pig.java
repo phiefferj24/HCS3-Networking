@@ -7,6 +7,7 @@ import java.util.UUID;
 import static java.lang.Integer.parseInt;
 
 public class Pig extends NonStatic {
+    private double angle = Math.random()*360;
     private int health;
 
     public Pig(double x, double y, int width, int height, String image, UUID id,
@@ -33,6 +34,17 @@ public class Pig extends NonStatic {
 
 
     public int getHealth(){return health;}
+
+    public void step()
+    {
+        double xMov = Math.cos(angle)*3;
+        double yMov = Math.sin(angle)*3;
+        angle+=.02;
+
+        setX(getX()+xMov);
+        setY(getY()+yMov);
+        super.step();
+    }
 
 
 

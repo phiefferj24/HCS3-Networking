@@ -198,7 +198,7 @@ public abstract class Sprite
         image = i;
     }
 
-    public void step(Game game)
+    public void step()
     {
         if(mesh!=null)
             mesh.translate((float) x, (float) y, 0);

@@ -85,9 +85,11 @@ public class ServerGame extends Thread {
                 addSprites(message);
 
 
+
                 String bruh = "";
                 for (Sprite s: sprites)
                 {
+                    s.step();
                     bruh+=s.toString() + ",";
                 }
                 server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
@@ -112,6 +114,7 @@ public class ServerGame extends Thread {
 
 
     private void addSprites(String message) {
+
         message = message.substring(message.indexOf("[")+1);
         String[] sprs = message.split(",");
         for (int i = 0; i < sprs.length; i++) {

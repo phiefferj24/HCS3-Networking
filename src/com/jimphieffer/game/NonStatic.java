@@ -80,10 +80,10 @@ public class NonStatic extends Sprite {
 
     public void changeAll(String x, String y,String vx,String vy)
     {
-        this.x = parseDouble(x);
-        this.y = parseDouble(y);
-        this.vx = parseDouble(vx);
-        this.vy = parseDouble(vy);
+        setX(parseDouble(x));
+        setY(parseDouble(y));
+        setVX(parseDouble(vx));
+        setVY(parseDouble(vy));
     }
 
 
@@ -94,7 +94,7 @@ public class NonStatic extends Sprite {
         return angle;
     }
 
-    public void step(Game game)
+    public void step()
     {
         //dont put it here specify in lowest order class
     }

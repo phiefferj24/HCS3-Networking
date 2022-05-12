@@ -200,7 +200,6 @@ public class Game {
             if(!matched)
                 sprites.add(Sprite.stringToSprite(sprs[i]));
 
-
         }
 
 
@@ -431,7 +430,7 @@ public class Game {
 
 
                         player.mesh.setRotation(player.getLocalRotation());
-                        sprites.get(i).step(this);
+                        //sprites.get(i).step();
                     }
                 }
                 return;
@@ -441,9 +440,9 @@ public class Game {
             StringBuilder messsageToSend = new StringBuilder();
             for (int d = 0; d < sprites.size(); d++) {
                 messsageToSend.append(sprites.get(d).toString()).append(",");
-                sprites.get(d).step(this);
+                sprites.get(d).mesh.setPosition((int)sprites.get(d).getX(),(int)sprites.get(d).getY(),0);;
             }
-            player.mesh.setPosition((int)player.getX(),(int)player.getY(),0);
+
         //player.mesh.setRotation(player.getLocalRotation());
 
             if (recievedConnect)
@@ -540,7 +539,6 @@ public class Game {
         if (key == GLFW_KEY_D) {
             player.setVX(0.01);
         }
-        player.setVX(0);
         hud.keyReleased(key);
         if (mainMenu != null) mainMenu.keyReleased(key);
     }
