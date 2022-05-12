@@ -1,12 +1,15 @@
 package com.jimphieffer.network.server;
 
 import com.jimphieffer.Message;
+import com.jimphieffer.game.NonStatic;
 import com.jimphieffer.game.Player;
 import com.jimphieffer.game.Sprite;
+import com.jimphieffer.game.Static;
 import com.jimphieffer.game.objects.Pig;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ServerGame extends Thread {
 
@@ -40,6 +43,7 @@ public class ServerGame extends Thread {
 
     }
 
+
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
         System.out.println("===============================MESSAGE TO SERVER===============================");
 
@@ -52,20 +56,16 @@ public class ServerGame extends Thread {
 
         if(protocol== Message.MessageProtocol.SEND)
         {
-
-            //CONNECT: USERNAME
             if (type == Message.MessageType.CONNECT)
             {
 
-                //todo if(name doesnt already exist) {
                 StringBuilder bruh = new StringBuilder();
                 for (Sprite s: sprites)
                 {
                     bruh.append(s.toString()).append(",");
                 }
-                server.send(Message.encode(bruh.toString(), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
+                server.send(Message.encode(bruh.toString().substring(0,bruh.length()-1), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
 
-                //} else {send message FAILED}
             }
             else if (type == Message.MessageType.DISCONNECT)
             {//USERMAME
@@ -78,42 +78,12 @@ public class ServerGame extends Thread {
                     }
                 }
             }//protocol == Message.MessageProtocol.SEND
-            else if (type == Message.MessageType.MOVEMENT)//username,x,y,vy,vy
-            {
-               String[] locs =  message.split(",");
-               String username = locs[0];
-               double curX = Double.parseDouble(locs[1]);
-               double curY = Double.parseDouble(locs[2]);
-                double vx = Double.parseDouble(locs[3]);
-                double vy = Double.parseDouble(locs[4]);
 
-                for (int i = 0; i< spritesNames.size(); i++)
-                {
-                    if(spritesNames.get(i).equals(message)) {
-                        for(int j = 0; j <sprites.size(); j++) {
-                            if (j == i)
-                                break;
-                            Player player = (Player)sprites.get(i);
-
-                           // System.out.println("itgetstotis");
-                            if(!player.touchingAfterDisplacement(sprites.get(j),vx,vy))
-                            {
-                                server.send(Message.encode("SUCCESS",Message.MessageProtocol.SEND,Message.MessageType.CONNECT),socket);
-                            }
-                        }
-                    }
-                }
-
-
-            }
             else if (type == Message.MessageType.SPRITE)
             {
-                System.out.println("SPRITE ran");
-                sprites.clear();
-                for(String s: message.split(","))
-                {
-                    sprites.add(Sprite.stringToSprite(s));
-                }
+                System.out.println("SPRITE ran (S)");
+                addSprites(message);
+
 
                 String bruh = "";
                 for (Sprite s: sprites)
@@ -137,6 +107,32 @@ public class ServerGame extends Thread {
 
         System.out.println();
         System.out.println();
+
+    }
+
+
+    private void addSprites(String message) {
+        message = message.substring(message.indexOf("[")+1);
+        String[] sprs = message.split(",");
+        for (int i = 0; i < sprs.length; i++) {
+            boolean matched = false;
+
+            for (int j = 0; j < sprites.size(); j++) {
+                String[] onGuh = sprs[i].split(";");
+                if (sprites.get(j).getUUID().equals(UUID.fromString(onGuh[6]))) {
+                    Sprite s = sprites.get(j);
+                    matched = true;
+                    if (s instanceof Static)
+                        ((Static) s).changeAll(onGuh[1], onGuh[2]);
+                    else
+                        ((NonStatic) s).changeAll(onGuh[1], onGuh[2], onGuh[7], onGuh[8]);
+                    break;
+                }
+            }
+            if(!matched)
+                sprites.add(Sprite.stringToSprite(sprs[i]));
+
+        }
 
     }
 }
