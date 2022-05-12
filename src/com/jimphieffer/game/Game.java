@@ -230,6 +230,7 @@ public class Game {
         //(String image, double x, double y, int width, int height, double angle, int health,  int programID
 
 
+
         // for(int x=0; x<sprites.size(); x++)
         // {//double x, double y, int width, int height,int programID
         //if(sprites.getType)
@@ -238,7 +239,7 @@ public class Game {
         // }
 
         sprites = new ArrayList<>();
-        player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
+        player = new Player(0, 0, 100, 100, "/textures/wall.png", null, 0, 0, username);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -531,6 +532,7 @@ public class Game {
         sprites.forEach(sprite -> {
             if (sprite.mesh != null) sprite.mesh.render();
         });
+
 
 
         glUseProgram(0);
