@@ -45,7 +45,7 @@ public class ServerGame extends Thread {
 
 
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
-        System.out.println("===============================MESSAGE TO SERVER===============================");
+        System.out.println("===============================MESSAGE TO SERVER FROM " + socket.toString() +  "===============================");
 
         if(message.contains("/") && message.contains(":"))
             type = Message.MessageType.SPRITE;

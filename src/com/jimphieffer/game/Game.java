@@ -444,7 +444,7 @@ public class Game {
                 sprites.get(d).step(this);
             }
             player.mesh.setPosition((int)player.getX(),(int)player.getY(),0);
-            player.mesh.setRotation(player.getLocalRotation());
+        //player.mesh.setRotation(player.getLocalRotation());
 
             if (recievedConnect)
                 ct.send(Message.encode(messsageToSend.substring(0, messsageToSend.length() - 1), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
@@ -529,16 +529,16 @@ public class Game {
 
     public void keyReleased(long window, int key) {
         if (key == GLFW_KEY_W) {
-            player.setVY(0.1);
+            player.setVY(0.01);
         }
         if (key == GLFW_KEY_S) {
-            player.setVX(-0.1);
+            player.setVY(-.01);
         }
         if (key == GLFW_KEY_A) {
-            player.setVX(-0.1);
+            player.setVX(-0.01);
         }
         if (key == GLFW_KEY_D) {
-            player.setVX(0.1);
+            player.setVX(0.01);
         }
         player.setVX(0);
         hud.keyReleased(key);
