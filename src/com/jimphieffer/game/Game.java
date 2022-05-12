@@ -47,11 +47,6 @@ public class Game {
     private long windowPointer;
     public ClientThread ct;
 
-    private int x;
-    private int y;
-    private int vx;
-    private int vy;
-
     public static int objectProgramId;
     private int objectVertexShaderId;
     private int objectFragmentShaderId;
@@ -59,6 +54,8 @@ public class Game {
     public static int hudProgramId;
     private int hudVertexShaderId;
     private int hudFragmentShaderId;
+
+    private int tickCount = 0;
 
     private ArrayList<Mesh> meshes;
     private HUD hud;
@@ -86,10 +83,7 @@ public class Game {
 
     public Game(int windowWidth, int windowHeight, String windowTitle) {
 
-        x = 50;
-        y = 50;
-        vx = 0;
-        vy = 0;
+
 
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
@@ -207,9 +201,6 @@ public class Game {
                 sprites.add(Sprite.stringToSprite(sprs[i]));
 
 
-
-
-            //er
         }
 
 
@@ -243,7 +234,7 @@ public class Game {
         // }
 
         sprites = new ArrayList<>();
-        player = new Player(0, 0, 100, 100, "/textures/wall.png", null, 0, 0, username);
+        player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -384,115 +375,80 @@ public class Game {
                 sprites.get(i).setImage("/textures/wall.png");
         }
         waitingScreen = UUID.randomUUID();
-        sprites.add(new Static(0, 0, window.getWidth(), window.getHeight(), "/textures/wall.png", waitingScreen));
         waitingStuff.add(new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0, 0, 0, 30));
         //how to initalize
-        if (numPlayers >= 1) {
-            TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0, 0, 0, 30);
-            System.out.println("getsToHere");
-            if (numPlayers >= 1) {
-                started = true;
-                newRound = true;
-            }
-            StringBuilder spriteMessage = new StringBuilder();
-            for (int a = 0; a < sprites.size(); a++) {
-                Sprite s = sprites.get(a);
-                if (sprites.get(a).getClassType() == "Static") {
-                    sprites.get(a).step(this);
-                    //ct.send(Message.encode(sprites.get(a).toString(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
-                }
-                if (s.getClassType().equals("Static"))
-                    s.step(this);
-                spriteMessage.append(s.toString());
-            }
 
-        }
     }
 
     private void tick(double deltaTime) {
+
         //Static(double x, double y, int width, int height, String image, UUID id) /
         int numPlayers = 0;
         for (int i = 0; i < sprites.size(); i++) {
-            if (sprites.get(i).getClassType() == "Player")
+            if (sprites.get(i).getTypeAsString().equals("PLAYER")) {
                 numPlayers++;
+            }
         }
-        if (numPlayers >= 1)
-            started = true;
-        if (!started) {
-            preStartTick(deltaTime, numPlayers);
+
+
+
+        if (numPlayers<=0) {
+            preStartTick(deltaTime, numPlayers); //if numplayers required is 1: will run this for the very first tick of the game
             return;
         }
+        tickCount++;
 
-        for (int i = 0; i < sprites.size(); i++) {
-            if (sprites.get(i).getClassType().equals("Player"))
-                sprites.get(i).setImage("/textures/player.png");
-        }
-        if (newRound) {
-            ArrayList<Sprite> remove = new ArrayList<Sprite>();
-            String messsageToSend = "[";
-            for (int i = 0; i < sprites.size(); i++) {
-                StringBuilder spriteMessage = new StringBuilder();
-                Sprite s = sprites.get(i);
-                if (sprites.get(i).getID() == waitingScreen) {
-                    sprites.remove(s);
-                    s.mesh.close();
-                    spriteMessage.append(s.toString());
-                    remove.add(sprites.get(i));
-                    sprites.get(i).mesh.close();
-                } else if (sprites.get(i).getClassType() == "Player") {
-                    sprites.get(i).setX(windowWidth * Math.random());
-                    sprites.get(i).setY(windowWidth * Math.random());
-                    if (((Player) sprites.get(i)).getHealth() == 0) {
-                        sprites.remove(i);
+            //waitingStuff.remove(0);
+            //TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0, 0, 0, 30);
+
+
+        waitingStuff.clear();
+
+            started = true;
+
+
+
+
+
+
+
+            if(tickCount==1) {
+
+                String messsageToSend = "[";
+                for (int i = 0; i < sprites.size(); i++) {
+                    StringBuilder spriteMessage = new StringBuilder();
+                    Sprite s = sprites.get(i);
+                    if (sprites.get(i).getID() == waitingScreen) {
+                        sprites.remove(s);
+                        s.mesh.close();
+                        spriteMessage.append(s.toString());
                         sprites.get(i).mesh.close();
+                    } else if (sprites.get(i) instanceof Player) {
+                        sprites.get(i).setX(windowWidth * Math.random());
+                        sprites.get(i).setY(windowWidth * Math.random());
+
+
+
+
+                        player.mesh.setRotation(player.getLocalRotation());
+                        sprites.get(i).step(this);
                     }
-                    //if(((Player)sprites.get(i)).isAttacking() && sprites.get(i).isTouchingAfter)
-                    //{
-
-                    // }
-                    //s.setHealth(100);
-
-                    //Tiko this is the line:
-                    // ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-                    //
-
-                    player.mesh.setRotation(player.getLocalRotation());
-                    for (int l = 0; l < remove.size(); l++) {
-                        remove.remove(l);
-                    }
-                    sprites.get(i).step(this);
-                } else if (sprites.get(i).getClassType() == "Static") {
-                    sprites.get(i).setX(windowWidth * Math.random());
-                    sprites.get(i).setY(windowWidth * Math.random());
-
-                    //Tiko this is the line:
-                    // ct.send(Message.encode(sprites.get(i).toString(),Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-                    //
-
-
-                    for (int j = 0; j < remove.size(); j++) {
-                        remove.remove(j);
-                    }
-                    sprites.get(i).step(this);
-                } else {
-                    for (int k = 0; k < remove.size(); k++) {
-                        remove.remove(k);
-                    }
-                    sprites.get(i).step(this);
                 }
+                return;
             }
 
-        } else {
-            String messsageToSend = "";
+
+            StringBuilder messsageToSend = new StringBuilder();
             for (int d = 0; d < sprites.size(); d++) {
-                messsageToSend += (sprites.get(d).toString() + ",");
+                messsageToSend.append(sprites.get(d).toString()).append(",");
                 sprites.get(d).step(this);
-                player.mesh.setRotation(player.getLocalRotation());
             }
+            player.mesh.setPosition((int)player.getX(),(int)player.getY(),0);
+            player.mesh.setRotation(player.getLocalRotation());
 
             if (recievedConnect)
                 ct.send(Message.encode(messsageToSend.substring(0, messsageToSend.length() - 1), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
-        }
+
 
         newRound = false;
 

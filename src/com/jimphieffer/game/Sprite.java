@@ -235,6 +235,11 @@ public abstract class Sprite
         return UUID.fromString(s.substring(s.indexOf('[')+1,s.length()-1).split(";")[6]);
     }
 
+    public String getTypeAsString()
+    {
+        return this.toString().substring(1,this.toString().length()-1).split(";")[0];
+    }
+
     public static Sprite stringToSprite(String s)
     {
         s= s.substring(s.indexOf('[')+1,s.length()-1);
