@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static java.lang.Integer.parseInt;
+
 public class ServerGame extends Thread {
 
     private int mapWidth = 1000;
@@ -24,24 +26,28 @@ public class ServerGame extends Thread {
         sprites.add(new Pig(100,100));
         spritesNames = new ArrayList<>();
         this.server = server;
+        runT();
     }
 
-    public void run()
+    public void runT()
     {
 
-        while(true)
+        Thread t = new Thread(() ->
         {
-            System.out.println("sending?");
-            String bruh = "";
-            for (Sprite s: sprites)
-
-
+            while(true)
             {
-                bruh+=s.toString() + ",";
-            }
-            server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
 
-        }
+//                String bruh = "";
+//                for (Sprite s: sprites)
+//                {
+//                    s.step();
+//                    bruh+=s.toString() + ",";
+//                }
+//                server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+            }
+        });
+
+
 
     }
 
@@ -84,20 +90,29 @@ public class ServerGame extends Thread {
             else if (type == Message.MessageType.SPRITE)
             {
                 System.out.println("SPRITE ran (S)");
-                addSprites(message);
+                int numSteps = parseInt(message.substring(message.indexOf(":")+1,message.indexOf(">")));
+                addSprites(message.substring(message.indexOf(">")+1));
 
 
-//                try {
-//                    Thread.sleep(10);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
 
+                for(int f = 0; f<numSteps; f++)
+                {
+                    for (Sprite s: sprites)
+                    {
+                        s.step();
+                    }
+                }
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 String bruh = "";
                 for (Sprite s: sprites)
                 {
-                    s.step();
+
                     bruh+=s.toString() + ",";
                 }
                 server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));

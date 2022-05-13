@@ -56,6 +56,7 @@ public class Game {
     private int hudFragmentShaderId;
 
     private int tickCount = 0;
+    private int numSteps = 0;
 
     private ArrayList<Mesh> meshes;
     private HUD hud;
@@ -127,19 +128,7 @@ public class Game {
             while (glfwGetTime() - lastRenderTime < secondsPerFrame) ;
             //System.out.println("FPS: " + (1/sinceRender));
         }
-        //
-        //Player dupe=player.set(VX)
-        //ct.send(Message.encode());
 
-        /*
-        String bruh = "";
-        for (Sprite s: sprites)
-        {
-          //  s.step(this);
-            bruh+=s.toString() + ",";
-        }
-
-        */
 
 
         close();
@@ -171,6 +160,7 @@ public class Game {
             recievedConnect = true;
         } else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE)) {
             System.out.println("SPRITE ran");
+            numSteps = 0;
             recievedSprites = true;
 
 
@@ -432,7 +422,7 @@ public class Game {
 
 
                         player.mesh.setRotation(player.getLocalRotation());
-                        //sprites.get(i).step();
+
                     }
                 }
                 return;
@@ -440,17 +430,26 @@ public class Game {
 
 
             StringBuilder messsageToSend = new StringBuilder();
+            System.out.println("ran this DDD");
             for (int d = 0; d < sprites.size(); d++) {
                 messsageToSend.append(sprites.get(d).toString()).append(",");
                 sprites.get(d).mesh.setPosition((float)sprites.get(d).getX(),(float)sprites.get(d).getY(),0);;
-                if(!recievedSprites);
+                if(!recievedSprites)
+                {
+                    numSteps++;
+                    sprites.get(d).step();
+                }
+                else
+                    numSteps = 0;
             }
 
         //player.mesh.setRotation(player.getLocalRotation());
 
         String messsageToSend2 = player.toString();
-            if (recievedConnect) {
-                ct.send(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+        if(recievedSprites)
+            System.out.println("werjnwfojinwkfmejbnkiekwfmeobgjnd");
+            if (recievedConnect && recievedSprites) {
+                ct.send(Message.encode(numSteps + ">" + messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
                 recievedSprites = false;
             }
 
