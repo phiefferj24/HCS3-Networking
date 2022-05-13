@@ -85,11 +85,11 @@ public class ServerGame extends Thread {
                 addSprites(message);
 
 
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(10);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
 
 
                 String bruh = "";
