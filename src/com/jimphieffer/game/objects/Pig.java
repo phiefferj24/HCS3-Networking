@@ -1,7 +1,9 @@
 package com.jimphieffer.game.objects;
 
 import com.jimphieffer.game.NonStatic;
+import com.jimphieffer.game.Sprite;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
@@ -40,7 +42,6 @@ public class Pig extends NonStatic {
         double xMov = Math.cos(angle)*3;
         double yMov = Math.sin(angle)*3;
         angle+=.02;
-
         setX(getX()+xMov);
         setY(getY()+yMov);
         super.step();
