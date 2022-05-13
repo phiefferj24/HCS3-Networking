@@ -34,6 +34,8 @@ public class ServerGame extends Thread {
             System.out.println("sending?");
             String bruh = "";
             for (Sprite s: sprites)
+
+
             {
                 bruh+=s.toString() + ",";
             }
