@@ -36,7 +36,6 @@ public class Game {
 
     private double playerRotation = 0;
     private boolean space = false;
-    private boolean print = false;
     private String ip;
     private int port;
 
@@ -67,7 +66,7 @@ public class Game {
     private boolean started = false;
     private boolean newRound = false;
     private boolean recievedConnect = false;
-    private boolean actionDone = false;
+    private boolean recievedSprites = false;
     private UUID waitingScreen;
     private ArrayList<TextBox> waitingStuff = new ArrayList<TextBox>();
 
@@ -160,25 +159,25 @@ public class Game {
     }
 
     public void onMessage(String message) {
-        if(print) System.out.println("--------------------MESSAGE RECIEVED BY " + username + "-------------------");
-        if(print) System.out.println("message to game: " + message);
-        if(print) System.out.println(Thread.currentThread().getName());
+        System.out.println("--------------------MESSAGE RECIEVED BY " + username + "-------------------");
+        System.out.println("message to game: " + message);
+        System.out.println(Thread.currentThread().getName());
         if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
-            if(print) System.out.println("CONNECT ran");
+            System.out.println("CONNECT ran");
 
 
             addSprites(message);
             sprites.add(player);
             recievedConnect = true;
         } else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE)) {
-            if(print) System.out.println("SPRITE ran");
+            System.out.println("SPRITE ran");
 
 
             addSprites(message);
         }
-        if(print) System.out.println("------------------------------------------------------");
-        if(print) System.out.println();
-        if(print) System.out.println();
+        System.out.println("------------------------------------------------------");
+        System.out.println();
+        System.out.println();
     }
 
     private void addSprites(String message) {
@@ -390,32 +389,16 @@ public class Game {
                 numPlayers++;
             }
         }
-
-
-
         if (numPlayers<=0) {
             preStartTick(deltaTime, numPlayers); //if numplayers required is 1: will run this for the very first tick of the game
             return;
         }
         tickCount++;
-
             //waitingStuff.remove(0);
             //TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0, 0, 0, 30);
-
-
         waitingStuff.clear();
-
             started = true;
-
-
-
-
-
-
-
-            if(tickCount==1 && actionDone) {
-
-
+            if(tickCount==1) {
                 String messsageToSend = "[";
                 for (int i = 0; i < sprites.size(); i++) {
                     StringBuilder spriteMessage = new StringBuilder();
@@ -426,30 +409,40 @@ public class Game {
                         spriteMessage.append(s.toString());
                         sprites.get(i).mesh.close();
                     } else if (sprites.get(i) instanceof Player) {
-                        sprites.get(i).setX(windowWidth/2 * Math.random() + windowWidth/2);
-                        sprites.get(i).setY(windowHeight/2 * Math.random() + windowHeight/2);
-
-
-
-
+                        sprites.get(i).setX(windowWidth/2 * Math.random()+windowWidth/2);
+                        sprites.get(i).setY(windowHeight/2 * Math.random()+windowHeight/2);
                         player.mesh.setRotation(player.getLocalRotation());
+                        if(((Player)sprites.get(i)).isAttacking())
+                        {
+                            for(int f=0; f<sprites.size(); f++)
+                            {
+                                if(sprites.get(f).getTypeAsString()!="PLAYER" && sprites.get(i).touchingAfterDisplacement(sprites.get(f),0,0))
+                                {
+                                    if(sprites.get(f).getTypeAsString()=="TREE")
+                                    {
+                                        ((Player)sprites.get(i)).setAmtWood(((Player)sprites.get(i)).getAmtWood()+1);
+                                    }
+                                }
+                            }
+                        }
                         //sprites.get(i).step();
                     }
                 }
                 return;
             }
-
-
             StringBuilder messsageToSend = new StringBuilder();
             for (int d = 0; d < sprites.size(); d++) {
                 messsageToSend.append(sprites.get(d).toString()).append(",");
-                sprites.get(d).mesh.setPosition((int)sprites.get(d).getX(),(int)sprites.get(d).getY(),0);;
+                sprites.get(d).mesh.setPosition((float)sprites.get(d).getX(),(float)sprites.get(d).getY(),0);;
+            }
+        //player.mesh.setRotation(player.getLocalRotation());
+        String messsageToSend2 = player.toString();
+            if (recievedConnect) {
+                ct.send(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                recievedSprites = false;
             }
 
-        //player.mesh.setRotation(player.getLocalRotation());
 
-            if (recievedConnect)
-                ct.send(Message.encode(messsageToSend.substring(0, messsageToSend.length() - 1), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
 
 
         newRound = false;
@@ -510,16 +503,16 @@ public class Game {
 
     public void keyPressed(long window, int key) {
         if (key == GLFW_KEY_W) {
-            player.setVY( 10);
+            player.setVY(player.getVY() + 10);
         }
         if (key == GLFW_KEY_S) {
-            player.setVY(-10);
+            player.setVY(player.getVY() - 10);
         }
         if (key == GLFW_KEY_A) {
-            player.setVX(-10);
+            player.setVX(player.getVX() - 10);
         }
         if (key == GLFW_KEY_D) {
-            player.setVX(10);
+            player.setVX(player.getVX() + 10);
         }
         if (key == GLFW_KEY_ESCAPE) {
             if (mainMenu == null) hud.visible = !hud.visible;
@@ -530,7 +523,6 @@ public class Game {
     }
 
     public void keyReleased(long window, int key) {
-        actionDone = false;
         if (key == GLFW_KEY_W) {
             player.setVY(0.01);
         }

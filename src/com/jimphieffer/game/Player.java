@@ -86,8 +86,10 @@ public class Player extends NonStatic{
         return rotation;
     }
 
-    public int getAmtWood(){ return amtWood; }
+    public void setAmtWood(int wood){ amtWood=wood; }
 
+    public int getAmtWood(){ return amtWood; }
+    public void setAttacking(){isAttacking=true;}
     public boolean isAttacking(){ return isAttacking;}
 
     public void step()
