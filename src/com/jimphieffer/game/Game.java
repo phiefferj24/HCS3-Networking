@@ -36,6 +36,7 @@ public class Game {
 
     private double playerRotation = 0;
     private boolean space = false;
+    private boolean print = false;
     private String ip;
     private int port;
 
@@ -66,6 +67,7 @@ public class Game {
     private boolean started = false;
     private boolean newRound = false;
     private boolean recievedConnect = false;
+    private boolean actionDone = false;
     private UUID waitingScreen;
     private ArrayList<TextBox> waitingStuff = new ArrayList<TextBox>();
 
@@ -158,25 +160,25 @@ public class Game {
     }
 
     public void onMessage(String message) {
-        System.out.println("--------------------MESSAGE RECIEVED BY " + username + "-------------------");
-        System.out.println("message to game: " + message);
-        System.out.println(Thread.currentThread().getName());
+        if(print) System.out.println("--------------------MESSAGE RECIEVED BY " + username + "-------------------");
+        if(print) System.out.println("message to game: " + message);
+        if(print) System.out.println(Thread.currentThread().getName());
         if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
-            System.out.println("CONNECT ran");
+            if(print) System.out.println("CONNECT ran");
 
 
             addSprites(message);
             sprites.add(player);
             recievedConnect = true;
         } else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE)) {
-            System.out.println("SPRITE ran");
+            if(print) System.out.println("SPRITE ran");
 
 
             addSprites(message);
         }
-        System.out.println("------------------------------------------------------");
-        System.out.println();
-        System.out.println();
+        if(print) System.out.println("------------------------------------------------------");
+        if(print) System.out.println();
+        if(print) System.out.println();
     }
 
     private void addSprites(String message) {
@@ -411,7 +413,8 @@ public class Game {
 
 
 
-            if(tickCount==1) {
+            if(tickCount==1 && actionDone) {
+
 
                 String messsageToSend = "[";
                 for (int i = 0; i < sprites.size(); i++) {
@@ -423,8 +426,8 @@ public class Game {
                         spriteMessage.append(s.toString());
                         sprites.get(i).mesh.close();
                     } else if (sprites.get(i) instanceof Player) {
-                        sprites.get(i).setX(windowWidth * Math.random());
-                        sprites.get(i).setY(windowWidth * Math.random());
+                        sprites.get(i).setX(windowWidth/2 * Math.random() + windowWidth/2);
+                        sprites.get(i).setY(windowHeight/2 * Math.random() + windowHeight/2);
 
 
 
@@ -507,16 +510,16 @@ public class Game {
 
     public void keyPressed(long window, int key) {
         if (key == GLFW_KEY_W) {
-            player.setVY(player.getVY() + 10);
+            player.setVY( 10);
         }
         if (key == GLFW_KEY_S) {
-            player.setVY(player.getVY() - 10);
+            player.setVY(-10);
         }
         if (key == GLFW_KEY_A) {
-            player.setVX(player.getVX() - 10);
+            player.setVX(-10);
         }
         if (key == GLFW_KEY_D) {
-            player.setVX(player.getVX() + 10);
+            player.setVX(10);
         }
         if (key == GLFW_KEY_ESCAPE) {
             if (mainMenu == null) hud.visible = !hud.visible;
@@ -527,6 +530,7 @@ public class Game {
     }
 
     public void keyReleased(long window, int key) {
+        actionDone = false;
         if (key == GLFW_KEY_W) {
             player.setVY(0.01);
         }

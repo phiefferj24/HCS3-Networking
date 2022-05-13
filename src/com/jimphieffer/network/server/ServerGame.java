@@ -11,46 +11,66 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import java.time.Duration;
+import java.time.Instant;
+
 public class ServerGame extends Thread {
+
+    private boolean print = false;
 
     private int mapWidth = 1000;
     private int mapHeight = 1000;
     private Server server;
     private ArrayList<Sprite> sprites;
-    private ArrayList<String> spritesNames;
+    private int numConnected = 0;
+
 
     public ServerGame(Server server) {
         sprites = new ArrayList<>();
         sprites.add(new Pig(100,100));
-        spritesNames = new ArrayList<>();
+
+
         this.server = server;
+        //runTemp();
     }
 
-    public void run()
+    public void runTemp() //OK so this is my temporary solution to run() not running correctly -Tiko
     {
 
-        while(true)
-        {
-            System.out.println("sending?");
-            String bruh = "";
-            for (Sprite s: sprites)
-            {
-                bruh+=s.toString() + ",";
-            }
-            server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+        Thread t = new Thread(() ->{
 
-        }
+
+
+            while(true)
+            {
+
+                    System.out.println("ran       ^");
+
+                }
+        });
+        t.start();
+
 
     }
 
 
+    public String spritesToString() {
+        StringBuilder message = new StringBuilder();
+        for (Sprite s: sprites)
+        {
+            message.append(s.toString()).append(",");
+        }
+        return message.toString();
+    }
+
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
-        System.out.println("===============================MESSAGE TO SERVER FROM " + socket.toString() +  "===============================");
+        if(print) System.out.println("===============================MESSAGE TO SERVER FROM " + socket.toString() +  "===============================");
 
         if(message.contains("/") && message.contains(":"))
             type = Message.MessageType.SPRITE;
 
-        System.out.println("message: " + message);
+
+        if(print) System.out.println("message: " + message);
 
 
 
@@ -58,41 +78,42 @@ public class ServerGame extends Thread {
         {
             if (type == Message.MessageType.CONNECT)
             {
+                numConnected++;
 
-                StringBuilder bruh = new StringBuilder();
-                for (Sprite s: sprites)
-                {
-                    bruh.append(s.toString()).append(",");
-                }
-                server.send(Message.encode(bruh.toString().substring(0,bruh.length()-1), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
+
+                String bruh = spritesToString();
+                server.send(Message.encode(bruh.substring(0,bruh.length()-1), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
 
             }
             else if (type == Message.MessageType.DISCONNECT)
             {//USERMAME
-                for (int i = 0; i< spritesNames.size(); i++)
-                {
-                    if(spritesNames.get(i).equals(message)) {
-                        sprites.remove(i);
-                        spritesNames.remove(i);
-                        break;
-                    }
-                }
+                //TODO
             }//protocol == Message.MessageProtocol.SEND
 
             else if (type == Message.MessageType.SPRITE)
             {
-                System.out.println("SPRITE ran (S)");
+                if(print) System.out.println("SPRITE ran (S)");
+
                 addSprites(message);
-
-
-
-                String bruh = "";
-                for (Sprite s: sprites)
-                {
+                StringBuilder bruh = new StringBuilder();
+                for (Sprite s : sprites) {
                     s.step();
-                    bruh+=s.toString() + ",";
+                    bruh.append(s.toString()).append(",");
                 }
-                server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+
+
+                server.relay(Message.encode(bruh.toString(), Message.MessageProtocol.RELAY, Message.MessageType.SPRITE));
+
+
+
+
+//                StringBuilder bruh = new StringBuilder();
+//                for (Sprite s: sprites)
+//                {
+//                    s.step();
+//                    bruh.append(s.toString()).append(",");
+//                }
+//                server.relay(Message.encode(bruh.toString(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
 
             }
         }
@@ -105,10 +126,10 @@ public class ServerGame extends Thread {
             System.out.println("tried an illegal protocol");
         }
 
-        System.out.println("=============================================================================================");
+        if(print) System.out.println("=============================================================================================");
 
-        System.out.println();
-        System.out.println();
+        if(print) System.out.println();
+        if(print) System.out.println();
 
     }
 
