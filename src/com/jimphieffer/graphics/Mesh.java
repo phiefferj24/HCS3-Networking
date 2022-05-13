@@ -1,6 +1,6 @@
 package com.jimphieffer.graphics;
 
-import java.lang.Math;
+import org.joml.Math;
 import java.nio.*;
 
 import static org.lwjgl.system.MemoryUtil.*;
@@ -11,6 +11,8 @@ import org.joml.*;
 public class Mesh {
     public float x;
     public float y;
+    public float z;
+    public float angle;
     public float width;
     public float height;
     private final int vvboId;
@@ -112,20 +114,24 @@ public class Mesh {
     public void translate(float x, float y, float z) {
         this.x += x;
         this.y += y;
+        this.z += z;
         positionMatrix.translate(x, y, z);
     }
     public void setPosition(float x, float y, float z) {
         this.x = x;
         this.y = y;
-        positionMatrix = new Matrix4f().translate(x, y, z);
+        this.z = z;
+        positionMatrix = new Matrix4f().translate(x, y, z).rotateZ(angle);
     }
     public void scale(float factor) {
         positionMatrix.scale(factor);
     }
     public void rotate(float degrees) {
+        angle += Math.toRadians(degrees);
         positionMatrix.rotateZ((float) Math.toRadians(degrees));
     }
     public void setRotation(float degrees) {
-        positionMatrix = new Matrix4f().rotateZ((float) Math.toRadians(degrees));
+        angle = Math.toRadians(degrees);
+        positionMatrix = new Matrix4f().rotateZ(angle).translate(x, y, z);
     }
 }
