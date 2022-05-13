@@ -445,8 +445,10 @@ public class Game {
 
         //player.mesh.setRotation(player.getLocalRotation());
 
+        String messsageToSend2 = player.toString();
+        System.out.println(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE) + "------=-=-=-=-=-=");
             if (recievedConnect)
-                ct.send(Message.encode(messsageToSend.substring(0, messsageToSend.length() - 1), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                ct.send(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
 
 
         newRound = false;
