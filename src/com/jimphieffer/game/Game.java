@@ -423,8 +423,8 @@ public class Game {
                         spriteMessage.append(s.toString());
                         sprites.get(i).mesh.close();
                     } else if (sprites.get(i) instanceof Player) {
-                        sprites.get(i).setX(windowWidth * Math.random());
-                        sprites.get(i).setY(windowWidth * Math.random());
+                        sprites.get(i).setX(windowWidth/2 * Math.random()+windowWidth/2);
+                        sprites.get(i).setY(windowHeight/2 * Math.random()+windowHeight/2);
 
 
 
