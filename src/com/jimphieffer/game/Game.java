@@ -56,6 +56,7 @@ public class Game {
     private int hudFragmentShaderId;
 
     private int tickCount = 0;
+    private int numSteps = 0;
 
     private ArrayList<Mesh> meshes;
     private HUD hud;
@@ -127,19 +128,7 @@ public class Game {
             while (glfwGetTime() - lastRenderTime < secondsPerFrame) ;
             //System.out.println("FPS: " + (1/sinceRender));
         }
-        //
-        //Player dupe=player.set(VX)
-        //ct.send(Message.encode());
 
-        /*
-        String bruh = "";
-        for (Sprite s: sprites)
-        {
-          //  s.step(this);
-            bruh+=s.toString() + ",";
-        }
-
-        */
 
 
         close();
@@ -171,6 +160,8 @@ public class Game {
             recievedConnect = true;
         } else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE)) {
             System.out.println("SPRITE ran");
+            numSteps = 0;
+            recievedSprites = true;
 
 
             addSprites(message);
@@ -389,16 +380,31 @@ public class Game {
                 numPlayers++;
             }
         }
+
+
+
         if (numPlayers<=0) {
             preStartTick(deltaTime, numPlayers); //if numplayers required is 1: will run this for the very first tick of the game
             return;
         }
         tickCount++;
+
             //waitingStuff.remove(0);
             //TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0, 0, 0, 30);
+
+
         waitingStuff.clear();
+
             started = true;
+
+
+
+
+
+
+
             if(tickCount==1) {
+
                 String messsageToSend = "[";
                 for (int i = 0; i < sprites.size(); i++) {
                     StringBuilder spriteMessage = new StringBuilder();
@@ -411,34 +417,39 @@ public class Game {
                     } else if (sprites.get(i) instanceof Player) {
                         sprites.get(i).setX(windowWidth/2 * Math.random()+windowWidth/2);
                         sprites.get(i).setY(windowHeight/2 * Math.random()+windowHeight/2);
+
+
+
+
                         player.mesh.setRotation(player.getLocalRotation());
-                        if(((Player)sprites.get(i)).isAttacking())
-                        {
-                            for(int f=0; f<sprites.size(); f++)
-                            {
-                                if(sprites.get(f).getTypeAsString()!="PLAYER" && sprites.get(i).touchingAfterDisplacement(sprites.get(f),0,0))
-                                {
-                                    if(sprites.get(f).getTypeAsString()=="TREE")
-                                    {
-                                        ((Player)sprites.get(i)).setAmtWood(((Player)sprites.get(i)).getAmtWood()+1);
-                                    }
-                                }
-                            }
-                        }
-                        //sprites.get(i).step();
+
                     }
                 }
                 return;
             }
+
+
             StringBuilder messsageToSend = new StringBuilder();
+            System.out.println("ran this DDD");
             for (int d = 0; d < sprites.size(); d++) {
                 messsageToSend.append(sprites.get(d).toString()).append(",");
                 sprites.get(d).mesh.setPosition((float)sprites.get(d).getX(),(float)sprites.get(d).getY(),0);;
+                if(!recievedSprites)
+                {
+                    numSteps++;
+                    sprites.get(d).step();
+                }
+                else
+                    numSteps = 0;
             }
+
         //player.mesh.setRotation(player.getLocalRotation());
+
         String messsageToSend2 = player.toString();
-            if (recievedConnect) {
-                ct.send(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+        if(recievedSprites)
+            System.out.println("werjnwfojinwkfmejbnkiekwfmeobgjnd");
+            if (recievedConnect && recievedSprites) {
+                ct.send(Message.encode(numSteps + ">" + messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
                 recievedSprites = false;
             }
 
