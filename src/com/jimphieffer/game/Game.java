@@ -66,6 +66,7 @@ public class Game {
     private boolean started = false;
     private boolean newRound = false;
     private boolean recievedConnect = false;
+    private boolean recievedSprites = false;
     private UUID waitingScreen;
     private ArrayList<TextBox> waitingStuff = new ArrayList<TextBox>();
 
@@ -170,6 +171,7 @@ public class Game {
             recievedConnect = true;
         } else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE)) {
             System.out.println("SPRITE ran");
+            recievedSprites = true;
 
 
             addSprites(message);
@@ -440,15 +442,19 @@ public class Game {
             StringBuilder messsageToSend = new StringBuilder();
             for (int d = 0; d < sprites.size(); d++) {
                 messsageToSend.append(sprites.get(d).toString()).append(",");
-                sprites.get(d).mesh.setPosition((int)sprites.get(d).getX(),(int)sprites.get(d).getY(),0);;
+                sprites.get(d).mesh.setPosition((float)sprites.get(d).getX(),(float)sprites.get(d).getY(),0);;
+                if(!recievedSprites);
             }
 
         //player.mesh.setRotation(player.getLocalRotation());
 
         String messsageToSend2 = player.toString();
-        System.out.println(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE) + "------=-=-=-=-=-=");
-            if (recievedConnect)
+            if (recievedConnect) {
                 ct.send(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                recievedSprites = false;
+            }
+
+
 
 
         newRound = false;
