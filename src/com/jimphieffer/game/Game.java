@@ -66,6 +66,7 @@ public class Game {
     private boolean started = false;
     private boolean newRound = false;
     private boolean recievedConnect = false;
+    private boolean recievedSprites = false;
     private UUID waitingScreen;
     private ArrayList<TextBox> waitingStuff = new ArrayList<TextBox>();
 
@@ -436,9 +437,14 @@ public class Game {
             }
         //player.mesh.setRotation(player.getLocalRotation());
         String messsageToSend2 = player.toString();
-        System.out.println(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE) + "------=-=-=-=-=-=");
-            if (recievedConnect)
+            if (recievedConnect) {
                 ct.send(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                recievedSprites = false;
+            }
+
+
+
+
         newRound = false;
 
 

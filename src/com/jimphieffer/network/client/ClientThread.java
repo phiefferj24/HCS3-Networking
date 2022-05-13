@@ -50,8 +50,6 @@ public class ClientThread extends Thread{
                     System.exit(1);
                 }
                 onMessage(Message.decode(message));
-
-                run();
             } catch(IOException e) {
                 e.printStackTrace();
             }
