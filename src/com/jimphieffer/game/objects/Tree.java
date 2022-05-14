@@ -1,6 +1,6 @@
 package com.jimphieffer.game.objects;
 
-import com.jimphieffer.game.Static;
+import com.jimphieffer.game.objectTypes.Static;
 
 import java.util.UUID;
 

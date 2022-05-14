@@ -1,16 +1,14 @@
 package com.jimphieffer.game;
 
+import com.jimphieffer.game.objectTypes.NonStatic;
+
 import java.util.UUID;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
 
-import static java.lang.Double.*;
-import static java.lang.Integer.*;
-
-
-public class Player extends NonStatic{
+public class Player extends NonStatic {
 
     private double vx;
     private double vy;

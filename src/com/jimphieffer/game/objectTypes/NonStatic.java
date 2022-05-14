@@ -1,7 +1,4 @@
-package com.jimphieffer.game;
-
-import com.jimphieffer.game.Game;
-import com.jimphieffer.game.Sprite;
+package com.jimphieffer.game.objectTypes;
 
 import java.util.UUID;
 

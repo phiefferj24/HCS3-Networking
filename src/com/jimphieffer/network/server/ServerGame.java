@@ -1,10 +1,9 @@
 package com.jimphieffer.network.server;
 
 import com.jimphieffer.Message;
-import com.jimphieffer.game.NonStatic;
-import com.jimphieffer.game.Player;
-import com.jimphieffer.game.Sprite;
-import com.jimphieffer.game.Static;
+import com.jimphieffer.game.objectTypes.NonStatic;
+import com.jimphieffer.game.objectTypes.Sprite;
+import com.jimphieffer.game.objectTypes.Static;
 import com.jimphieffer.game.objects.Pig;
 
 import java.net.Socket;
@@ -96,12 +95,9 @@ public class ServerGame extends Thread {
 
 
                 for(int f = 0; f<numSteps; f++)
-                {
                     for (Sprite s: sprites)
-                    {
                         s.step();
-                    }
-                }
+
 
                 try {
                     Thread.sleep(100);
@@ -109,13 +105,13 @@ public class ServerGame extends Thread {
                     e.printStackTrace();
                 }
 
-                String bruh = "";
+                StringBuilder bruh = new StringBuilder();
                 for (Sprite s: sprites)
                 {
 
-                    bruh+=s.toString() + ",";
+                    bruh.append(s.toString()).append(",");
                 }
-                server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+                server.relay(Message.encode(bruh.toString(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
 
             }
         }
