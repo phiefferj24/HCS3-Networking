@@ -375,8 +375,8 @@ public class Game {
 
         //Static(double x, double y, int width, int height, String image, UUID id) /
         int numPlayers = 0;
-        for (int i = 0; i < sprites.size(); i++) {
-            if (sprites.get(i).getTypeAsString().equals("PLAYER")) {
+        for (Sprite sprite : sprites) {
+            if (sprite.getTypeAsString().equals("PLAYER")) {
                 numPlayers++;
             }
         }
@@ -430,7 +430,7 @@ public class Game {
 
 
             StringBuilder messsageToSend = new StringBuilder();
-            System.out.println("ran this DDD");
+
             for (int d = 0; d < sprites.size(); d++) {
                 messsageToSend.append(sprites.get(d).toString()).append(",");
                 sprites.get(d).mesh.setPosition((float)sprites.get(d).getX(),(float)sprites.get(d).getY(),0);;
