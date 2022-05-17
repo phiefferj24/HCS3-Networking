@@ -1,5 +1,7 @@
 package com.jimphieffer.game;
 
+import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
+
 import java.util.UUID;
 
 import static java.lang.Double.parseDouble;
@@ -20,6 +22,7 @@ public class Player extends NonStatic{
     private float rotation;
     private boolean isAttacking;
 
+    @JsonDefaultConstructor(names = {"x", "y", "width", "height", "image", "id", "vx", "vy", "username"})
     public Player(double x, double y, int width, int height, String image, UUID id,
                   double velocityX, double velocityY, String username)
     {

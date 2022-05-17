@@ -2,6 +2,7 @@ package com.jimphieffer.game;
 
 import com.jimphieffer.game.Game;
 import com.jimphieffer.game.Sprite;
+import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
 
 import java.util.UUID;
 
@@ -17,6 +18,7 @@ public class NonStatic extends Sprite {
     private String image;
 
     //TODO: change change animal to static and extend it
+    @JsonDefaultConstructor(names = {"x", "y", "width", "height", "image", "id", "vx", "vy"})
     public NonStatic(double x, double y, int width, int height, String image, UUID id,
                      double vx, double vy)
     {

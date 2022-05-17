@@ -3,12 +3,14 @@ package com.jimphieffer.utils.json;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jimphieffer.utils.json.annotations.JsonIgnore;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class Encoder {
@@ -26,15 +28,16 @@ public class Encoder {
         ObjectNode objectNode = parentNode.putObject("object");
         Method[] methods = object.getClass().getMethods();
         for (Method method : methods) {
-            if (method.getName().startsWith("get")) {
-                String propertyName = method.getName().substring(3);
-                if (!ignoredProperties.contains(propertyName.toLowerCase())
+            if (method.getName().startsWith("get") && !method.isAnnotationPresent(JsonIgnore.class)) {
+                String propertyName = method.getName().substring(3).toLowerCase();
+                if (!ignoredProperties.contains(propertyName)
                         && method.getParameterCount() == 0
                         && superclass.isAssignableFrom(method.getDeclaringClass())) {
                     boolean hasSetter = false;
                     for (Method method2 : methods) {
-                        if (method2.getName().startsWith("set") && method2.getName().substring(3).equals(propertyName)) {
+                        if (method2.getName().startsWith("set") && method2.getName().substring(3).equalsIgnoreCase(propertyName)) {
                             hasSetter = true;
+                            break;
                         }
                     }
                     if (!hasSetter) {

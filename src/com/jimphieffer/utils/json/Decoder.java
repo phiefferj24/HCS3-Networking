@@ -15,16 +15,14 @@ import java.util.stream.Collectors;
 
 public class Decoder {
     protected final String json;
-    private final HashMap<Class<?>, Json.AssignmentMethod<?>> assignmentMethods = new HashMap<>();
+    protected final HashMap<Class<?>, Json.AssignmentMethod<?>> assignmentMethods = new HashMap<>();
     public Object[] objects = new Object[0];
 
     public Decoder(String json) {
         this.json = json;
     }
 
-    private void decode(String... ignoredPropertyNames) {
-        List<String> ignoredProperties = Arrays.asList(ignoredPropertyNames);
-        ignoredProperties = ignoredProperties.stream().map(String::toLowerCase).collect(Collectors.toList());
+    private void decode() {
         try {
             JsonNode arrayNode = new ObjectMapper().readTree(json);
             if (!arrayNode.isArray()) {
@@ -46,8 +44,8 @@ public class Decoder {
                         try {
                             Object object = constructor.newInstance();
                             for (Method method : methods) {
-                                if (method.getName().startsWith("set") && method.getParameterCount() == 1 && method.getReturnType() == void.class && !ignoredProperties.contains(method.getName().toLowerCase())) {
-                                    String propertyName = method.getName().substring(3);
+                                if (method.getName().startsWith("set") && method.getParameterCount() == 1 && method.getReturnType() == void.class) {
+                                    String propertyName = method.getName().substring(3).toLowerCase();
                                     if (objectNode.has(propertyName)) {
                                         JsonNodeType nodeType = objectNode.get(propertyName).getNodeType();
                                         switch (nodeType) {

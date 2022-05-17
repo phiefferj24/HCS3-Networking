@@ -9,9 +9,7 @@ import com.jimphieffer.graphics.hud.elements.HUDButton;
 import com.jimphieffer.graphics.hud.elements.HUDTextBox;
 import com.jimphieffer.network.client.ClientThread;
 import com.jimphieffer.network.server.Server;
-import com.jimphieffer.utils.json.Decoder;
-import com.jimphieffer.utils.json.Encoder;
-import com.jimphieffer.utils.json.Json;
+import com.jimphieffer.utils.json.*;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
@@ -378,7 +376,7 @@ public class Game {
         //Static(double x, double y, int width, int height, String image, UUID id) /
         int numPlayers = 0;
         for (Sprite sprite : sprites) {
-            if (sprite.getTypeAsString().equals("PLAYER")) {
+            if (sprite.getClass().getSimpleName().equalsIgnoreCase("PLAYER")) {
                 numPlayers++;
             }
         }
@@ -637,24 +635,24 @@ public class Game {
     // use but dont touch
 
     public static void main(String[] args) {
-        Thread t = new Thread(() -> {
-            Server s = new Server(9000);
-            s.listen();
-        });
-        t.start();
-
-        // join menu
-        Game g = new Game(1280, 720, "Game");
-        g.init();
-        g.menu();
-        g.run();
-//        Sprite p = new Player(1.0, 2.0, 3, 4, "hello", UUID.randomUUID(), 5.0, 6.0, "world");
-//        Encoder encoder = new Encoder();
-//        encoder.addObject(p, Sprite.class);
-//        System.out.println(encoder.encode());
-//        Decoder decoder = new Decoder(encoder.encode());
-//        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
-//        Sprite p2 = decoder.getDerivativeObjects(Sprite.class)[0];
-//        System.out.println(p2.getUUID());
+//        Thread t = new Thread(() -> {
+//            Server s = new Server(9000);
+//            s.listen();
+//        });
+//        t.start();
+//
+//        // join menu
+//        Game g = new Game(1280, 720, "Game");
+//        g.init();
+//        g.menu();
+//        g.run();
+        Sprite p = new Player(1.0, 2.0, 3, 4, "hello", UUID.randomUUID(), 5.0, 6.0, "world");
+        AnnotatedEncoder encoder = new AnnotatedEncoder();
+        encoder.addObject(p, Sprite.class);
+        System.out.println(encoder.encode());
+        AnnotatedDecoder decoder = new AnnotatedDecoder(encoder.encode());
+        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
+        Sprite p2 = decoder.getDerivativeObjects(Sprite.class)[0];
+        System.out.println(p2.getUUID());
     }
 }

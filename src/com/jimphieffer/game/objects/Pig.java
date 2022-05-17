@@ -2,6 +2,7 @@ package com.jimphieffer.game.objects;
 
 import com.jimphieffer.game.NonStatic;
 import com.jimphieffer.game.Sprite;
+import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -12,6 +13,7 @@ public class Pig extends NonStatic {
     private double angle = Math.random()*360;
     private int health;
 
+    @JsonDefaultConstructor(names = {"x", "y", "width", "height", "image", "id", "vx", "vy", "health"})
     public Pig(double x, double y, int width, int height, String image, UUID id,
                double vx, double vy, int health) {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
