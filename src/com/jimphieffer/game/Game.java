@@ -9,11 +9,13 @@ import com.jimphieffer.graphics.hud.elements.HUDButton;
 import com.jimphieffer.graphics.hud.elements.HUDTextBox;
 import com.jimphieffer.network.client.ClientThread;
 import com.jimphieffer.network.server.Server;
+import com.jimphieffer.utils.json.Decoder;
+import com.jimphieffer.utils.json.Encoder;
+import com.jimphieffer.utils.json.Json;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Scanner;
 import java.lang.String;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
@@ -189,10 +191,10 @@ public class Game {
                     break;
                 }
             }
-            if(!matched)
-                sprites.add(Sprite.stringToSprite(sprs[i]));
+            if(!matched);
+                //sprites.add(Sprite.stringToSprite(sprs[i]));
 
-        }
+            }
 
 
     }
@@ -646,5 +648,13 @@ public class Game {
         g.init();
         g.menu();
         g.run();
+//        Sprite p = new Player(1.0, 2.0, 3, 4, "hello", UUID.randomUUID(), 5.0, 6.0, "world");
+//        Encoder encoder = new Encoder();
+//        encoder.addObject(p, Sprite.class);
+//        System.out.println(encoder.encode());
+//        Decoder decoder = new Decoder(encoder.encode());
+//        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
+//        Sprite p2 = decoder.getDerivativeObjects(Sprite.class)[0];
+//        System.out.println(p2.getUUID());
     }
 }

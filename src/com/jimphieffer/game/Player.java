@@ -29,16 +29,8 @@ public class Player extends NonStatic{
         health  = 100;
        this.username = username + id;
     }
-
-    public Player(String x, String y, String width, String height, String image, String id,
-                  String velocityX, String velocityY, String username)
-    {
-        super(x, y, width, height, image,id,velocityX,velocityY);
-        vx = parseDouble(velocityX);
-        vy = parseDouble(velocityY);
-        health  = 100;
-        this.username = username;
-
+    public Player() {
+        super();
     }
 
     public void setUsername(String name)
@@ -89,8 +81,8 @@ public class Player extends NonStatic{
     public void setAmtWood(int wood){ amtWood=wood; }
 
     public int getAmtWood(){ return amtWood; }
-    public void setAttacking(){isAttacking=true;}
-    public boolean isAttacking(){ return isAttacking;}
+    public void setAttacking(boolean attacking){isAttacking=attacking;}
+    public boolean getAttacking(){ return isAttacking;}
 
     public void step()
     {
@@ -136,11 +128,4 @@ public class Player extends NonStatic{
 
         super.step();
     }
-
-
-    public String toString()
-    {
-        return "[" + "PLAYER" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";"  + getVX() + ";" + getVY() + ";" + username + "]";
-    }
-
 }

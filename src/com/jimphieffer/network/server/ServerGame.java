@@ -157,8 +157,8 @@ public class ServerGame extends Thread {
                     break;
                 }
             }
-            if(!matched)
-                sprites.add(Sprite.stringToSprite(sprs[i]));
+            if(!matched);
+                //sprites.add(Sprite.stringToSprite(sprs[i]));
 
         }
 

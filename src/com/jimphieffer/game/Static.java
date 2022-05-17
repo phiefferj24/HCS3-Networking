@@ -16,11 +16,9 @@ public class Static extends Sprite {
         super(x,y,width,height,image,id);
 
     }
-    public Static(String x, String y, String width, String height, String image, String id )
-    {
-        super(x,y,width,height,image,id);
 
-
+    public Static() {
+        super();
     }
 
     public void changeAll(String x, String y) {
