@@ -45,7 +45,7 @@ public class AnnotatedEncoder extends Encoder {
                             Class<?> methodType = method.getReturnType();
                             if(method.isAnnotationPresent(JsonEquivalent.class)) {
                                 JsonEquivalent equivalent = method.getAnnotation(JsonEquivalent.class);
-                                name = equivalent.value();
+                                name = equivalent.name();
                             }
                             switch (methodType.getName()) {
                                 case "int", "java.lang.Integer" -> objectNode.put(name.toLowerCase(), (Integer)method.invoke(object));

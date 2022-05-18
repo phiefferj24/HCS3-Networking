@@ -20,6 +20,10 @@ public class Encoder {
         addObject(object, Object.class, ignoredPropertyNames);
     }
 
+    public void clearObjects() {
+        node = node.removeAll();
+    }
+
     public void addObject(Object object, Class<?> superclass, String... ignoredPropertyNames) {
         List<String> ignoredProperties = new ArrayList<>(Arrays.asList(ignoredPropertyNames));
         ignoredProperties = ignoredProperties.stream().map(String::toLowerCase).collect(Collectors.toList());

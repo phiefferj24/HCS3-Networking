@@ -3,7 +3,7 @@ package com.jimphieffer.utils.json.annotations;
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface JsonEquivalent {
-    String value() default "";
+    String name() default "";
 }

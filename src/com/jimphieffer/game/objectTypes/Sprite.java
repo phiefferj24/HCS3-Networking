@@ -5,6 +5,7 @@ import com.jimphieffer.game.objects.Pig;
 import com.jimphieffer.game.objects.Tree;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
+import com.jimphieffer.utils.json.annotations.JsonEquivalent;
 import com.jimphieffer.utils.json.annotations.JsonIgnore;
 
 import java.util.UUID;
