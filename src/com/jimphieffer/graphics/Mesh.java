@@ -1,5 +1,6 @@
 package com.jimphieffer.graphics;
 
+
 import org.joml.Math;
 import java.nio.*;
 
@@ -128,7 +129,9 @@ public class Mesh {
     }
     public void rotate(float degrees) {
         angle += Math.toRadians(degrees);
-        positionMatrix.rotateZ((float) Math.toRadians(degrees));
+        positionMatrix.translate(-x, -y, -z);
+        positionMatrix.rotateZ(Math.toRadians(degrees));
+        positionMatrix.translate(x, y, z);
     }
     public void setRotation(float degrees) {
         angle = Math.toRadians(degrees);

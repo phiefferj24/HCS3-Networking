@@ -1,4 +1,8 @@
-package com.jimphieffer.game.objectTypes;
+package com.jimphieffer.game;
+
+import com.jimphieffer.game.Game;
+import com.jimphieffer.game.Sprite;
+import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
 
 import java.util.UUID;
 
@@ -14,6 +18,7 @@ public class NonStatic extends Sprite {
     private String image;
 
     //TODO: change change animal to static and extend it
+    @JsonDefaultConstructor(names = {"x", "y", "width", "height", "image", "id", "vx", "vy"})
     public NonStatic(double x, double y, int width, int height, String image, UUID id,
                      double vx, double vy)
     {
@@ -29,20 +34,8 @@ public class NonStatic extends Sprite {
         this.vy=vy;
         this.image = image;
     }
-    public NonStatic(String x, String y, String width, String height, String image, String id,
-                     String vx, String vy)
-    {
-        //for any program id do Animal#### and the numbers will be from where we render it go thru list
-        //of all sprites and then compute which one
-
-        super(x, y,width,height,image,id);
-        this.image=image;
-        this.health  = health;
-        this.x=parseDouble(x);
-        this.y=parseDouble(y);
-        this.vx=parseDouble(vx);
-        this.vy=parseDouble(vy);
-        this.image = image;
+    public NonStatic() {
+        super();
     }
 
 
@@ -97,9 +90,4 @@ public class NonStatic extends Sprite {
     }
 
     //String image, double x, double y, int width, int height, double angle, int health,  int programID)
-
-    public String toString(){
-        return "[" + "NONSTATIC" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";"  + getVX() + ";" + getVY() + "]";
-        //return ("[" +image + ";" + x + ";" + y + ";"+vx+";"+vy+";"+getWidth()+";"+getHeight()+";"+ username  +";"  + angle + ";"  + health + ";" + getProgramID()+ "]");
-    }
 }

@@ -5,6 +5,7 @@ import com.jimphieffer.game.objectTypes.NonStatic;
 import com.jimphieffer.game.objectTypes.Sprite;
 import com.jimphieffer.game.objectTypes.Static;
 import com.jimphieffer.game.objects.Pig;
+import com.jimphieffer.game.objects.Tree;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class ServerGame extends Thread {
     public ServerGame(Server server) {
         sprites = new ArrayList<>();
         sprites.add(new Pig(100,100));
+        sprites.add(new Tree(150,150, 100, 100, "/textures/wood.png", UUID.randomUUID()));
         spritesNames = new ArrayList<>();
         this.server = server;
         runT();
@@ -151,8 +153,8 @@ public class ServerGame extends Thread {
                     break;
                 }
             }
-            if(!matched)
-                sprites.add(Sprite.stringToSprite(sprs[i]));
+            if(!matched);
+                //sprites.add(Sprite.stringToSprite(sprs[i]));
 
         }
 

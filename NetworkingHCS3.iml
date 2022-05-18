@@ -19,5 +19,8 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="joml-1.10.4" level="project" />
+    <orderEntry type="library" name="jackson-core-2.9.9" level="project" />
+    <orderEntry type="library" name="jackson-databind-2.9.9.3" level="project" />
+    <orderEntry type="library" name="jackson-annotations-2.9.9" level="project" />
   </component>
 </module>
