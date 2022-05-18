@@ -1,6 +1,6 @@
-package com.jimphieffer.game;
+package com.jimphieffer.game.objectTypes;
 
-import com.jimphieffer.game.Sprite;
+import com.jimphieffer.game.objectTypes.*;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
 

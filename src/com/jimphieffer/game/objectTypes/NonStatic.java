@@ -1,7 +1,7 @@
-package com.jimphieffer.game;
+package com.jimphieffer.game.objectTypes;
 
 import com.jimphieffer.game.Game;
-import com.jimphieffer.game.Sprite;
+import com.jimphieffer.game.objectTypes.*;
 import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
 
 import java.util.UUID;

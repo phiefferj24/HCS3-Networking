@@ -1,7 +1,7 @@
 package com.jimphieffer.game.objects;
 
-import com.jimphieffer.game.NonStatic;
-import com.jimphieffer.game.Sprite;
+import com.jimphieffer.game.objectTypes.*;
+
 import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
 
 import java.util.ArrayList;

@@ -23,13 +23,13 @@ public class Living extends NonStatic {
         //of all sprites and then compute which on
         super(x, y, 50, 50, "/textures/Amogus.png", UUID.randomUUID(), 0, 0);
     }
-    public Living(String x, String y, String width, String height, String image, String id,
-               String vx, String vy, String health) {
-        //for any program id do Animal#### and the numbers will be from where we render it go thru list
-        //of all sprites and then compute which on
-        super(x, y, width, height, image, id, vx, vy);
-        this.health = parseInt(health);
-    }
+//    public Living(String x, String y, String width, String height, String image, String id,
+//               String vx, String vy, String health) {
+//        //for any program id do Animal#### and the numbers will be from where we render it go thru list
+//        //of all sprites and then compute which on
+//        super(x, y, width, height, image, id, vx, vy);
+//        this.health = parseInt(health);
+//    }
 
 
 

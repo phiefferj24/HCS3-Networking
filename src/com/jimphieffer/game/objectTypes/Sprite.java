@@ -1,5 +1,6 @@
-package com.jimphieffer.game;
+package com.jimphieffer.game.objectTypes;
 
+import com.jimphieffer.game.Game;
 import com.jimphieffer.game.objects.Pig;
 import com.jimphieffer.game.objects.Tree;
 import com.jimphieffer.graphics.Mesh;
