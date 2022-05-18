@@ -15,6 +15,7 @@ import org.joml.Vector4f;
 import com.jimphieffer.game.objectTypes.Sprite;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 import java.lang.String;
 import java.util.UUID;
@@ -178,10 +179,29 @@ public class Game {
 
     private void addSprites(String message) {
 
+        recievedSprites = true;
 
-        AnnotatedDecoder decoder = new AnnotatedDecoder(message);
+        AnnotatedDecoder decoder = new AnnotatedDecoder(Message.decode(message));
         decoder.addAssignmentMethod(UUID.class, UUID::fromString);
+        Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
 
+        System.out.println("---<L><><game: " + tempSprites.length);
+        sprites.clear();//remove
+
+
+        Collections.addAll(sprites, tempSprites);//remove
+
+//        for(Sprite s: tempSprites)
+//        {
+//            for(Sprite spr: sprites)
+//            {
+//                if(spr.getUUID().equals(s.getUUID())) TODO have it change instead of add new each time
+//                {
+//                    s.
+//                }
+//
+//            }
+//        }
 
     }
 
@@ -437,7 +457,15 @@ public class Game {
         if(recievedSprites)
             System.out.println("werjnwfojinwkfmejbnkiekwfmeobgjnd");
             if (recievedConnect && recievedSprites) {
-                ct.send(Message.encode(numSteps + ">" + messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+
+                AnnotatedEncoder encoder = new AnnotatedEncoder();
+
+                for (Sprite s: sprites)
+                {
+                    encoder.addAnnotatedObject(s);
+                }
+                ct.send(Message.encode(numSteps + ">" +encoder.encode(), Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+
                 recievedSprites = false;
             }
 

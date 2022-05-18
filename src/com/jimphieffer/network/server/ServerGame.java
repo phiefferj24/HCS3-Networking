@@ -6,9 +6,12 @@ import com.jimphieffer.game.objectTypes.Sprite;
 import com.jimphieffer.game.objectTypes.Static;
 import com.jimphieffer.game.objects.Pig;
 import com.jimphieffer.game.objects.Tree;
+import com.jimphieffer.utils.json.AnnotatedDecoder;
+import com.jimphieffer.utils.json.AnnotatedEncoder;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
@@ -68,12 +71,13 @@ public class ServerGame extends Thread {
             if (type == Message.MessageType.CONNECT)
             {
 
-                StringBuilder bruh = new StringBuilder();
+                AnnotatedEncoder encoder = new AnnotatedEncoder();
+
                 for (Sprite s: sprites)
                 {
-                    bruh.append(s.toString()).append(",");
+                    encoder.addAnnotatedObject(s);
                 }
-                server.send(Message.encode(bruh.toString().substring(0,bruh.length()-1), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
+                server.send(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
 
             }
             else if (type == Message.MessageType.DISCONNECT)
@@ -107,13 +111,13 @@ public class ServerGame extends Thread {
                     e.printStackTrace();
                 }
 
-                StringBuilder bruh = new StringBuilder();
+                AnnotatedEncoder encoder = new AnnotatedEncoder();
+
                 for (Sprite s: sprites)
                 {
-
-                    bruh.append(s.toString()).append(",");
+                    encoder.addAnnotatedObject(s);
                 }
-                server.relay(Message.encode(bruh.toString(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+                server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT));
 
             }
         }
@@ -136,27 +140,15 @@ public class ServerGame extends Thread {
 
     private void addSprites(String message) {
 
-        message = message.substring(message.indexOf("[")+1);
-        String[] sprs = message.split(",");
-        for (int i = 0; i < sprs.length; i++) {
-            boolean matched = false;
+        AnnotatedDecoder decoder = new AnnotatedDecoder(message);
+        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
 
-            for (int j = 0; j < sprites.size(); j++) {
-                String[] onGuh = sprs[i].split(";");
-                if (sprites.get(j).getUUID().equals(UUID.fromString(onGuh[6]))) {
-                    Sprite s = sprites.get(j);
-                    matched = true;
-                    if (s instanceof Static)
-                        ((Static) s).changeAll(onGuh[1], onGuh[2]);
-                    else
-                        ((NonStatic) s).changeAll(onGuh[1], onGuh[2], onGuh[7], onGuh[8]);
-                    break;
-                }
-            }
-            if(!matched);
-                //sprites.add(Sprite.stringToSprite(sprs[i]));
+        Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
+        System.out.println("in ServerGame: " + tempSprites.length);
+        sprites.clear();//remove
 
-        }
+
+        Collections.addAll(sprites, tempSprites);//remove
 
     }
 }

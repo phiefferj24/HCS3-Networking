@@ -32,7 +32,7 @@ public class Player extends NonStatic{
         vx = velocityX;
         vy = velocityY;
         health  = 100;
-       this.username = username + id;
+       this.username = username;
     }
     public Player() {
         super();
