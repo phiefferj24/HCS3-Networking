@@ -177,27 +177,10 @@ public class Game {
     }
 
     private void addSprites(String message) {
-        message = message.substring(message.indexOf("[")+1);
-        String[] sprs = message.split(",");
-        for (int i = 0; i < sprs.length; i++) {
-            boolean matched = false;
 
-            for (int j = 0; j < sprites.size(); j++) {
-                String[] onGuh = sprs[i].split(";");
-                if (sprites.get(j).getUUID().equals(UUID.fromString(onGuh[6]))) {
-                    Sprite s = sprites.get(j);
-                    matched = true;
-                    if (s instanceof Static)
-                        ((Static) s).changeAll(onGuh[1], onGuh[2]);
-                    else
-                        ((NonStatic) s).changeAll(onGuh[1], onGuh[2], onGuh[7], onGuh[8]);
-                    break;
-                }
-            }
-            if(!matched);
-                //sprites.add(Sprite.stringToSprite(sprs[i]));
 
-            }
+        AnnotatedDecoder decoder = new AnnotatedDecoder(message);
+        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
 
 
     }
@@ -640,24 +623,26 @@ public class Game {
     // use but dont touch
 
     public static void main(String[] args) {
-//        Thread t = new Thread(() -> {
-//            Server s = new Server(9000);
-//            s.listen();
-//        });
-//        t.start();
-//
-//        // join menu
-//        Game g = new Game(1280, 720, "Game");
-//        g.init();
-//        g.menu();
-//        g.run();
-        Sprite p = new Player(1.0, 2.0, 3, 4, "hello", UUID.randomUUID(), 5.0, 6.0, "world");
-        AnnotatedEncoder encoder = new AnnotatedEncoder();
-        encoder.addObject(p, Sprite.class);
-        System.out.println(encoder.encode());
-        AnnotatedDecoder decoder = new AnnotatedDecoder(encoder.encode());
-        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
-        Sprite p2 = decoder.getDerivativeObjects(Sprite.class)[0];
-        System.out.println(p2.getUUID());
+        Thread t = new Thread(() -> {
+            Server s = new Server(9000);
+            s.listen();
+        });
+        t.start();
+
+        // join menu
+        Game g = new Game(1280, 720, "Game");
+        g.init();
+        g.menu();
+        g.run();
+
+
+//        Sprite p = new Player(1.0, 2.0, 3, 4, "hello", UUID.randomUUID(), 5.0, 6.0, "world");
+//        AnnotatedEncoder encoder = new AnnotatedEncoder();
+//        encoder.addObject(p, Sprite.class);
+//        System.out.println(encoder.encode());
+//        AnnotatedDecoder decoder = new AnnotatedDecoder(encoder.encode());
+//        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
+//        Sprite p2 = decoder.getDerivativeObjects(Sprite.class)[0];
+//        System.out.println(p2.getUUID());
     }
 }
