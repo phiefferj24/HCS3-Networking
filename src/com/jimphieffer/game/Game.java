@@ -462,7 +462,7 @@ public class Game {
                 {
                     encoder.addObject(s);
                 }
-                ct.send(Message.encode(numSteps + ">" +encoder.encode(), Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+                ct.send(Message.encode(numSteps + ">" + encoder.encode(), Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
 
                 recievedSprites = false;
             }
