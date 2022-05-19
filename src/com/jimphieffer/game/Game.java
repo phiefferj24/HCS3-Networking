@@ -154,63 +154,27 @@ public class Game {
     }
 
     public void onMessage(String message) {
-        System.out.println("--------------------MESSAGE RECIEVED BY " + username + "-------------------");
-        System.out.println("message to game: " + message);
-        System.out.println(Thread.currentThread().getName());
-        if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
-            System.out.println("CONNECT ran");
-
-
-            addSprites(message);
+        System.out.println("\n\nGame recieved: " + message);
+        if (Message.getType(message) == Message.MessageType.CONNECT) {
+            onMessage(Message.encode(Message.decode(message), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
             sprites.add(player);
             recievedConnect = true;
-        } else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE)) {
-            System.out.println("SPRITE ran");
+        } else if (Message.getType(message) == Message.MessageType.SPRITE) {
             numSteps = 0;
             recievedSprites = true;
-
-
-            addSprites(message);
-        }
-        System.out.println("------------------------------------------------------");
-        System.out.println();
-        System.out.println();
-    }
-
-    private void addSprites(String message) {
-
-        recievedSprites = true;
-
-        AnnotatedDecoder decoder = new AnnotatedDecoder(Message.decode(message));
-        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
-        Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
-
-        System.out.println("---<L><><game: " + tempSprites.length);
-        for(Sprite s : tempSprites) {
-            boolean found = false;
-            for(int i = 0; i < sprites.size(); i++) {
-                if(s.getUUID().equals(sprites.get(i).getUUID())) {
-                    found = true;
-                    sprites.set(i, s);
+            String decodedMessage = Message.decode(message);
+            AnnotatedDecoder decoder = new AnnotatedDecoder(decodedMessage);
+            decoder.addAssignmentMethod(UUID.class, UUID::fromString);
+            Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
+            sprites.replaceAll(sprite -> {
+                for (Sprite tempSprite : tempSprites) {
+                    if (sprite.getUUID().equals(tempSprite.getUUID())) {
+                        return tempSprite;
+                    }
                 }
-            }
-            if(!found) {
-                sprites.add(s);
-            }
+                return sprite;
+            });
         }
-
-//        for(Sprite s: tempSprites)
-//        {
-//            for(Sprite spr: sprites)
-//            {
-//                if(spr.getUUID().equals(s.getUUID())) TODO have it change instead of add new each time
-//                {
-//                    s.
-//                }
-//
-//            }
-//        }
-
     }
 
 
@@ -378,7 +342,7 @@ public class Game {
 
     private void preStartTick(double deltaTime, int numPlayers) {
         for (int i = 0; i < sprites.size(); i++) {// maybe instead of this all sprites start as being deactivated where they are at position 0,0 cant do anything and dont have an image and then when we activate them they start to do stuff. just an idea
-            if (sprites.get(i).getClassType() == "Player")
+            if (sprites.get(i).getClassType().equals("Player"))
                 sprites.get(i).setImage("/textures/wall.png");
         }
         waitingScreen = UUID.randomUUID();
@@ -391,79 +355,28 @@ public class Game {
 
         //in order to check name of class do: sprite.getClass().getSimpleName().equalsIgnoreCase("PLAYER"
         tickCount++;
-        /*
-        int numPlayers = 0;
-        for (Sprite sprite : sprites) {
-            if (sprite.getClass().getSimpleName().equalsIgnoreCase("PLAYER")) {
-                numPlayers++;
+        if (tickCount == 1) {
+            for (int i = 0; i < sprites.size(); i++) {
+                if (sprites.get(i) instanceof Player) {
+                    sprites.get(i).setX(windowWidth / 2.f * Math.random() + windowWidth / 2.f);
+                    sprites.get(i).setY(windowHeight / 2.f * Math.random() + windowHeight / 2.f);
+                    //player.mesh.setRotation(player.getLocalRotation());
+                }
             }
+            return;
         }
-
-            //waitingStuff.remove(0);
-            //TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0, 0, 0, 30);
-        waitingStuff.clear();
-        */
-            if(tickCount==1) {
-                for (int i = 0; i < sprites.size(); i++) {
-                    /*
-                    if (sprites.get(i).getID() == waitingScreen) {
-                        sprites.remove(s);
-                        s.mesh.close();
-                        spriteMessage.append(s.toString());
-                        sprites.get(i).mesh.close();
-                    } */
-                    if (sprites.get(i) instanceof Player) {
-                        sprites.get(i).setX(windowWidth/2 * Math.random()+windowWidth/2);
-                        sprites.get(i).setY(windowHeight/2 * Math.random()+windowHeight/2);
-                        //player.mesh.setRotation(player.getLocalRotation());
-                    }
-                }
-                return;
-            }
-        AnnotatedEncoder encoder = new AnnotatedEncoder();
+        if (recievedSprites && recievedConnect) {
+            AnnotatedEncoder encoder = new AnnotatedEncoder();
             for (int d = 0; d < sprites.size(); d++) {
+
                 System.out.println(sprites.size());
-                if(recievedSprites && recievedConnect) {
-                    sprites.get(d).step();
-                    sprites.get(d).mesh.setPosition((float) sprites.get(d).getX(), (float) sprites.get(d).getY(), 0);
-                    encoder.addObject(sprites.get(d));
-                }
-                /*
-                if(!recievedSprites)
-                {
-                    numSteps++;
-                    sprites.get(d).step();
-                    System.out.println("successfully stepped");
-                }
-                else
-                    numSteps = 0;
-                    */
-
+                sprites.get(d).step();
+                sprites.get(d).mesh.setPosition((float) sprites.get(d).getX(), (float) sprites.get(d).getY(), 0);
+                encoder.addAnnotatedObject(sprites.get(d));
             }
-        ct.send(Message.encode(numSteps + ">" +encoder.encode(), Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-        recievedSprites=false;
-
-        //player.mesh.setRotation(player.getLocalRotation());
-        /*
-        String messsageToSend2 = player.toString();
-        if(recievedSprites)
-            System.out.println("werjnwfojinwkfmejbnkiekwfmeobgjnd");
-            if (recievedConnect && recievedSprites) {
-
-                AnnotatedEncoder encoder = new AnnotatedEncoder();
-
-                for (Sprite s: sprites)
-                {
-                    encoder.addObject(s);
-                }
-                //System.out.println("numSteps" + numSteps);
-                ct.send(Message.encode(numSteps + ">" +encoder.encode(), Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
-
-                recievedSprites = false;
-            }
-
-         */
-
+            ct.send(Message.encode(encoder.encode(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+            recievedSprites=false;
+        }
     }
 
 
