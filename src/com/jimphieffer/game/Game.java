@@ -157,7 +157,7 @@ public class Game {
         System.out.println("--------------------MESSAGE RECIEVED BY " + username + "-------------------");
         System.out.println("message to game: " + message);
         System.out.println(Thread.currentThread().getName());
-        if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
+        if (Objects.equals(Message.getType(message), Message.MessageType.CONNECT)) {
             System.out.println("CONNECT ran");
 
 
@@ -185,7 +185,7 @@ public class Game {
         decoder.addAssignmentMethod(UUID.class, UUID::fromString);
         Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
 
-        System.out.println("---<L><><game: " + tempSprites.length);
+
         sprites.clear();//remove
 
 
@@ -391,6 +391,8 @@ public class Game {
 
 
 
+
+
         if (numPlayers<=0) {
             preStartTick(deltaTime, numPlayers); //if numplayers required is 1: will run this for the very first tick of the game
             return;
@@ -427,8 +429,6 @@ public class Game {
                         sprites.get(i).setY(windowHeight/2 * Math.random()+windowHeight/2);
 
 
-
-
                         player.mesh.setRotation(player.getLocalRotation());
 
                     }
@@ -439,17 +439,15 @@ public class Game {
 
             StringBuilder messsageToSend = new StringBuilder();
 
-            for (int d = 0; d < sprites.size(); d++) {
-                messsageToSend.append(sprites.get(d).toString()).append(",");
-                sprites.get(d).mesh.setPosition((float)sprites.get(d).getX(),(float)sprites.get(d).getY(),0);;
-                if(!recievedSprites)
-                {
-                    numSteps++;
-                    sprites.get(d).step();
-                }
-                else
-                    numSteps = 0;
-            }
+        for (Sprite sprite : sprites) {
+            messsageToSend.append(sprite.toString()).append(",");
+            sprite.mesh.setPosition((float) sprite.getX(), (float) sprite.getY(), 0);
+            if (!recievedSprites) {
+                numSteps++;
+                sprite.step();
+            } else
+                numSteps = 0;
+        }
 
         //player.mesh.setRotation(player.getLocalRotation());
 
