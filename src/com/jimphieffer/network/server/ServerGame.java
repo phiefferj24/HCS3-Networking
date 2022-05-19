@@ -75,7 +75,7 @@ public class ServerGame extends Thread {
 
                 for (Sprite s: sprites)
                 {
-                    encoder.addAnnotatedObject(s);
+                    encoder.addObject(s);
                 }
                 server.send(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
 
@@ -115,9 +115,9 @@ public class ServerGame extends Thread {
 
                 for (Sprite s: sprites)
                 {
-                    encoder.addAnnotatedObject(s);
+                    encoder.addObject(s);
                 }
-                server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT));
+                server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
 
             }
         }

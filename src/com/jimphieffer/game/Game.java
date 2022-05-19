@@ -462,7 +462,7 @@ public class Game {
 
                 for (Sprite s: sprites)
                 {
-                    encoder.addAnnotatedObject(s);
+                    encoder.addObject(s);
                 }
                 ct.send(Message.encode(numSteps + ">" +encoder.encode(), Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
 
