@@ -30,24 +30,23 @@ public class ServerGame extends Thread {
         sprites.add(new Tree(150,150, 100, 100, "/textures/wood.png", UUID.randomUUID()));
         spritesNames = new ArrayList<>();
         this.server = server;
-        runT();
+      //  runT();
     }
 
     public void runT()
     {
-
         Thread t = new Thread(() ->
         {
             while(true)
             {
 
-//                String bruh = "";
-//                for (Sprite s: sprites)
-//                {
-//                    s.step();
-//                    bruh+=s.toString() + ",";
-//                }
-//                server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+                String bruh = "";
+                for (Sprite s: sprites)
+                {
+                        s.step();
+                        bruh += s.toString() + ",";
+                }
+                server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
             }
         });
 
@@ -97,22 +96,15 @@ public class ServerGame extends Thread {
                 System.out.println("SPRITE ran (S)");
                 int numSteps = parseInt(message.substring(message.indexOf(":")+1,message.indexOf(">")));
                 addSprites(message.substring(message.indexOf(">")+1));
-
-
-
                 for(int f = 0; f<numSteps; f++)
                     for (Sprite s: sprites)
                         s.step();
-
-
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
-
                 for (Sprite s: sprites)
                 {
                     encoder.addObject(s);
@@ -145,10 +137,18 @@ public class ServerGame extends Thread {
 
         Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
         System.out.println("in ServerGame: " + tempSprites.length);
-        sprites.clear();//remove
-
-
-        Collections.addAll(sprites, tempSprites);//remove
+        for(Sprite s : tempSprites) {
+            boolean found = false;
+            for(int i = 0; i < sprites.size(); i++) {
+                if(s.getUUID().equals(sprites.get(i).getUUID())) {
+                    found = true;
+                    sprites.set(i, s);
+                }
+            }
+            if(!found) {
+                sprites.add(s);
+            }
+        }
 
     }
 }

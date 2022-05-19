@@ -192,6 +192,7 @@ public abstract class Sprite
 
     public void setImage(String i)
     {
+        if(i.equals(image)) return;
         image = i;
         if(mesh != null) mesh.close();
         if(Game.objectProgramId != 0 && Thread.currentThread().getName().equals("main")) mesh = new Mesh((float)this.x,(float)this.y ,-1.f,this.width,this.height,image,Game.objectProgramId);

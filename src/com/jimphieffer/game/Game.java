@@ -186,10 +186,18 @@ public class Game {
         Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
 
         System.out.println("---<L><><game: " + tempSprites.length);
-        sprites.clear();//remove
-
-
-        Collections.addAll(sprites, tempSprites);//remove
+        for(Sprite s : tempSprites) {
+            boolean found = false;
+            for(int i = 0; i < sprites.size(); i++) {
+                if(s.getUUID().equals(sprites.get(i).getUUID())) {
+                    found = true;
+                    sprites.set(i, s);
+                }
+            }
+            if(!found) {
+                sprites.add(s);
+            }
+        }
 
 //        for(Sprite s: tempSprites)
 //        {
@@ -381,7 +389,9 @@ public class Game {
 
     private void tick(double deltaTime) {
 
-        //Static(double x, double y, int width, int height, String image, UUID id) /
+        //in order to check name of class do: sprite.getClass().getSimpleName().equalsIgnoreCase("PLAYER"
+        tickCount++;
+        /*
         int numPlayers = 0;
         for (Sprite sprite : sprites) {
             if (sprite.getClass().getSimpleName().equalsIgnoreCase("PLAYER")) {
@@ -389,70 +399,52 @@ public class Game {
             }
         }
 
-
-
-        if (numPlayers<=0) {
-            preStartTick(deltaTime, numPlayers); //if numplayers required is 1: will run this for the very first tick of the game
-            return;
-        }
-        tickCount++;
-
             //waitingStuff.remove(0);
             //TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0, 0, 0, 30);
-
-
         waitingStuff.clear();
-
-            started = true;
-
-
-
-
-
-
-
+        */
             if(tickCount==1) {
-
-                String messsageToSend = "[";
                 for (int i = 0; i < sprites.size(); i++) {
-                    StringBuilder spriteMessage = new StringBuilder();
-                    Sprite s = sprites.get(i);
+                    /*
                     if (sprites.get(i).getID() == waitingScreen) {
                         sprites.remove(s);
                         s.mesh.close();
                         spriteMessage.append(s.toString());
                         sprites.get(i).mesh.close();
-                    } else if (sprites.get(i) instanceof Player) {
+                    } */
+                    if (sprites.get(i) instanceof Player) {
                         sprites.get(i).setX(windowWidth/2 * Math.random()+windowWidth/2);
                         sprites.get(i).setY(windowHeight/2 * Math.random()+windowHeight/2);
-
-
-
-
-                        player.mesh.setRotation(player.getLocalRotation());
-
+                        //player.mesh.setRotation(player.getLocalRotation());
                     }
                 }
                 return;
             }
-
-
-            StringBuilder messsageToSend = new StringBuilder();
-
+        AnnotatedEncoder encoder = new AnnotatedEncoder();
             for (int d = 0; d < sprites.size(); d++) {
-                messsageToSend.append(sprites.get(d).toString()).append(",");
-                sprites.get(d).mesh.setPosition((float)sprites.get(d).getX(),(float)sprites.get(d).getY(),0);;
+                System.out.println(sprites.size());
+                if(recievedSprites && recievedConnect) {
+                    sprites.get(d).step();
+                    sprites.get(d).mesh.setPosition((float) sprites.get(d).getX(), (float) sprites.get(d).getY(), 0);
+                    encoder.addObject(sprites.get(d));
+                }
+                /*
                 if(!recievedSprites)
                 {
                     numSteps++;
                     sprites.get(d).step();
+                    System.out.println("successfully stepped");
                 }
                 else
                     numSteps = 0;
+                    */
+
             }
+        ct.send(Message.encode(numSteps + ">" +encoder.encode(), Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
+        recievedSprites=false;
 
         //player.mesh.setRotation(player.getLocalRotation());
-
+        /*
         String messsageToSend2 = player.toString();
         if(recievedSprites)
             System.out.println("werjnwfojinwkfmejbnkiekwfmeobgjnd");
@@ -464,16 +456,13 @@ public class Game {
                 {
                     encoder.addObject(s);
                 }
+                //System.out.println("numSteps" + numSteps);
                 ct.send(Message.encode(numSteps + ">" +encoder.encode(), Message.MessageProtocol.SEND,Message.MessageType.SPRITE));
 
                 recievedSprites = false;
             }
 
-
-
-
-        newRound = false;
-
+         */
 
     }
 
