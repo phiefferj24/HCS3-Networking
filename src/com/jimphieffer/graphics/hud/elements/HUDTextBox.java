@@ -1,14 +1,11 @@
 package com.jimphieffer.graphics.hud.elements;
 
-import com.jimphieffer.game.Game;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.hud.FloatRectangle;
 import com.jimphieffer.graphics.hud.TextMesh;
 import com.jimphieffer.utils.TextUtilities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.stream.IntStream;
 
 import static org.lwjgl.glfw.GLFW.*;
 

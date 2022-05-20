@@ -1,8 +1,5 @@
 package com.jimphieffer.game;
 
-import com.jimphieffer.game.Game;
-import com.jimphieffer.game.Sprite;
-
 import java.util.UUID;
 
 import static java.lang.Double.parseDouble;

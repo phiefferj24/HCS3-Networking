@@ -1,20 +1,15 @@
 package com.jimphieffer.network.server;
 
 import com.jimphieffer.Message;
-import com.jimphieffer.game.objectTypes.NonStatic;
-import com.jimphieffer.game.objectTypes.Sprite;
-import com.jimphieffer.game.objectTypes.Static;
+import com.jimphieffer.game.NonStatic;
+import com.jimphieffer.game.Player;
+import com.jimphieffer.game.Sprite;
+import com.jimphieffer.game.Static;
 import com.jimphieffer.game.objects.Pig;
-import com.jimphieffer.game.objects.Tree;
-import com.jimphieffer.utils.json.AnnotatedDecoder;
-import com.jimphieffer.utils.json.AnnotatedEncoder;
 
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.UUID;
-
-import static java.lang.Integer.parseInt;
 
 public class ServerGame extends Thread {
 
@@ -27,52 +22,31 @@ public class ServerGame extends Thread {
     public ServerGame(Server server) {
         sprites = new ArrayList<>();
         sprites.add(new Pig(100,100));
-        sprites.add(new Tree(150,150, 100, 100, "/textures/wood.png", UUID.randomUUID()));
         spritesNames = new ArrayList<>();
         this.server = server;
-      //  runT();
     }
 
-    public void runT()
+    public void run()
     {
-        Thread t = new Thread(() ->
+
+        while(true)
         {
-            while(true)
+            System.out.println("sending?");
+            String bruh = "";
+            for (Sprite s: sprites)
+
+
             {
-
-                String bruh = "";
-                for (Sprite s: sprites)
-                {
-                        s.step();
-                        bruh += s.toString() + ",";
-                }
-                server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+                bruh+=s.toString() + ",";
             }
-        });
+            server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
 
-
+        }
 
     }
 
 
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
-        int size =0;
-        for(Sprite b: sprites)
-        {
-            if(b.getClass().getSimpleName().equalsIgnoreCase("TREE"))
-            {
-                System.out.println("SERVER: tree x" + b.getX());
-                System.out.println("SERVER: tree y" + b.getY());
-            }
-            if(b.getClass().getSimpleName().equalsIgnoreCase("PLAYER"))
-            {
-                System.out.println("SERVER: player x" + b.getX());
-                System.out.println("SERVER: player y" + b.getY());
-            }
-            size++;
-        }
-        System.out.println("SERVER: number of sprites: " + size);
-
         System.out.println("===============================MESSAGE TO SERVER FROM " + socket.toString() +  "===============================");
 
         if(message.contains("/") && message.contains(":"))
@@ -86,14 +60,13 @@ public class ServerGame extends Thread {
         {
             if (type == Message.MessageType.CONNECT)
             {
-                System.out.println("SERVER: CONNECT");
-                AnnotatedEncoder encoder = new AnnotatedEncoder();
 
+                StringBuilder bruh = new StringBuilder();
                 for (Sprite s: sprites)
                 {
-                    encoder.addObject(s);
+                    bruh.append(s.toString()).append(",");
                 }
-                server.send(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
+                server.send(Message.encode(bruh.toString().substring(0,bruh.length()-1), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
 
             }
             else if (type == Message.MessageType.DISCONNECT)
@@ -110,25 +83,24 @@ public class ServerGame extends Thread {
 
             else if (type == Message.MessageType.SPRITE)
             {
-                /*
                 System.out.println("SPRITE ran (S)");
-                int numSteps = parseInt(message.substring(message.indexOf(":")+1,message.indexOf(">")));
-                addSprites(message.substring(message.indexOf(">")+1));
-                for(int f = 0; f<numSteps; f++)
-                    for (Sprite s: sprites)
-                        s.step();
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                */
-                AnnotatedEncoder encoder = new AnnotatedEncoder();
+                addSprites(message);
+
+
+//                try {
+//                    Thread.sleep(10);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+
+
+                String bruh = "";
                 for (Sprite s: sprites)
                 {
-                    encoder.addObject(s);
+                    s.step();
+                    bruh+=s.toString() + ",";
                 }
-                server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
+                server.relay(Message.encode(bruh, Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
 
             }
         }
@@ -151,22 +123,26 @@ public class ServerGame extends Thread {
 
     private void addSprites(String message) {
 
-        AnnotatedDecoder decoder = new AnnotatedDecoder(message);
-        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
+        message = message.substring(message.indexOf("[")+1);
+        String[] sprs = message.split(",");
+        for (int i = 0; i < sprs.length; i++) {
+            boolean matched = false;
 
-        Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
-        System.out.println("in ServerGame: " + tempSprites.length);
-        for(Sprite s : tempSprites) {
-            boolean found = false;
-            for(int i = 0; i < sprites.size(); i++) {
-                if(s.getUUID().equals(sprites.get(i).getUUID())) {
-                    found = true;
-                    sprites.set(i, s);
+            for (int j = 0; j < sprites.size(); j++) {
+                String[] onGuh = sprs[i].split(";");
+                if (sprites.get(j).getUUID().equals(UUID.fromString(onGuh[6]))) {
+                    Sprite s = sprites.get(j);
+                    matched = true;
+                    if (s instanceof Static)
+                        ((Static) s).changeAll(onGuh[1], onGuh[2]);
+                    else
+                        ((NonStatic) s).changeAll(onGuh[1], onGuh[2], onGuh[7], onGuh[8]);
+                    break;
                 }
             }
-            if(!found) {
-                sprites.add(s);
-            }
+            if(!matched)
+                sprites.add(Sprite.stringToSprite(sprs[i]));
+
         }
 
     }

@@ -1,17 +1,13 @@
 package com.jimphieffer.network.client;
 
 import com.jimphieffer.Message;
-import com.jimphieffer.game.Game;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 import java.io.File;
-import javax.swing.*;
 import javax.sound.sampled.*;
 
 public class ClientThread extends Thread{

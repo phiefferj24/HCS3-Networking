@@ -1,10 +1,6 @@
 package com.jimphieffer.graphics.hud;
 
-import com.jimphieffer.game.Camera;
-import com.jimphieffer.graphics.Mesh;
-import com.jimphieffer.graphics.hud.elements.HUDButton;
 import com.jimphieffer.graphics.hud.elements.HUDElement;
-import com.jimphieffer.graphics.hud.elements.HUDTextBox;
 
 import java.util.ArrayList;
 
