@@ -1,9 +1,5 @@
 package com.jimphieffer.game;
 
-import com.jimphieffer.game.objectTypes.*;
-
-import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
-
 import java.util.UUID;
 
 import static java.lang.Double.parseDouble;
@@ -24,7 +20,6 @@ public class Player extends NonStatic{
     private float rotation;
     private boolean isAttacking;
 
-    @JsonDefaultConstructor(names = {"x", "y", "width", "height", "image", "id", "vx", "vy", "username"})
     public Player(double x, double y, int width, int height, String image, UUID id,
                   double velocityX, double velocityY, String username)
     {
@@ -32,10 +27,18 @@ public class Player extends NonStatic{
         vx = velocityX;
         vy = velocityY;
         health  = 100;
-       this.username = username;
+       this.username = username + id;
     }
-    public Player() {
-        super();
+
+    public Player(String x, String y, String width, String height, String image, String id,
+                  String velocityX, String velocityY, String username)
+    {
+        super(x, y, width, height, image,id,velocityX,velocityY);
+        vx = parseDouble(velocityX);
+        vy = parseDouble(velocityY);
+        health  = 100;
+        this.username = username;
+
     }
 
     public void setUsername(String name)
@@ -86,8 +89,8 @@ public class Player extends NonStatic{
     public void setAmtWood(int wood){ amtWood=wood; }
 
     public int getAmtWood(){ return amtWood; }
-    public void setAttacking(boolean attacking){isAttacking=attacking;}
-    public boolean getAttacking(){ return isAttacking;}
+    public void setAttacking(){isAttacking=true;}
+    public boolean isAttacking(){ return isAttacking;}
 
     public void step()
     {
@@ -133,4 +136,11 @@ public class Player extends NonStatic{
 
         super.step();
     }
+
+
+    public String toString()
+    {
+        return "[" + "PLAYER" +";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";" + getID().toString() + ";"  + getVX() + ";" + getVY() + ";" + username + "]";
+    }
+
 }

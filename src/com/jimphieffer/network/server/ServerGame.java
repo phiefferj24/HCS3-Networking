@@ -56,6 +56,23 @@ public class ServerGame extends Thread {
 
 
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
+        int size =0;
+        for(Sprite b: sprites)
+        {
+            if(b.getClass().getSimpleName().equalsIgnoreCase("TREE"))
+            {
+                System.out.println("SERVER: tree x" + b.getX());
+                System.out.println("SERVER: tree y" + b.getY());
+            }
+            if(b.getClass().getSimpleName().equalsIgnoreCase("PLAYER"))
+            {
+                System.out.println("SERVER: player x" + b.getX());
+                System.out.println("SERVER: player y" + b.getY());
+            }
+            size++;
+        }
+        System.out.println("SERVER: number of sprites: " + size);
+
         System.out.println("===============================MESSAGE TO SERVER FROM " + socket.toString() +  "===============================");
 
         if(message.contains("/") && message.contains(":"))
@@ -69,7 +86,7 @@ public class ServerGame extends Thread {
         {
             if (type == Message.MessageType.CONNECT)
             {
-
+                System.out.println("SERVER: CONNECT");
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
 
                 for (Sprite s: sprites)
@@ -93,6 +110,7 @@ public class ServerGame extends Thread {
 
             else if (type == Message.MessageType.SPRITE)
             {
+                /*
                 System.out.println("SPRITE ran (S)");
                 int numSteps = parseInt(message.substring(message.indexOf(":")+1,message.indexOf(">")));
                 addSprites(message.substring(message.indexOf(">")+1));
@@ -104,6 +122,7 @@ public class ServerGame extends Thread {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                */
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
                 for (Sprite s: sprites)
                 {
