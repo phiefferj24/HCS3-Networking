@@ -60,7 +60,11 @@ public class Server{
         return serverThreads;
     }
     public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
-        serverGame.onMessage(message,protocol,type,socket);
+        try {
+            serverGame.messages.put(Message.encode(message, protocol, type));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

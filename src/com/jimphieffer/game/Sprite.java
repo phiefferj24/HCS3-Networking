@@ -1,7 +1,12 @@
-package com.jimphieffer.game;
+package com.jimphieffer.game.objectTypes;
 
+import com.jimphieffer.game.Game;
 import com.jimphieffer.game.objects.Pig;
+import com.jimphieffer.game.objects.Tree;
 import com.jimphieffer.graphics.Mesh;
+import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
+import com.jimphieffer.utils.json.annotations.JsonEquivalent;
+import com.jimphieffer.utils.json.annotations.JsonIgnore;
 
 import java.util.UUID;
 
@@ -17,8 +22,10 @@ public abstract class Sprite
 
     private String image;
     private UUID id;
+    @JsonIgnore
     public Mesh mesh;
 
+    @JsonDefaultConstructor(names = {"x", "y", "width", "height", "image", "id"})
     public Sprite(double x, double y, int theWidth, int theHeight, String theImage, UUID id)
     {
 
@@ -31,17 +38,7 @@ public abstract class Sprite
             this.id = UUID.randomUUID();
         else
             this.id = id;
-        if(Game.objectProgramId != 0 && Thread.currentThread().getName().equals("main")) mesh = new Mesh((float)x,(float)y,0,width,height,image,Game.objectProgramId);
-    }
-    public Sprite(String x, String y, String width, String height, String theImage, String id)
-    {
-        this.x = parseDouble(x);
-        this.y = parseDouble(y);
-        this.width = parseInt(width);
-        this.height = parseInt(height);
-        setImage(theImage);
-        this.id = UUID.fromString(id);
-        if(Game.objectProgramId != 0 && Thread.currentThread().getName().equals("main")) mesh = new Mesh((float)this.x,(float)this.y ,-1.f,this.width,this.height,image,Game.objectProgramId);
+        //if(Game.objectProgramId != 0 && Thread.currentThread().getName().equals("main")) mesh = new Mesh((float)x,(float)y,0,width,height,image,Game.objectProgramId);
     }
 
     public Sprite() {
@@ -195,63 +192,19 @@ public abstract class Sprite
 
     public void setImage(String i)
     {
+        if(i.equals(image)) return;
         image = i;
     }
 
-    public void step()
-    {
-        if(mesh!=null)
-            mesh.translate((float) x, (float) y, 0);
+    public void open() {
+        if(mesh != null) mesh.close();
+        if(Game.objectProgramId != 0 && Thread.currentThread().getName().equals("main")) mesh = new Mesh((float)this.x,(float)this.y ,-1.f,this.width,this.height,image,Game.objectProgramId);
+    }
+
+    public void step() {
+        if (mesh != null)
+            mesh.setPosition((float) x, (float) y, 0);
         //do NOT insert any code here
     }
 
-    public String toString()
-    {
-        return "[" + "SPRITE" +";" + x +";" + y + ";" + width + ";" + height + ";" + image + ";" +id.toString()+ "]";
-    }
-
-    /*
-    public static Sprite stringToSprite(String s)
-    {
-        s= s.substring(1,s.length()-1);
-        String[] onGuh = s.split(";");
-        switch(onGuh[0])
-        {
-            case "PLAYER": return new Player(parseDouble(onGuh[1]),parseDouble(onGuh[2]),parseInt(onGuh[3]),parseInt(onGuh[4]),onGuh[5],
-                                            parseInt(onGuh[6]),parseDouble(onGuh[7]),parseDouble(onGuh[8]),onGuh[9]);
-            case "ANIMAL": return null; //new Animal(onGuh[1],parseDouble(onGuh[1]),parseDouble(onGuh[2]),parseInt(onGuh[3]),parseInt(onGuh[4],onGuh[5], parseInt(onGuh[6])))
-            case "WALL": return null; // TODO
-            default: return new Sprite(parseDouble(onGuh[1]),parseDouble(onGuh[2]),parseInt(onGuh[3]),parseInt(onGuh[4]),onGuh[5], parseInt(onGuh[6]));
-    
-        }
-
-        //[" + ID + ";" + getX() +";" + getY() + ";" + getWidth() + ";" + getHeight() + ";" + getImage() + ";"+ getGame.objectProgramId() + "]";
-    }
-
-     */
-
-    public static UUID getUUIDFromString(String s)
-    {
-        return UUID.fromString(s.substring(s.indexOf('[')+1,s.length()-1).split(";")[6]);
-    }
-
-    public String getTypeAsString()
-    {
-        return this.toString().substring(1,this.toString().length()-1).split(";")[0];
-    }
-
-    public static Sprite stringToSprite(String s)
-    {
-        s= s.substring(s.indexOf('[')+1,s.length()-1);
-        String[] onGuh = s.split(";");
-
-
-
-        return switch (onGuh[0]) {
-            case "PLAYER"       -> new Player(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
-            case "PIG"          -> new Pig(         onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8], onGuh[9]);
-            case "NONSTATIC"    -> new NonStatic(   onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6], onGuh[7], onGuh[8]);
-            default             -> new Static(      onGuh[1], onGuh[2], onGuh[3], onGuh[4], onGuh[5], onGuh[6]);
-        };
-    }
 }

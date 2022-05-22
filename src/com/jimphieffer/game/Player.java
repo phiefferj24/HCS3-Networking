@@ -94,46 +94,8 @@ public class Player extends NonStatic{
 
     public void step()
     {
-       /*
-        if(vx<0)
-            vx+=1;
-        if(vx>0)
-            vx-=1;
-        if(vy<0)
-            vy+=1;
-        if(vy>0)
-            vy-=1;
-
-        if(Math.abs(vx)<.3)
-            vx = 0;
-        if(Math.abs(vy)<.3)
-            vy = 0;
-
-//        if (getLeft() < -game.getWorldWidth())
-//            vx = Math.abs(vx);
-//        if (getLeft() + getWidth() > game.getWorldWidth())
-//            vx = -Math.abs(vx);
-//        if (getTop() < -game.getWorldHeight())
-//            vy = Math.abs(vy);
-//        if (getTop() + getHeight() >game.getWorldHeight())
-//            vy = -Math.abs(vy);
-
-
-
-
-
-
-
-
-
-
-
-
-        */
-
         setX(getX()+vx);
         setY(getY()+vy);
-
         super.step();
     }
 

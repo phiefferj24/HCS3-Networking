@@ -11,6 +11,8 @@ import com.jimphieffer.utils.json.AnnotatedEncoder;
 
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static java.lang.Integer.parseInt;
 
@@ -21,6 +23,7 @@ public class ServerGame extends Thread {
     private Server server;
     private ArrayList<Sprite> sprites;
     private ArrayList<String> spritesNames;
+    public BlockingQueue<String> messages = new LinkedBlockingQueue<>();
 
     public ServerGame(Server server) {
         sprites = new ArrayList<>();
@@ -28,16 +31,27 @@ public class ServerGame extends Thread {
         sprites.add(new Tree(150,150, 100, 100, "/textures/wood.png", UUID.randomUUID()));
         spritesNames = new ArrayList<>();
         this.server = server;
+        // create a new thread that calls onMessage whenever a new message is added to the queue
+        new Thread(() -> {
+            while (true) {
+                try {
+                    String message = messages.take();
+                    onMessage(Message.decode(message), Message.getProtocol(message), Message.getType(message));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
-    public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type, Socket socket) {
-        System.out.println("\n\nServerGame recieved: " + message + type);
+    public void onMessage(String message, Message.MessageProtocol protocol, Message.MessageType type) {
+        //System.out.println("\n\nServerGame recieved: " + message + " - " + type);
             if (type == Message.MessageType.CONNECT)
             {
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
 
                 sprites.forEach(encoder::addAnnotatedObject);
-                server.send(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT),socket);
+                server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.CONNECT));
             }
             else if (type == Message.MessageType.DISCONNECT)
             {//USERMAME
@@ -53,7 +67,6 @@ public class ServerGame extends Thread {
 
             else if (type == Message.MessageType.SPRITE || type == Message.MessageType.MESSAGE)
             {
-                System.out.println("was sprite");
                 String data = Message.decode(message);
                 AnnotatedDecoder decoder = new AnnotatedDecoder(data);
                 decoder.addAssignmentMethod(UUID.class, UUID::fromString);
@@ -69,7 +82,6 @@ public class ServerGame extends Thread {
 //                    }
 //                    return sprite;
 //                });
-                System.out.println("eheheh");
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -78,9 +90,7 @@ public class ServerGame extends Thread {
                 for(Sprite sprite : sprites) sprite.step();
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
                 sprites.forEach(encoder::addObject);
-                System.out.println("got here");
                 server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
-                System.out.println("and here");
             }
     }
 }
