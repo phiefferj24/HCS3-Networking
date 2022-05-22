@@ -194,14 +194,16 @@ public abstract class Sprite
     {
         if(i.equals(image)) return;
         image = i;
+    }
+
+    public void open() {
         if(mesh != null) mesh.close();
         if(Game.objectProgramId != 0 && Thread.currentThread().getName().equals("main")) mesh = new Mesh((float)this.x,(float)this.y ,-1.f,this.width,this.height,image,Game.objectProgramId);
     }
 
-    public void step()
-    {
-        if(mesh!=null)
-            mesh.translate((float) x, (float) y, 0);
+    public void step() {
+        if (mesh != null)
+            mesh.setPosition((float) x, (float) y, 0);
         //do NOT insert any code here
     }
 

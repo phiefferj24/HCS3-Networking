@@ -121,7 +121,6 @@ public class Mesh {
     public void setPosition(float x, float y, float z) {
         this.x = x;
         this.y = y;
-        this.z = z;
         positionMatrix = new Matrix4f().translate(x, y, z).rotateZ(angle);
     }
     public void scale(float factor) {

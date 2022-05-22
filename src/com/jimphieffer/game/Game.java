@@ -154,7 +154,7 @@ public class Game {
     }
 
     public void onMessage(String message) {
-        System.out.println("\n\nGame recieved: " + message);
+        //System.out.println("\n\nGame recieved: " + message);
         if (Message.getType(message) == Message.MessageType.CONNECT) {
             onMessage(Message.encode(Message.decode(message), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
             sprites.add(player);
@@ -169,6 +169,10 @@ public class Game {
             sprites.replaceAll(sprite -> {
                 for (Sprite tempSprite : tempSprites) {
                     if (sprite.getUUID().equals(tempSprite.getUUID())) {
+                        if (sprite.mesh != null) {
+                            sprite.mesh.close();
+                        }
+                        tempSprite.open();
                         return tempSprite;
                     }
                 }
@@ -211,6 +215,13 @@ public class Game {
         camera = new Camera(window.getWidth(), window.getHeight());
 
         hud = new HUD(hudProgramId, window.getWidth(), window.getHeight(), false);
+
+        hud.elements.add(new HUDButton(
+                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 66 / 256.f, 200 / 256.f, 86 / 256.f),
+                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 86 / 256.f, 200 / 256.f, 106 / 256.f),
+                new Mesh(0, 0, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 46 / 256.f, 200 / 256.f, 66 / 256.f),
+                windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Quit Game", false));
+        hud.elements.get(0).setCallback("selected", this::close);
 
         background = new Mesh(0, 0, -10.f, windowWidth, windowHeight, "/textures/grass.png", objectProgramId, 0.1f, 0.1f);
     }
@@ -365,11 +376,13 @@ public class Game {
             }
             return;
         }
-        if (recievedSprites && recievedConnect) {
+        if (recievedConnect) {
             AnnotatedEncoder encoder = new AnnotatedEncoder();
             for (int d = 0; d < sprites.size(); d++) {
-
-                System.out.println(sprites.size());
+                if(sprites.get(d).getUUID().toString().equals(player.getUUID().toString())) {
+                    sprites.set(d, player);
+                }
+                if(sprites.get(d).mesh == null) sprites.get(d).open();
                 sprites.get(d).step();
                 sprites.get(d).mesh.setPosition((float) sprites.get(d).getX(), (float) sprites.get(d).getY(), 0);
                 encoder.addAnnotatedObject(sprites.get(d));
@@ -408,12 +421,13 @@ public class Game {
         } else {
             Uniforms.setUniform("color", new Vector4f(1, 1, 1, 1), objectProgramId);
         }
+        if(player.mesh == null) player.open();
 
         background.render();
-
         player.mesh.render();
 
         sprites.forEach(sprite -> {
+            if(sprite.mesh == null) sprite.open();
             if (sprite.mesh != null) sprite.mesh.render();
         });
 
@@ -514,7 +528,6 @@ public class Game {
                 new Mesh(0, -150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 86 / 256.f, 200 / 256.f, 106 / 256.f),
                 new Mesh(0, -150, 0.f, 500f, 50f, "/textures/widgets.png", hudProgramId, 0, 46 / 256.f, 200 / 256.f, 66 / 256.f),
                 windowWidth, windowHeight, hudProgramId, "/fonts/minecraft.png", "Quit Game", false));
-        System.out.println(mainMenu.elements.get(2).getClass());
         mainMenu.elements.get(2).setCallback("selected", () -> {
             if (((HUDTextBox) mainMenu.elements.get(1)).getText().matches("^((([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}))|localhost):([0-9]{1,5})$") && ((HUDTextBox) mainMenu.elements.get(0)).getText().matches("^[A-Za-z0-9_-]*$")) {
                 mainMenu.visible = false;
@@ -546,7 +559,6 @@ public class Game {
         }
         mainMenu.close();
         mainMenu = null;
-        System.out.println("run");
     }
 
 
@@ -568,11 +580,11 @@ public class Game {
 
 //        Sprite p = new Player(1.0, 2.0, 3, 4, "hello", UUID.randomUUID(), 5.0, 6.0, "world");
 //        AnnotatedEncoder encoder = new AnnotatedEncoder();
-//        encoder.addObject(p, Sprite.class);
+//        encoder.addAnnotatedObject(p);
 //        System.out.println(encoder.encode());
 //        AnnotatedDecoder decoder = new AnnotatedDecoder(encoder.encode());
 //        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
 //        Sprite p2 = decoder.getDerivativeObjects(Sprite.class)[0];
-//        System.out.println(p2.getUUID());
+//        System.out.println(((Player)p2).getVX());
     }
 }
