@@ -8,9 +8,14 @@ import com.jimphieffer.graphics.hud.TextBox;
 import com.jimphieffer.graphics.hud.elements.HUDButton;
 import com.jimphieffer.graphics.hud.elements.HUDTextBox;
 import com.jimphieffer.network.client.ClientThread;
+import com.jimphieffer.network.server.Server;
+import com.jimphieffer.utils.json.*;
 import org.joml.Vector4f;
 
+import com.jimphieffer.game.objectTypes.Sprite;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 import java.lang.String;
 import java.util.UUID;
@@ -20,6 +25,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
+
+
+import com.jimphieffer.game.objectTypes.*;
 
 
 import static com.jimphieffer.utils.FileUtilities.*;
@@ -54,6 +62,7 @@ public class Game {
     private int hudFragmentShaderId;
 
     private int tickCount = 0;
+    private int numSteps = 0;
 
     private ArrayList<Mesh> meshes;
     private HUD hud;
@@ -125,19 +134,7 @@ public class Game {
             while (glfwGetTime() - lastRenderTime < secondsPerFrame) ;
             //System.out.println("FPS: " + (1/sinceRender));
         }
-        //
-        //Player dupe=player.set(VX)
-        //ct.send(Message.encode());
 
-        /*
-        String bruh = "";
-        for (Sprite s: sprites)
-        {
-          //  s.step(this);
-            bruh+=s.toString() + ",";
-        }
-
-        */
 
 
         close();
@@ -157,51 +154,27 @@ public class Game {
     }
 
     public void onMessage(String message) {
-        System.out.println("--------------------MESSAGE RECIEVED BY " + username + "-------------------");
-        System.out.println("message to game: " + message);
-        System.out.println(Thread.currentThread().getName());
-        if (Message.getType(message).equals(Message.MessageType.CONNECT)) {
-            System.out.println("CONNECT ran");
-
-
-            addSprites(message);
+        System.out.println("\n\nGame recieved: " + message);
+        if (Message.getType(message) == Message.MessageType.CONNECT) {
+            onMessage(Message.encode(Message.decode(message), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
             sprites.add(player);
             recievedConnect = true;
-        } else if (Objects.equals(Message.getType(message), Message.MessageType.SPRITE)) {
-            System.out.println("SPRITE ran");
-
-
-            addSprites(message);
-        }
-        System.out.println("------------------------------------------------------");
-        System.out.println();
-        System.out.println();
-    }
-
-    private void addSprites(String message) {
-        message = message.substring(message.indexOf("[")+1);
-        String[] sprs = message.split(",");
-        for (int i = 0; i < sprs.length; i++) {
-            boolean matched = false;
-
-            for (int j = 0; j < sprites.size(); j++) {
-                String[] onGuh = sprs[i].split(";");
-                if (sprites.get(j).getUUID().equals(UUID.fromString(onGuh[6]))) {
-                    Sprite s = sprites.get(j);
-                    matched = true;
-                    if (s instanceof Static)
-                        ((Static) s).changeAll(onGuh[1], onGuh[2]);
-                    else
-                        ((NonStatic) s).changeAll(onGuh[1], onGuh[2], onGuh[7], onGuh[8]);
-                    break;
+        } else if (Message.getType(message) == Message.MessageType.SPRITE) {
+            numSteps = 0;
+            recievedSprites = true;
+            String decodedMessage = Message.decode(message);
+            AnnotatedDecoder decoder = new AnnotatedDecoder(decodedMessage);
+            decoder.addAssignmentMethod(UUID.class, UUID::fromString);
+            Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
+            sprites.replaceAll(sprite -> {
+                for (Sprite tempSprite : tempSprites) {
+                    if (sprite.getUUID().equals(tempSprite.getUUID())) {
+                        return tempSprite;
+                    }
                 }
-            }
-            if(!matched)
-                sprites.add(Sprite.stringToSprite(sprs[i]));
-
+                return sprite;
+            });
         }
-
-
     }
 
 
@@ -369,7 +342,7 @@ public class Game {
 
     private void preStartTick(double deltaTime, int numPlayers) {
         for (int i = 0; i < sprites.size(); i++) {// maybe instead of this all sprites start as being deactivated where they are at position 0,0 cant do anything and dont have an image and then when we activate them they start to do stuff. just an idea
-            if (sprites.get(i).getClassType() == "Player")
+            if (sprites.get(i).getClassType().equals("Player"))
                 sprites.get(i).setImage("/textures/wall.png");
         }
         waitingScreen = UUID.randomUUID();
@@ -380,72 +353,30 @@ public class Game {
 
     private void tick(double deltaTime) {
 
-        //Static(double x, double y, int width, int height, String image, UUID id) /
-        int numPlayers = 0;
-        for (int i = 0; i < sprites.size(); i++) {
-            if (sprites.get(i).getTypeAsString().equals("PLAYER")) {
-                numPlayers++;
+        //in order to check name of class do: sprite.getClass().getSimpleName().equalsIgnoreCase("PLAYER"
+        tickCount++;
+        if (tickCount == 1) {
+            for (int i = 0; i < sprites.size(); i++) {
+                if (sprites.get(i) instanceof Player) {
+                    sprites.get(i).setX(windowWidth / 2.f * Math.random() + windowWidth / 2.f);
+                    sprites.get(i).setY(windowHeight / 2.f * Math.random() + windowHeight / 2.f);
+                    //player.mesh.setRotation(player.getLocalRotation());
+                }
             }
-        }
-        if (numPlayers<=0) {
-            preStartTick(deltaTime, numPlayers); //if numplayers required is 1: will run this for the very first tick of the game
             return;
         }
-        tickCount++;
-            //waitingStuff.remove(0);
-            //TextBox waiting = new TextBox(hudProgramId, "/fonts/minecraft.png", "Waiting for next round...", 0, 0, 0, 30);
-        waitingStuff.clear();
-            started = true;
-            if(tickCount==1) {
-                String messsageToSend = "[";
-                for (int i = 0; i < sprites.size(); i++) {
-                    StringBuilder spriteMessage = new StringBuilder();
-                    Sprite s = sprites.get(i);
-                    if (sprites.get(i).getID() == waitingScreen) {
-                        sprites.remove(s);
-                        s.mesh.close();
-                        spriteMessage.append(s.toString());
-                        sprites.get(i).mesh.close();
-                    } else if (sprites.get(i) instanceof Player) {
-                        sprites.get(i).setX(windowWidth/2 * Math.random()+windowWidth/2);
-                        sprites.get(i).setY(windowHeight/2 * Math.random()+windowHeight/2);
-                        player.mesh.setRotation(player.getLocalRotation());
-                        if(((Player)sprites.get(i)).isAttacking())
-                        {
-                            for(int f=0; f<sprites.size(); f++)
-                            {
-                                if(sprites.get(f).getTypeAsString()!="PLAYER" && sprites.get(i).touchingAfterDisplacement(sprites.get(f),0,0))
-                                {
-                                    if(sprites.get(f).getTypeAsString()=="TREE")
-                                    {
-                                        ((Player)sprites.get(i)).setAmtWood(((Player)sprites.get(i)).getAmtWood()+1);
-                                    }
-                                }
-                            }
-                        }
-                        //sprites.get(i).step();
-                    }
-                }
-                return;
-            }
-            StringBuilder messsageToSend = new StringBuilder();
+        if (recievedSprites && recievedConnect) {
+            AnnotatedEncoder encoder = new AnnotatedEncoder();
             for (int d = 0; d < sprites.size(); d++) {
-                messsageToSend.append(sprites.get(d).toString()).append(",");
-                sprites.get(d).mesh.setPosition((float)sprites.get(d).getX(),(float)sprites.get(d).getY(),0);;
+
+                System.out.println(sprites.size());
+                sprites.get(d).step();
+                sprites.get(d).mesh.setPosition((float) sprites.get(d).getX(), (float) sprites.get(d).getY(), 0);
+                encoder.addAnnotatedObject(sprites.get(d));
             }
-        //player.mesh.setRotation(player.getLocalRotation());
-        String messsageToSend2 = player.toString();
-            if (recievedConnect) {
-                ct.send(Message.encode(messsageToSend2, Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
-                recievedSprites = false;
-            }
-
-
-
-
-        newRound = false;
-
-
+            ct.send(Message.encode(encoder.encode(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+            recievedSprites=false;
+        }
     }
 
 
@@ -633,5 +564,15 @@ public class Game {
         g.init();
         g.menu();
         g.run();
+
+
+//        Sprite p = new Player(1.0, 2.0, 3, 4, "hello", UUID.randomUUID(), 5.0, 6.0, "world");
+//        AnnotatedEncoder encoder = new AnnotatedEncoder();
+//        encoder.addObject(p, Sprite.class);
+//        System.out.println(encoder.encode());
+//        AnnotatedDecoder decoder = new AnnotatedDecoder(encoder.encode());
+//        decoder.addAssignmentMethod(UUID.class, UUID::fromString);
+//        Sprite p2 = decoder.getDerivativeObjects(Sprite.class)[0];
+//        System.out.println(p2.getUUID());
     }
 }
