@@ -44,6 +44,9 @@ public class Pig extends NonStatic {
         angle+=.02;
         setX(getX()+xMov);
         setY(getY()+yMov);
+
+        //setX(getX()+2);
+
         super.step();
     }
 }

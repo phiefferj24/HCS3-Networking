@@ -58,7 +58,7 @@ public abstract class Sprite
 
     public boolean touching(Sprite s)
     {
-        double scale = 0.2;
+        double scale = 1;
         double sRight = (s.getX() + s.getWidth()) - s.getWidth()*scale;
         double sBottom = s.getY() + s.getHeight() - s.getHeight()*scale;
         if (touching(s.getX() + s.getWidth()*scale, s.getY() + s.getHeight()*scale))
@@ -98,7 +98,7 @@ public abstract class Sprite
     }
 
     public boolean touchingAfterDisplacement(Sprite s, double dx, double dy) {
-        double scale = 0.2;
+
         double sLeft = s.getX();
         double sTop = s.getY();
         double sRight = (s.getX() + s.getWidth());
@@ -199,6 +199,11 @@ public abstract class Sprite
     public void open() {
         if(mesh != null) mesh.close();
         if(Game.objectProgramId != 0 && Thread.currentThread().getName().equals("main")) mesh = new Mesh((float)this.x,(float)this.y ,-1.f,this.width,this.height,image,Game.objectProgramId);
+    }
+
+    public void step(int n) {
+        for(int i = 0; i<n;i++)
+            step();
     }
 
     public void step() {

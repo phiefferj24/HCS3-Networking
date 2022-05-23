@@ -16,8 +16,7 @@ public class Wall extends Static {
         super(x, y, width, height, image, id);
     }
 
-    public Wall() {
-        super();
-        setImage("textures/wall.png");
+    public Wall(int x, int y) {
+        super(x, y, 50, 50, "/textures/wall.png", UUID.randomUUID());
     }
 }

@@ -160,24 +160,52 @@ public class Game {
             sprites.add(player);
             recievedConnect = true;
         } else if (Message.getType(message) == Message.MessageType.SPRITE) {
+            System.out.println("on recieve: " + numSteps);
             numSteps = 0;
             recievedSprites = true;
             String decodedMessage = Message.decode(message);
             AnnotatedDecoder decoder = new AnnotatedDecoder(decodedMessage);
             decoder.addAssignmentMethod(UUID.class, UUID::fromString);
             Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
-            sprites.replaceAll(sprite -> {
-                for (Sprite tempSprite : tempSprites) {
+
+            //System.out.println("recieved" + decodedMessage.substring(decodedMessage.indexOf("\"x\""),decodedMessage.indexOf("\"x\"")+13));
+
+            for(Sprite tempSprite: tempSprites)
+            {
+                boolean found = false;
+
+                for (int i = 0; i < sprites.size(); i++) {
+                    Sprite sprite = sprites.get(i);
                     if (sprite.getUUID().equals(tempSprite.getUUID())) {
                         if (sprite.mesh != null) {
                             sprite.mesh.close();
                         }
                         tempSprite.open();
-                        return tempSprite;
+                        sprites.set(i,tempSprite);
+                        found = true;
+                        break;
                     }
+
                 }
-                return sprite;
-            });
+                if (!found)
+                    sprites.add(tempSprite);
+
+            }
+
+
+//            sprites.replaceAll(sprite -> {
+//                System.out.println("ran for " + sprite.getClassType());
+//                for (Sprite tempSprite : tempSprites) {
+//                    if (sprite.getUUID().equals(tempSprite.getUUID())) {
+//                        if (sprite.mesh != null) {
+//                            sprite.mesh.close();
+//                        }
+//                        tempSprite.open();
+//                        return tempSprite;
+//                    }
+//                }
+//                return sprite;
+//            });
         }
     }
 
@@ -376,19 +404,36 @@ public class Game {
             }
             return;
         }
+        boolean print = false; //REMOVE
         if (recievedConnect) {
             AnnotatedEncoder encoder = new AnnotatedEncoder();
             for (int d = 0; d < sprites.size(); d++) {
-                if(sprites.get(d).getUUID().toString().equals(player.getUUID().toString())) {
+                if (sprites.get(d).getUUID().toString().equals(player.getUUID().toString())) {
                     sprites.set(d, player);
                 }
-                if(sprites.get(d).mesh == null) sprites.get(d).open();
-                sprites.get(d).step();
+                if (sprites.get(d).mesh == null) sprites.get(d).open();
+                if (print)
+                    System.out.println("stepped " + sprites.get(d).getClassType() + " at " + sprites.get(d).getX()); //REMOVE
+
+                if(sprites.get(d) instanceof Player)
+                    ((Player)sprites.get(d)).step(sprites);
+                    sprites.get(d).step();
+                    numSteps++;
                 sprites.get(d).mesh.setPosition((float) sprites.get(d).getX(), (float) sprites.get(d).getY(), 0);
                 encoder.addAnnotatedObject(sprites.get(d));
             }
-            ct.send(Message.encode(encoder.encode(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
-            recievedSprites=false;
+
+
+
+            if(recievedSprites) {
+                encoder = new AnnotatedEncoder();
+               encoder.addAnnotatedObject(player);
+
+                if (print) System.out.println("sent" + encoder.encode().substring(encoder.encode().indexOf("\"x\""),encoder.encode().indexOf("\"x\"")+13)); //REMOVE
+                ct.send(Message.encode(numSteps + "<" +encoder.encode(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
+                recievedSprites = false;
+
+            }
         }
     }
 

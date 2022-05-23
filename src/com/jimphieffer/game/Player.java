@@ -2,8 +2,10 @@ package com.jimphieffer.game;
 
 import com.jimphieffer.game.objectTypes.*;
 
+import com.jimphieffer.game.objects.Wall;
 import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static java.lang.Double.parseDouble;
@@ -88,6 +90,37 @@ public class Player extends NonStatic{
     public int getAmtWood(){ return amtWood; }
     public void setAttacking(boolean attacking){isAttacking=attacking;}
     public boolean getAttacking(){ return isAttacking;}
+
+
+    public void step(ArrayList<Sprite> sprites)
+    {
+        for (Sprite s : sprites) {
+            if (s instanceof Wall) {
+
+                boolean right = (vx > 0);
+                boolean up = (vy > 0);
+
+
+                while (touchingAfterDisplacement(s, vx, 0)) {
+                    System.out.println("touching");
+                    if (right)
+                        vx -= 0.1;
+                    else
+                        vx += 0.1;
+                }
+                while (touchingAfterDisplacement(s, 0, vy)) {
+                    System.out.println("touching");
+                    if (up)
+                        vy -= 0.1;
+                    else
+                        vy += 0.1;
+                }
+            }
+        }
+
+        setX(getX()+vx);
+        setY(getY()+vy);
+    }
 
     public void step()
     {

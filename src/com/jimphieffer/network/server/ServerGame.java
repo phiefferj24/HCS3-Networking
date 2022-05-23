@@ -1,11 +1,13 @@
 package com.jimphieffer.network.server;
 
 import com.jimphieffer.Message;
+import com.jimphieffer.game.Player;
 import com.jimphieffer.game.objectTypes.NonStatic;
 import com.jimphieffer.game.objectTypes.Sprite;
 import com.jimphieffer.game.objectTypes.Static;
 import com.jimphieffer.game.objects.Pig;
 import com.jimphieffer.game.objects.Tree;
+import com.jimphieffer.game.objects.Wall;
 import com.jimphieffer.utils.json.AnnotatedDecoder;
 import com.jimphieffer.utils.json.AnnotatedEncoder;
 
@@ -28,6 +30,7 @@ public class ServerGame extends Thread {
     public ServerGame(Server server) {
         sprites = new ArrayList<>();
         sprites.add(new Pig(100,100));
+        sprites.add(new Wall(400,400));
         sprites.add(new Tree(150,150, 100, 100, "/textures/wood.png", UUID.randomUUID()));
         spritesNames = new ArrayList<>();
         this.server = server;
@@ -67,13 +70,18 @@ public class ServerGame extends Thread {
 
             else if (type == Message.MessageType.SPRITE || type == Message.MessageType.MESSAGE)
             {
-                String data = Message.decode(message);
+                int numSteps = Integer.parseInt(message.substring(message.indexOf(":")+1,message.indexOf("<")));
+                String data = Message.decode("SEND/SPRITE:"+message.substring(message.indexOf("<")+1));
                 AnnotatedDecoder decoder = new AnnotatedDecoder(data);
                 decoder.addAssignmentMethod(UUID.class, UUID::fromString);
                 Sprite[] tempSpritesarr = decoder.getDerivativeObjects(Sprite.class);
                 List<Sprite> tempSprites = Arrays.asList(tempSpritesarr);
-                sprites.clear();
-                sprites.addAll(tempSprites);
+//                sprites.clear();
+//                sprites.addAll(tempSprites);
+
+                for(int i = 0; i<sprites.size(); i++)
+                    if (sprites.get(i) instanceof Player)
+                        sprites.set(i,tempSpritesarr[0]);
 //                sprites.replaceAll(sprite -> {
 //                    for (int i = 0; i < tempSprites.size(); i++) {
 //                        if (sprite.getUUID().equals(tempSprites.get(i).getUUID())) {
@@ -83,11 +91,13 @@ public class ServerGame extends Thread {
 //                    return sprite;
 //                });
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                for(Sprite sprite : sprites) sprite.step();
+
+                sprites.forEach((s) -> s.step(numSteps));
+
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
                 sprites.forEach(encoder::addObject);
                 server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
