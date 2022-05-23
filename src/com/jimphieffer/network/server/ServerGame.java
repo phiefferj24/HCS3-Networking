@@ -76,20 +76,23 @@ public class ServerGame extends Thread {
                 decoder.addAssignmentMethod(UUID.class, UUID::fromString);
                 Sprite[] tempSpritesarr = decoder.getDerivativeObjects(Sprite.class);
                 List<Sprite> tempSprites = Arrays.asList(tempSpritesarr);
+
+                for (Sprite sprite : tempSprites) {
+                    for(int i = 0; i < sprites.size(); i++) {
+                        if(sprites.get(i).getUUID().equals(sprite.getUUID())) {
+                            sprites.set(i, sprite);
+                        }
+                    }
+                }
 //                sprites.clear();
 //                sprites.addAll(tempSprites);
 
-                for(int i = 0; i<sprites.size(); i++)
-                    if (sprites.get(i) instanceof Player)
-                        sprites.set(i,tempSpritesarr[0]);
-//                sprites.replaceAll(sprite -> {
-//                    for (int i = 0; i < tempSprites.size(); i++) {
-//                        if (sprite.getUUID().equals(tempSprites.get(i).getUUID())) {
-//                            return tempSprites.remove(i);
-//                        }
-//                    }
-//                    return sprite;
-//                });
+//                for(int i = 0; i<sprites.size(); i++)
+//                    if (sprites.get(i) instanceof Player)
+//                        sprites.set(i,tempSpritesarr[0]);
+
+
+
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {

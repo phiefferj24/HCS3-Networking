@@ -182,6 +182,10 @@ public class Game {
                         }
                         tempSprite.open();
                         sprites.set(i,tempSprite);
+                        if(tempSprite.getUUID().equals(player.getUUID())) {
+                            player.mesh.close();
+                            player = (Player) tempSprite;
+                        }
                         found = true;
                         break;
                     }
@@ -396,7 +400,7 @@ public class Game {
         tickCount++;
         if (tickCount == 1) {
             for (int i = 0; i < sprites.size(); i++) {
-                if (sprites.get(i) instanceof Player) {
+                if (sprites.get(i).getUUID().equals(player.getUUID())) {
                     sprites.get(i).setX(windowWidth / 2.f * Math.random() + windowWidth / 2.f);
                     sprites.get(i).setY(windowHeight / 2.f * Math.random() + windowHeight / 2.f);
                     //player.mesh.setRotation(player.getLocalRotation());
@@ -406,7 +410,6 @@ public class Game {
         }
         boolean print = false; //REMOVE
         if (recievedConnect) {
-            AnnotatedEncoder encoder = new AnnotatedEncoder();
             for (int d = 0; d < sprites.size(); d++) {
                 if (sprites.get(d).getUUID().toString().equals(player.getUUID().toString())) {
                     sprites.set(d, player);
@@ -414,19 +417,18 @@ public class Game {
                 if (sprites.get(d).mesh == null) sprites.get(d).open();
                 if (print) System.out.println("stepped " + sprites.get(d).getClassType() + " at " + sprites.get(d).getX()); //REMOVE
 
-                if(sprites.get(d) instanceof Player)
+                if(sprites.get(d).getUUID().equals(player.getUUID()))
                     ((Player)sprites.get(d)).step(sprites);
                 else
                     sprites.get(d).step();
                 numSteps++;
                 sprites.get(d).mesh.setPosition((float) sprites.get(d).getX(), (float) sprites.get(d).getY(), 0);
-                encoder.addAnnotatedObject(sprites.get(d));
             }
 
 
 
             if(recievedSprites) {
-                encoder = new AnnotatedEncoder();
+                AnnotatedEncoder encoder = new AnnotatedEncoder();
                encoder.addAnnotatedObject(player);
 
                 if (print) System.out.println("sent" + encoder.encode().substring(encoder.encode().indexOf("\"x\""),encoder.encode().indexOf("\"x\"")+13)); //REMOVE
