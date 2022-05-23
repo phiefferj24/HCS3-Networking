@@ -220,4 +220,14 @@ public abstract class Sprite
         //do NOT insert any code here
     }
 
+    public double distanceTo(double x, double y)
+    {
+        return -1;
+    }
+
+    public double distanceTo(Sprite s)
+    {
+        return distanceTo(s.getX(),s.getY());
+    }
+
 }
