@@ -136,4 +136,10 @@ public class Mesh {
         angle = Math.toRadians(degrees);
         positionMatrix = new Matrix4f().rotateZ(angle).translate(x, y, z);
     }
+    public float getActualWidth() {
+        return width * 2;
+    }
+    public float getActualHeight() {
+        return height * 2;
+    }
 }

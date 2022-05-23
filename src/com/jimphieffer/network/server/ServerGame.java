@@ -77,7 +77,14 @@ public class ServerGame extends Thread {
                 AnnotatedDecoder decoder = new AnnotatedDecoder(data);
                 decoder.addAssignmentMethod(UUID.class, UUID::fromString);
                 Sprite[] tempSpritesarr = decoder.getDerivativeObjects(Sprite.class);
-                List<Sprite> tempSprites = Arrays.asList(tempSpritesarr);
+
+                for (Sprite sprite : tempSpritesarr) {
+                    for(int i = 0; i < sprites.size(); i++) {
+                        if(sprites.get(i).getUUID().equals(sprite.getUUID())) {
+                            sprites.set(i, sprite);
+                        }
+                    }
+                }
 //                sprites.clear();
 //                sprites.addAll(tempSprites);
 
@@ -93,6 +100,12 @@ public class ServerGame extends Thread {
 //                    }
 //                    return sprite;
 //                });
+//                for(int i = 0; i<sprites.size(); i++)
+//                    if (sprites.get(i) instanceof Player)
+//                        sprites.set(i,tempSpritesarr[0]);
+
+
+
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -108,7 +121,7 @@ public class ServerGame extends Thread {
                 });
 
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
-                sprites.forEach(encoder::addObject);
+                sprites.forEach(encoder::addAnnotatedObject);
                 server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
             }
     }
