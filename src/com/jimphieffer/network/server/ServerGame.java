@@ -75,9 +75,8 @@ public class ServerGame extends Thread {
                 AnnotatedDecoder decoder = new AnnotatedDecoder(data);
                 decoder.addAssignmentMethod(UUID.class, UUID::fromString);
                 Sprite[] tempSpritesarr = decoder.getDerivativeObjects(Sprite.class);
-                List<Sprite> tempSprites = Arrays.asList(tempSpritesarr);
 
-                for (Sprite sprite : tempSprites) {
+                for (Sprite sprite : tempSpritesarr) {
                     for(int i = 0; i < sprites.size(); i++) {
                         if(sprites.get(i).getUUID().equals(sprite.getUUID())) {
                             sprites.set(i, sprite);
@@ -102,7 +101,7 @@ public class ServerGame extends Thread {
                 sprites.forEach((s) -> s.step(numSteps));
 
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
-                sprites.forEach(encoder::addObject);
+                sprites.forEach(encoder::addAnnotatedObject);
                 server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
             }
     }

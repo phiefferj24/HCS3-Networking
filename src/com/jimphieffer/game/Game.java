@@ -171,11 +171,12 @@ public class Game {
             //System.out.println("recieved" + decodedMessage.substring(decodedMessage.indexOf("\"x\""),decodedMessage.indexOf("\"x\"")+13));
 
             for (Sprite sprite : sprites) {
-                sprite.mesh.close();
+                if(sprite.mesh != null) sprite.mesh.close();
             }
             sprites.clear();
             for (Sprite sprite : tempSprites) {
                 sprites.add(sprite);
+                sprite.open();
                 if(sprite.getUUID().equals(player.getUUID())) {
                     player = (Player) sprite;
                 }
