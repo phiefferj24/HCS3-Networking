@@ -53,6 +53,12 @@ public abstract class Sprite
 
     public boolean touchingAfterDisplacement(double x, double y, double dx, double dy)
     {
+        double s = 1.5;
+        double x1 = this.x+width/2-width*s;
+        double x2 = this.x+width/2+width*s;
+        double y1 = this.y+height/2-width*s;
+        double y2 = this.x+height/2+width*s;
+        //return x> x1 +dx && x< x2+dx && y> y1 +dy && y< y2+dy;
         return x> this.x +dx && x< this.x +width+dx && y> this.y +dy && y< this.y + height+dy ;
     }
 
@@ -98,6 +104,8 @@ public abstract class Sprite
     }
 
     public boolean touchingAfterDisplacement(Sprite s, double dx, double dy) {
+
+
 
         double sLeft = s.getX();
         double sTop = s.getY();

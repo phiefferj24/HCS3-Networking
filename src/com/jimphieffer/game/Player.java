@@ -102,14 +102,12 @@ public class Player extends NonStatic{
 
 
                 while (touchingAfterDisplacement(s, vx, 0)) {
-                    System.out.println("touching");
                     if (right)
                         vx -= 0.1;
                     else
                         vx += 0.1;
                 }
                 while (touchingAfterDisplacement(s, 0, vy)) {
-                    System.out.println("touching");
                     if (up)
                         vy -= 0.1;
                     else

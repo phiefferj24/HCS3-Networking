@@ -160,10 +160,10 @@ public class Game {
             sprites.add(player);
             recievedConnect = true;
         } else if (Message.getType(message) == Message.MessageType.SPRITE) {
-            System.out.println("on recieve: " + numSteps);
             numSteps = 0;
             recievedSprites = true;
             String decodedMessage = Message.decode(message);
+
             AnnotatedDecoder decoder = new AnnotatedDecoder(decodedMessage);
             decoder.addAssignmentMethod(UUID.class, UUID::fromString);
             Sprite[] tempSprites = decoder.getDerivativeObjects(Sprite.class);
@@ -412,13 +412,13 @@ public class Game {
                     sprites.set(d, player);
                 }
                 if (sprites.get(d).mesh == null) sprites.get(d).open();
-                if (print)
-                    System.out.println("stepped " + sprites.get(d).getClassType() + " at " + sprites.get(d).getX()); //REMOVE
+                if (print) System.out.println("stepped " + sprites.get(d).getClassType() + " at " + sprites.get(d).getX()); //REMOVE
 
                 if(sprites.get(d) instanceof Player)
                     ((Player)sprites.get(d)).step(sprites);
+                else
                     sprites.get(d).step();
-                    numSteps++;
+                numSteps++;
                 sprites.get(d).mesh.setPosition((float) sprites.get(d).getX(), (float) sprites.get(d).getY(), 0);
                 encoder.addAnnotatedObject(sprites.get(d));
             }
