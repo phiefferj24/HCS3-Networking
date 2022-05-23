@@ -170,30 +170,15 @@ public class Game {
 
             //System.out.println("recieved" + decodedMessage.substring(decodedMessage.indexOf("\"x\""),decodedMessage.indexOf("\"x\"")+13));
 
-            for(Sprite tempSprite: tempSprites)
-            {
-                boolean found = false;
-
-                for (int i = 0; i < sprites.size(); i++) {
-                    Sprite sprite = sprites.get(i);
-                    if (sprite.getUUID().equals(tempSprite.getUUID())) {
-                        if (sprite.mesh != null) {
-                            sprite.mesh.close();
-                        }
-                        tempSprite.open();
-                        sprites.set(i,tempSprite);
-                        if(tempSprite.getUUID().equals(player.getUUID())) {
-                            player.mesh.close();
-                            player = (Player) tempSprite;
-                        }
-                        found = true;
-                        break;
-                    }
-
+            for (Sprite sprite : sprites) {
+                sprite.mesh.close();
+            }
+            sprites.clear();
+            for (Sprite sprite : tempSprites) {
+                sprites.add(sprite);
+                if(sprite.getUUID().equals(player.getUUID())) {
+                    player = (Player) sprite;
                 }
-                if (!found)
-                    sprites.add(tempSprite);
-
             }
 
 
