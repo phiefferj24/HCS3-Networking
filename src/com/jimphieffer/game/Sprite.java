@@ -1,8 +1,8 @@
-package com.jimphieffer.game.objectTypes;
+package com.jimphieffer.game;
 
 import com.jimphieffer.game.Game;
-import com.jimphieffer.game.objects.Pig;
-import com.jimphieffer.game.objects.Tree;
+
+import com.jimphieffer.game.Tree;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
 import com.jimphieffer.utils.json.annotations.JsonEquivalent;
@@ -53,12 +53,25 @@ public abstract class Sprite
 
     public boolean touchingAfterDisplacement(double x, double y, double dx, double dy)
     {
-        return x> this.x +dx && x< this.x +width+dx && y> this.y +dy && y< this.y + height+dy ;
+        double s = 1;
+        double x1=this.x-width*s+width;
+        double x2=this.x+width*s+width;
+        double y1=this.y-height*s+height;
+        double y2=this.y+height*s+height;
+
+        return x> x1 +dx &&
+                x< (x2)+dx &&
+                y> y1 +dy &&
+                y< (y2)+dy;
+//        return x> this.x +dx &&
+//               x< (this.x +width)+dx &&
+//               y> this.y +dy &&
+//               y< (this.y + height)+dy;
     }
 
     public boolean touching(Sprite s)
     {
-        double scale = 0.2;
+        double scale = 1;
         double sRight = (s.getX() + s.getWidth()) - s.getWidth()*scale;
         double sBottom = s.getY() + s.getHeight() - s.getHeight()*scale;
         if (touching(s.getX() + s.getWidth()*scale, s.getY() + s.getHeight()*scale))

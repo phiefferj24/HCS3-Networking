@@ -1,5 +1,6 @@
 package com.jimphieffer.graphics.hud;
 
+import com.jimphieffer.game.Camera;
 import com.jimphieffer.graphics.hud.elements.HUDElement;
 
 import java.util.ArrayList;

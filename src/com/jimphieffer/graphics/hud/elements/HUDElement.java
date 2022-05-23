@@ -1,5 +1,6 @@
 package com.jimphieffer.graphics.hud.elements;
 
+import com.jimphieffer.game.Game;
 import com.jimphieffer.graphics.Mesh;
 import com.jimphieffer.graphics.hud.FloatRectangle;
 

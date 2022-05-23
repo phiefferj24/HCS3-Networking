@@ -27,7 +27,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 
 
-import com.jimphieffer.game.objectTypes.*;
+import com.jimphieffer.game.*;
 
 
 import static com.jimphieffer.utils.FileUtilities.*;
@@ -134,7 +134,19 @@ public class Game {
             while (glfwGetTime() - lastRenderTime < secondsPerFrame) ;
             //System.out.println("FPS: " + (1/sinceRender));
         }
+        //
+        //Player dupe=player.set(VX)
+        //ct.send(Message.encode());
 
+        /*
+        String bruh = "";
+        for (Sprite s: sprites)
+        {
+          //  s.step(this);
+            bruh+=s.toString() + ",";
+        }
+
+        */
 
 
         close();
@@ -179,6 +191,8 @@ public class Game {
                 return sprite;
             });
         }
+
+
     }
 
 

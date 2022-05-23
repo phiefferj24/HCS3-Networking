@@ -1,13 +1,13 @@
 package com.jimphieffer.game;
 
 import com.jimphieffer.game.Game;
-import com.jimphieffer.game.Sprite;
+import com.jimphieffer.game.objectTypes.Sprite;
 
 import java.util.UUID;
 
 import static java.lang.Double.parseDouble;
 
-public class NonStatic extends Sprite {
+public class NonStatic extends com.jimphieffer.game.objectTypes.Sprite {
     private double vx;
     private double vy;
     private double x;
@@ -32,21 +32,23 @@ public class NonStatic extends Sprite {
         this.vy=vy;
         this.image = image;
     }
-    public NonStatic(String x, String y, String width, String height, String image, String id,
-                     String vx, String vy)
-    {
-        //for any program id do Animal#### and the numbers will be from where we render it go thru list
-        //of all sprites and then compute which one
-
-        super(x, y,width,height,image,id);
-        this.image=image;
-        this.health  = health;
-        this.x=parseDouble(x);
-        this.y=parseDouble(y);
-        this.vx=parseDouble(vx);
-        this.vy=parseDouble(vy);
-        this.image = image;
-    }
+//    public NonStatic(String x, String y, String width, String height, String image, String id,
+//                     String vx, String vy)
+//    {
+//        //for any program id do Animal#### and the numbers will be from where we render it go thru list
+//        //of all sprites and then compute which one
+//
+//
+//
+////        super(x, y,width,height,image,id);
+////        this.image=image;
+////        this.health  = health;
+////        this.x=parseDouble(x);
+////        this.y=parseDouble(y);
+////        this.vx=parseDouble(vx);
+////        this.vy=parseDouble(vy);
+////        this.image = image;
+//    }
 
 
     public double getVY()

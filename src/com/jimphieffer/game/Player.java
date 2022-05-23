@@ -1,9 +1,11 @@
 package com.jimphieffer.game;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
+import com.jimphieffer.game.objectTypes.Sprite;
 
 
 import static java.lang.Double.*;
@@ -92,11 +94,44 @@ public class Player extends NonStatic{
     public void setAttacking(){isAttacking=true;}
     public boolean isAttacking(){ return isAttacking;}
 
-    public void step()
+    public void step(ArrayList<Sprite> sprites)
     {
+
+
+        for(Sprite s: sprites)
+        {
+            if(s instanceof Wall)
+            {
+                boolean right = (vx>0);
+                boolean up = (vy>0);
+
+                while(touchingAfterDisplacement(s,vx,0)) {
+                    if(right)
+                        vx-=0.1;
+                    else
+                        vx+=0.1;
+                    //System.out.println("right o left");
+                }
+                while(touchingAfterDisplacement(s,0,vy)) {
+                    if(up)
+                        vy-=0.1;
+                    else
+                        vy+=0.1;
+                    //System.out.println("up o down");
+                }
+            }
+        }
+
+
         setX(getX()+vx);
         setY(getY()+vy);
+
         super.step();
+    }
+
+    public void step()
+    {
+       step(null);
     }
 
 
