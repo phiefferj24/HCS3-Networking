@@ -8,6 +8,7 @@ import com.jimphieffer.game.objectTypes.Static;
 import com.jimphieffer.game.objects.Pig;
 import com.jimphieffer.game.objects.Tree;
 import com.jimphieffer.game.objects.Wall;
+import com.jimphieffer.game.objects.Zombie;
 import com.jimphieffer.utils.json.AnnotatedDecoder;
 import com.jimphieffer.utils.json.AnnotatedEncoder;
 
@@ -32,6 +33,7 @@ public class ServerGame extends Thread {
         sprites.add(new Pig(100,100));
         sprites.add(new Wall(400,400));
         sprites.add(new Tree(150,150, 100, 100, "/textures/wood.png", UUID.randomUUID()));
+        sprites.add(new Zombie(-200,-200));
         spritesNames = new ArrayList<>();
         this.server = server;
         // create a new thread that calls onMessage whenever a new message is added to the queue
@@ -79,9 +81,10 @@ public class ServerGame extends Thread {
 //                sprites.clear();
 //                sprites.addAll(tempSprites);
 
-                for(int i = 0; i<sprites.size(); i++)
-                    if (sprites.get(i) instanceof Player)
-                        sprites.set(i,tempSpritesarr[0]);
+//                for(int i = 0; i<sprites.size(); i++)
+//                    if (sprites.get(i) instanceof Player)
+//                        sprites.set(i,tempSpritesarr[0]);
+                //System.out.println(sprites.toString());
 //                sprites.replaceAll(sprite -> {
 //                    for (int i = 0; i < tempSprites.size(); i++) {
 //                        if (sprite.getUUID().equals(tempSprites.get(i).getUUID())) {
@@ -96,7 +99,13 @@ public class ServerGame extends Thread {
                     e.printStackTrace();
                 }
 
-                sprites.forEach((s) -> s.step(numSteps));
+                sprites.forEach((s) ->{
+
+                    if(s instanceof Zombie)
+                        s.step(numSteps,sprites);
+                    else
+                        s.step(numSteps);
+                });
 
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
                 sprites.forEach(encoder::addObject);

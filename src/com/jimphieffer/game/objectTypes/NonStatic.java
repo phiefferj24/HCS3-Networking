@@ -89,5 +89,11 @@ public class NonStatic extends Sprite {
         //dont put it here specify in lowest order class
     }
 
+    public void moveTo (Sprite s, double speed)
+    {
+        vx = Math.atan2(getX()-s.getX(),getY()-s.getY())*speed;
+        vy = Math.atan2(getX()-s.getX(),getY()-s.getY())*speed;
+    }
+
     //String image, double x, double y, int width, int height, double angle, int health,  int programID)
 }
