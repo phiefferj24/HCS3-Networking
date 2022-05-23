@@ -531,8 +531,8 @@ public class Game {
     }
 
     public void mouseMoved(long window, double x, double y) {
-        float angely = (float) Math.atan2(y, x);
-        player.setLocalRotation((float) (360 * angely));
+        double angely = Math.atan2(y, x);
+        player.setLocalRotation((float)Math.toDegrees(angely));
         //System.out.println(angely);
         //TODO: handle rotation
         hud.mouseMoved(x, y);
