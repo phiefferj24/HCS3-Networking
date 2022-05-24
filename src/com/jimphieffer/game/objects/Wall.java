@@ -19,4 +19,9 @@ public class Wall extends Static {
     public Wall(int x, int y) {
         super(x, y, 50, 50, "/textures/wall.png", UUID.randomUUID());
     }
+
+    public String getClassType(){
+        return "Wall";
+    }
+
 }

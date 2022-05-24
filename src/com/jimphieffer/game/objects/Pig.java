@@ -57,6 +57,13 @@ public class Pig extends NonStatic {
 
         //setX(getX()+2);
 
+        System.out.println("theta: " + angle + " (" +getX() + ", " + getY()+ ")");
+
         super.step();
     }
+
+    public String getClassType(){
+        return "Pig";
+    }
+
 }

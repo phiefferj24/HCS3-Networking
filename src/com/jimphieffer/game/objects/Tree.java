@@ -20,4 +20,9 @@ public class Tree extends Static {
         super();
         setImage("textures/wood.png");
     }
+
+    public String getClassType(){
+        return "Tree";
+    }
+
 }

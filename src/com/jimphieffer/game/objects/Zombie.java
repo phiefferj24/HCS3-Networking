@@ -78,4 +78,9 @@ public class Zombie extends NonStatic {
         //setX(getX()+2);
         super.step();
     }
+
+    public String getClassType(){
+        return "Zombie";
+    }
+
 }
