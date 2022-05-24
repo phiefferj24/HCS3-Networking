@@ -39,28 +39,48 @@ public class Zombie extends NonStatic {
 
     public void step(ArrayList<Sprite> sprites)
     {
+        double vx = getVX();
+        double vy = getVY();
         for (Sprite s : sprites) {
             if (s instanceof Wall) {
+                boolean right = (vx > 0);
+                boolean up = (vy > 0);
 
+
+                while (touchingAfterDisplacement(s, vx, 0)) {
+                    if (right)
+                        vx -= 0.1;
+                    else
+                        vx += 0.1;
+                }
+                while (touchingAfterDisplacement(s, 0, vy)) {
+                    if (up)
+                        vy -= 0.1;
+                    else
+                        vy += 0.1;
+                }
             }
             else if (s instanceof Player)
             {
-
+                if(distanceTo(s)<500)
+                {
+                    moveTo(s,10);
+                    //System.out.println("sees");
+                }
             }
         }
+        step();
 
     }
 
     public void step()
     {
-        double xMov = Math.cos(angle)*3;
-        double yMov = Math.sin(angle)*3;
-        angle+=.02;
-        setX(getX()+xMov);
-        setY(getY()+yMov);
-
         //setX(getX()+2);
-
         super.step();
     }
+
+    public String getClassType(){
+        return "Zombie";
+    }
+
 }

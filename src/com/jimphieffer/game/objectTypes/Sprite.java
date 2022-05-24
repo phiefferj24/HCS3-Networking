@@ -8,6 +8,7 @@ import com.jimphieffer.utils.json.annotations.JsonDefaultConstructor;
 import com.jimphieffer.utils.json.annotations.JsonEquivalent;
 import com.jimphieffer.utils.json.annotations.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static java.lang.Double.*;
@@ -214,10 +215,30 @@ public abstract class Sprite
             step();
     }
 
+    public void step(int n, ArrayList<Sprite> sprites) {
+        for(int i = 0; i<n;i++)
+            step(sprites);
+    }
+
+    public void step(ArrayList<Sprite> sprites) {
+        step();
+    }
+
     public void step() {
         if (mesh != null)
             mesh.setPosition((float) x, (float) y, 0);
         //do NOT insert any code here
+    }
+
+    public double distanceTo(double x, double y)
+    {
+
+        return Math.sqrt(Math.pow(this.x-x,2)+Math.pow(this.y-y,2));
+    }
+
+    public double distanceTo(Sprite s)
+    {
+        return distanceTo(s.getX(),s.getY());
     }
 
 }
