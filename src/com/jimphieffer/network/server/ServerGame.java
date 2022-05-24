@@ -25,6 +25,7 @@ public class ServerGame extends Thread {
     private int mapHeight = 1000;
     private Server server;
     private ArrayList<Sprite> sprites;
+    private ArrayList<Player> players;
     private ArrayList<String> spritesNames;
     public BlockingQueue<String> messages = new LinkedBlockingQueue<>();
 
@@ -78,12 +79,21 @@ public class ServerGame extends Thread {
                 decoder.addAssignmentMethod(UUID.class, UUID::fromString);
                 Sprite[] tempSpritesarr = decoder.getDerivativeObjects(Sprite.class);
 
+                System.out.println(data);
+
+                boolean found =false;
                 for (Sprite sprite : tempSpritesarr) {
                     for(int i = 0; i < sprites.size(); i++) {
                         if(sprites.get(i).getUUID().equals(sprite.getUUID())) {
                             sprites.set(i, sprite);
+                            found = true;
                         }
                     }
+                }
+                if(!found)
+                {
+                    sprites.add(tempSpritesarr[0]);
+                    System.out.println("boof");
                 }
 //                sprites.clear();
 //                sprites.addAll(tempSprites);
@@ -116,11 +126,19 @@ public class ServerGame extends Thread {
 
                     if(s instanceof Zombie)
                         s.step(numSteps,sprites);
-                    else
+                    else {
                         s.step(numSteps);
+                    }
                 });
 
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
+                sprites.forEach((s)->
+                {
+                    if(!s.getUUID().equals(tempSpritesarr[0].getUUID()))
+                        encoder.addAnnotatedObject(s);
+                    else
+                        System.out.println("yuhs on " + s.getClassType());
+                });
                 sprites.forEach(encoder::addAnnotatedObject);
                 server.relay(Message.encode(encoder.encode(), Message.MessageProtocol.RELAY,Message.MessageType.SPRITE));
             }

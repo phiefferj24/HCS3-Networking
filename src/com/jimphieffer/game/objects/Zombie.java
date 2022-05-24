@@ -43,7 +43,6 @@ public class Zombie extends NonStatic {
         double vy = getVY();
         for (Sprite s : sprites) {
             if (s instanceof Wall) {
-                System.out.println("wall");
                 boolean right = (vx > 0);
                 boolean up = (vy > 0);
 
@@ -63,11 +62,10 @@ public class Zombie extends NonStatic {
             }
             else if (s instanceof Player)
             {
-                System.out.println("player");
                 if(distanceTo(s)<500)
                 {
                     moveTo(s,10);
-                    System.out.println("sees");
+                    //System.out.println("sees");
                 }
             }
         }

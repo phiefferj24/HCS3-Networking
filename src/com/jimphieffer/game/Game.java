@@ -175,11 +175,14 @@ public class Game {
             }
             sprites.clear();
             for (Sprite sprite : tempSprites) {
-                sprites.add(sprite);
-                sprite.open();
                 if(sprite.getUUID().equals(player.getUUID())) {
-                    player = (Player) sprite;
+                    sprites.add(player);
                 }
+                else {
+                    sprites.add(sprite);
+                    sprite.open();
+                }
+
             }
 
 
