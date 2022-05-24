@@ -23,7 +23,7 @@ public class Zombie extends NonStatic {
     public Zombie(double x, double y) {
         //for any program id do Animal#### and the numbers will be from where we render it go thru list
         //of all sprites and then compute which on
-        super(x, y, 50, 50, "/textures/zombie.png", UUID.randomUUID(), 0, 0);
+        super(x, y, 15, 15, "/textures/zombie.png", UUID.randomUUID(), 0, 0);
         this.health = health;
     }
 

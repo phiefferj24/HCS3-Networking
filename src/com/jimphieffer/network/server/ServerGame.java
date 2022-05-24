@@ -6,6 +6,7 @@ import com.jimphieffer.game.objectTypes.NonStatic;
 import com.jimphieffer.game.objectTypes.Sprite;
 import com.jimphieffer.game.objectTypes.Static;
 import com.jimphieffer.game.objects.Pig;
+import com.jimphieffer.game.objects.Stone;
 import com.jimphieffer.game.objects.Tree;
 import com.jimphieffer.game.objects.Wall;
 import com.jimphieffer.utils.json.AnnotatedDecoder;
@@ -31,7 +32,8 @@ public class ServerGame extends Thread {
         sprites = new ArrayList<>();
         sprites.add(new Pig(100,100));
         sprites.add(new Wall(400,400));
-        sprites.add(new Tree(150,150, 100, 100, "/textures/wood.png", UUID.randomUUID()));
+        sprites.add(new Stone(50,50, 25, 25, "/textures/stone.png", UUID.randomUUID()));
+        sprites.add(new Tree(150,150, 15, 15, "/textures/wood.png", UUID.randomUUID()));
         spritesNames = new ArrayList<>();
         this.server = server;
         // create a new thread that calls onMessage whenever a new message is added to the queue

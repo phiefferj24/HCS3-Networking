@@ -170,10 +170,7 @@ public class Game {
 
             //System.out.println("recieved" + decodedMessage.substring(decodedMessage.indexOf("\"x\""),decodedMessage.indexOf("\"x\"")+13));
 
-            for (Sprite sprite : sprites) {
-                if(sprite.mesh != null) sprite.mesh.close();
-            }
-            sprites.clear();
+
             for (Sprite sprite : tempSprites) {
                 sprites.add(sprite);
                 sprite.open();
@@ -189,7 +186,7 @@ public class Game {
 //                    if (sprite.getUUID().equals(tempSprite.getUUID())) {
 //                        if (sprite.mesh != null) {
 //                            sprite.mesh.close();
-//                        }
+//                      x  }
 //                        tempSprite.open();
 //                        return tempSprite;
 //                    }
@@ -227,7 +224,7 @@ public class Game {
         // }
 
         sprites = new ArrayList<>();
-        player = new Player(0, 0, 100, 100, "/textures/player.png", null, 0, 0, username);
+        player = new Player(0, 0, 15, 15, "/textures/player.png", null, 0, 0, username);
         initTextures();
 
         camera = new Camera(window.getWidth(), window.getHeight());
@@ -415,13 +412,15 @@ public class Game {
 
             if(recievedSprites) {
                 AnnotatedEncoder encoder = new AnnotatedEncoder();
-               encoder.addAnnotatedObject(player);
+                encoder.addAnnotatedObject(player);
 
                 if (print) System.out.println("sent" + encoder.encode().substring(encoder.encode().indexOf("\"x\""),encoder.encode().indexOf("\"x\"")+13)); //REMOVE
                 ct.send(Message.encode(numSteps + "<" +encoder.encode(), Message.MessageProtocol.SEND, Message.MessageType.SPRITE));
                 recievedSprites = false;
 
             }
+            camera.setScreenSize((int)((float)windowWidth*(1/5.f)),(int)((float)windowHeight*(1/5.f)));
+            camera.setPosition((float)player.getX(),(float)player.getY(),(float)0);
         }
     }
 
@@ -531,8 +530,8 @@ public class Game {
     }
 
     public void mouseMoved(long window, double x, double y) {
-        double angely = Math.atan2(y, x);
-        player.setLocalRotation((float)Math.toDegrees(angely));
+        float angely = (float) Math.atan2(y, x);
+        player.setLocalRotation((float) (360 * angely));
         //System.out.println(angely);
         //TODO: handle rotation
         hud.mouseMoved(x, y);

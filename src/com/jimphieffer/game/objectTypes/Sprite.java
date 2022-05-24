@@ -105,12 +105,12 @@ public abstract class Sprite
 
     public boolean touchingAfterDisplacement(Sprite s, double dx, double dy) {
 
-
+        //TODO: here is collision
 
         double sLeft = s.getX();
-        double sTop = s.getY();
-        double sRight = (s.getX() + s.getWidth());
-        double sBottom = s.getY() + s.getHeight();
+        double sTop =  s.getY();
+        double sRight =(s.getX() + s.mesh.getActualWidth());
+        double sBottom =(s.getY() + s.mesh.getActualHeight());
 
         if (touchingAfterDisplacement(sLeft,sTop,dx,dy))
             return true;
